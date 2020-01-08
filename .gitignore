@@ -2,9 +2,4 @@
 # This .gitignore file was automatically created by Microsoft(R) Visual Studio.
 ################################################################################
 
-/x64
-/BridgeDesign.vcxproj.user
-/BridgeDesign.vcxproj.filters
-/BridgeDesign.vcxproj
-/BridgeDesign.sln
 /.vs
