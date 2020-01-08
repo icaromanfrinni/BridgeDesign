@@ -95,7 +95,7 @@ namespace CRAb
         // load models (from OBJ file)
         // ---------------------------
         std::vector<Mesh> ourMesh_List;
-        ourMesh_List = CRAB::LoadOBJ("objects/estrutura.obj");
+        ourMesh_List = CRAB::LoadOBJ("objects/model.obj");
 		/*float width = 10.8f;
 		float height = 35.0f;
 		BoxGirder bridge = BoxGirder(width, height);
