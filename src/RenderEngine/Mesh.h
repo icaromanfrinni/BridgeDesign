@@ -9,6 +9,7 @@
 #include <glm/gtc/matrix_transform.hpp>
 
 #include "Shader.h"
+#include "ObjFile.h"
 
 #include <string>
 #include <fstream>
@@ -33,6 +34,8 @@ public:
     /*  Functions  */
     // constructor
     Mesh(std::vector<Vertex> vertices);
+    // constructor (from OBJ struct)
+    Mesh(const obj& object);
 	// destructor
 	~Mesh();
 

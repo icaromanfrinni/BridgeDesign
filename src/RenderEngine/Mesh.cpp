@@ -8,6 +8,26 @@ Mesh::Mesh(std::vector<Vertex> vertices)
     // now that we have all the required data, set the vertex buffers and its attribute pointers.
     setupMesh();
 }
+// constructor (from OBJ struct)
+Mesh::Mesh(const obj& object)
+{
+    for (int i = 0; i < object.Faces.size(); i++)
+        for (int j = 0; j < object.Faces[i].vertices.size(); j++)
+        {
+            unsigned int index;
+            Vertex vertex;
+
+            index = object.Faces[i].vertices[j] - 1;
+            vertex.Position = glm::vec3(object.Vertices[index].x, object.Vertices[index].y, object.Vertices[index].z);
+            index = object.Faces[i].normals[j] - 1;
+            vertex.Normal = glm::vec3(object.vNormals[index].x, object.vNormals[index].y, object.vNormals[index].z);
+            
+            vertices.push_back(vertex);
+        }
+
+    // now that we have all the required data, set the vertex buffers and its attribute pointers.
+    setupMesh();
+}
 // destructor
 Mesh::~Mesh()
 {

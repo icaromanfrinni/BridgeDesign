@@ -2,5 +2,5 @@
 
 int main()
 {
-	CRAb::main();
+	CRAB::main();
 }

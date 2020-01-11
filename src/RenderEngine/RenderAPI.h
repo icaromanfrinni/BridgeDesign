@@ -11,12 +11,14 @@
 #include "Camera.h"
 #include "Mesh.h"
 #include "LoadOBJ.h"
+#include "ObjFile.h"
 
 #include "BoxGirder.h"
 
 #include <iostream>
+#include <Windows.h>
 
-namespace CRAb
+namespace CRAB
 {
     void framebuffer_size_callback(GLFWwindow* window, int width, int height);
     void mouse_callback(GLFWwindow* window, double xpos, double ypos);
@@ -95,14 +97,23 @@ namespace CRAb
         // load models (from OBJ file)
         // ---------------------------
         std::vector<Mesh> ourMesh_List;
-        ourMesh_List = CRAB::LoadOBJ("objects/model.obj");
-		/*float width = 10.8f;
-		float height = 35.0f;
-		BoxGirder bridge = BoxGirder(width, height);
-        ourMesh_List.push_back(Mesh(bridge.vertices));*/
+        //ourMesh_List = CRAB::LoadOBJ("objects/cubes.obj");
+        std::string fileName;
+        std::cout << "Enter file name (*.obj): " << std::endl;
+        std::cin >> fileName;
+        fileName = "objects/" + fileName + ".obj";
+        ObjFile inputObjFile;
+        if (inputObjFile.ReadObjFile(fileName) == false) {
+            MessageBox(NULL, (LPCWSTR)L"File could not be opened!", (LPCWSTR)L"Info",
+                MB_OK | MB_ICONEXCLAMATION);
+        }
+        else {
+            for (int i = 0; i < inputObjFile.objectList.size(); i++)
+                ourMesh_List.push_back(Mesh(inputObjFile.objectList[i]));
+        }        
 
         // draw in wireframe
-        //glPolygonMode(GL_BACK, GL_LINE);
+        //glPolygonMode(GL_FRONT, GL_LINE);
 
         // pass projection matrix to shader (as projection matrix rarely changes there's no need to do this per frame)
         // -----------------------------------------------------------------------------------------------------------
