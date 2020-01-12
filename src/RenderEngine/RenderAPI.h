@@ -48,6 +48,12 @@ namespace CRAB
     // mouse event handlers
     int TheKeyState = GLFW_KEY_LEFT_CONTROL;
 
+    //List of Solids
+    std::vector<CRAB::solid*> solids;
+
+    // List of Meshes
+    std::vector<Mesh> ourMesh_List;
+
     int main()
     {
         // glfw: initialize and configure
@@ -96,24 +102,11 @@ namespace CRAB
 
         // load models (from OBJ file)
         // ---------------------------
-        std::vector<Mesh> ourMesh_List;
+        //std::vector<Mesh> ourMesh_List;
         //ourMesh_List = CRAB::LoadOBJ("objects/cubes.obj");
-        std::string fileName;
-        std::cout << "Enter file name (*.obj): " << std::endl;
-        std::cin >> fileName;
-        fileName = "objects/" + fileName + ".obj";
-        ObjFile inputObjFile;
-        if (inputObjFile.ReadObjFile(fileName) == false) {
-            MessageBox(NULL, (LPCWSTR)L"File could not be opened!", (LPCWSTR)L"Info",
-                MB_OK | MB_ICONEXCLAMATION);
-        }
-        else {
-            for (int i = 0; i < inputObjFile.objectList.size(); i++)
-                ourMesh_List.push_back(Mesh(inputObjFile.objectList[i]));
-        }        
 
         // draw in wireframe
-        //glPolygonMode(GL_FRONT, GL_LINE);
+        /*glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);*/
 
         // pass projection matrix to shader (as projection matrix rarely changes there's no need to do this per frame)
         // -----------------------------------------------------------------------------------------------------------
@@ -169,7 +162,10 @@ namespace CRAB
 
             // render
             for (int i = 0; i < ourMesh_List.size(); i++)
+            {
+                //ourMesh_List[i].Draw(ourShader);
                 ourMesh_List[i].Draw(ourShader);
+            }
 
             // glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
             // -------------------------------------------------------------------------------
@@ -203,6 +199,30 @@ namespace CRAB
             TheKeyState = GLFW_KEY_LEFT_CONTROL;
         if (glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS)
             TheKeyState = GLFW_KEY_LEFT_SHIFT;
+
+        if (glfwGetKey(window, GLFW_KEY_N) == GLFW_PRESS)
+            ourMesh_List.clear();
+        if (glfwGetKey(window, GLFW_KEY_L) == GLFW_PRESS)
+        {
+            std::string fileName;
+            std::cout << "Enter file name (*.obj): " << std::endl;
+            std::cin >> fileName;
+            fileName = "objects/" + fileName + ".obj";
+            ObjFile inputObjFile;
+            if (inputObjFile.ReadObjFile(fileName) == false) {
+                MessageBox(NULL, (LPCWSTR)L"File could not be opened!", (LPCWSTR)L"Info",
+                    MB_OK | MB_ICONEXCLAMATION);
+            }
+            else {
+                solids.clear();
+                for (int i = 0; i < inputObjFile.objectList.size(); i++)
+                {
+                    //ourMesh_List.push_back(Mesh(inputObjFile.objectList[i]));
+                    solids.push_back(new CRAB::solid(i, inputObjFile.objectList[i]));
+                    ourMesh_List.push_back(Mesh(solids[i]));
+                }
+            }
+        }
     }
 
     // glfw: whenever the window size changed (by OS or user resize) this callback function executes

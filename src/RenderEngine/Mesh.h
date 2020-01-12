@@ -10,6 +10,7 @@
 
 #include "Shader.h"
 #include "ObjFile.h"
+#include "HalfEdge.h"
 
 #include <string>
 #include <fstream>
@@ -17,16 +18,17 @@
 #include <iostream>
 #include <vector>
 
-struct Vertex {
-    // position
-    glm::vec3 Position;
-    // normal
-    glm::vec3 Normal;
-};
-
 class Mesh
 {
 public:
+
+    struct Vertex {
+        // position
+        glm::vec3 Position;
+        // normal
+        glm::vec3 Normal;
+    };
+
     /*  Mesh Data  */
     std::vector<Vertex> vertices;
     unsigned int VAO;
@@ -36,6 +38,8 @@ public:
     Mesh(std::vector<Vertex> vertices);
     // constructor (from OBJ struct)
     Mesh(const obj& object);
+    // constructor (from HalfEdge struct)
+    Mesh(const CRAB::solid* solid);
 	// destructor
 	~Mesh();
 

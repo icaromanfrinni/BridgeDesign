@@ -20,7 +20,7 @@ namespace CRAB
         //Initialize
         std::vector<glm::vec3> OBJ_vertices;
         std::vector<glm::vec3> OBJ_normals;
-        std::vector<Vertex> current_Vertex_List;
+        std::vector<Mesh::Vertex> current_Vertex_List;
         bool object = false;
         //Read a file line by line
         std::string line;
@@ -73,7 +73,7 @@ namespace CRAB
 
             if (line.substr(0, 1) == "f")
             {
-                Vertex vertex;
+                Mesh::Vertex vertex;
                 unsigned int v1, v2, v3, vn1, vn2, vn3;
                 char c;
                 line = line.substr(1);

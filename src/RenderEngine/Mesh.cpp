@@ -1,7 +1,7 @@
 #include "Mesh.h"
 
 // constructor
-Mesh::Mesh(std::vector<Vertex> vertices)
+Mesh::Mesh(std::vector<Mesh::Vertex> vertices)
 {
     this->vertices = vertices;
 
@@ -15,7 +15,7 @@ Mesh::Mesh(const obj& object)
         for (int j = 0; j < object.Faces[i].vertices.size(); j++)
         {
             unsigned int index;
-            Vertex vertex;
+            Mesh::Vertex vertex;
 
             index = object.Faces[i].vertices[j] - 1;
             vertex.Position = glm::vec3(object.Vertices[index].x, object.Vertices[index].y, object.Vertices[index].z);
@@ -24,6 +24,30 @@ Mesh::Mesh(const obj& object)
             
             vertices.push_back(vertex);
         }
+
+    // now that we have all the required data, set the vertex buffers and its attribute pointers.
+    setupMesh();
+}
+// constructor (from HalfEdge struct)
+Mesh::Mesh(const CRAB::solid* solid)
+{
+    for (int i = 0; i < solid->faces.size(); i++)
+    {
+        Mesh::Vertex vertex;
+        vertex.Normal = glm::vec3(solid->faces[i]->normal.x, solid->faces[i]->normal.y, solid->faces[i]->normal.z);
+
+        CRAB::halfEdge* he = solid->faces[i]->hEdge;
+        vertex.Position = glm::vec3(he->vStart->point.x, he->vStart->point.y, he->vStart->point.z);
+
+        vertices.push_back(vertex);
+
+        for (he = solid->faces[i]->hEdge->next; he != solid->faces[i]->hEdge; he = he->next)
+        {
+            if (he->next == he->opp) break;
+            vertex.Position = glm::vec3(he->vStart->point.x, he->vStart->point.y, he->vStart->point.z);
+            vertices.push_back(vertex);
+        }
+    }
 
     // now that we have all the required data, set the vertex buffers and its attribute pointers.
     setupMesh();

@@ -3,7 +3,7 @@
 BoxGirder::BoxGirder(const float width, const float length)
 {
 	float height = 2.5f;
-	Vertex vertex;
+	Mesh::Vertex vertex;
 
 	vertex.Position = { 0.0f, 0.0f, 0.0f };
 	vertex.Normal = { 0.0f, 0.0f, -1.0f };

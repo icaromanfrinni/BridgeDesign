@@ -4,7 +4,7 @@
 class BoxGirder
 {
 public:
-	std::vector<Vertex> vertices;
+	std::vector<Mesh::Vertex> vertices;
 
 	BoxGirder(const float width, const float length);
 	~BoxGirder();
