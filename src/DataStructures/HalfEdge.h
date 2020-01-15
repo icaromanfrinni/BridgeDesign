@@ -21,6 +21,7 @@ namespace CRAB
 		int id;
 		//halfEdge *hEdge;
 		CRAB::Vector4Df point;
+		CRAB::Vector4Df normal;
 		int enable;
 	};
 
@@ -42,7 +43,7 @@ namespace CRAB
 	struct face
 	{
 		int id;
-		CRAB::Vector4Df normal;
+		//CRAB::Vector4Df normal;
 		halfEdge* hEdge;
 		solid* HedSolid;
 	};
@@ -88,6 +89,7 @@ namespace CRAB
 				vertices[i] = new CRAB::vertex;
 				vertices[i]->id = i;
 				vertices[i]->point = OBJ.Vertices[i];
+				vertices[i]->normal = { 0.0f, 0.0f, 0.0f, 0.0f };
 				vertices[i]->enable = 0;
 			}
 
@@ -98,12 +100,14 @@ namespace CRAB
 				//PARA CADA FACE DO *.OBJ
 				faces[i] = new CRAB::face;
 				faces[i]->id = i; //atribui um 'id'
-				faces[i]->normal = OBJ.vNormals[OBJ.Faces[i].normals[0] - 1]; //prrimeiro vetor normal da face do OBJ File
 				faces[i]->hEdge = halfEdges[heCount]; //primeira 'half-edge' da face fica sendo a referência
 				faces[i]->HedSolid = this;
 
 				for (int j = 0; j < OBJ.Faces[i].vertices.size(); j++)
 				{
+					vertices[OBJ.Faces[i].vertices[j] - 1]->normal += OBJ.vNormals[OBJ.Faces[i].normals[j] - 1]; //para cada nova normal encontrada nas faces do OBJ, soma e normaliza
+					vertices[OBJ.Faces[i].vertices[j] - 1]->normal.normalize();
+
 					halfEdges[heCount]->id = heCount; //atribui um 'id'
 					halfEdges[heCount]->leftFace = faces[i]; //todas as 'half-edges' da face recebem como referência a face corrente
 					halfEdges[heCount]->vStart = vertices[OBJ.Faces[i].vertices[j] - 1];

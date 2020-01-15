@@ -163,7 +163,6 @@ namespace CRAB
             // render
             for (int i = 0; i < ourMesh_List.size(); i++)
             {
-                //ourMesh_List[i].Draw(ourShader);
                 ourMesh_List[i].Draw(ourShader);
             }
 
@@ -217,9 +216,9 @@ namespace CRAB
                 solids.clear();
                 for (int i = 0; i < inputObjFile.objectList.size(); i++)
                 {
-                    //ourMesh_List.push_back(Mesh(inputObjFile.objectList[i]));
-                    solids.push_back(new CRAB::solid(i, inputObjFile.objectList[i]));
-                    ourMesh_List.push_back(Mesh(solids[i]));
+                    ourMesh_List.push_back(Mesh(inputObjFile.objectList[i]));
+                    /*solids.push_back(new CRAB::solid(i, inputObjFile.objectList[i]));
+                    ourMesh_List.push_back(Mesh(solids[i]));*/
                 }
             }
         }

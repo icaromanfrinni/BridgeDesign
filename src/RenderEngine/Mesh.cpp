@@ -34,10 +34,10 @@ Mesh::Mesh(const CRAB::solid* solid)
     for (int i = 0; i < solid->faces.size(); i++)
     {
         Mesh::Vertex vertex;
-        vertex.Normal = glm::vec3(solid->faces[i]->normal.x, solid->faces[i]->normal.y, solid->faces[i]->normal.z);
 
         CRAB::halfEdge* he = solid->faces[i]->hEdge;
         vertex.Position = glm::vec3(he->vStart->point.x, he->vStart->point.y, he->vStart->point.z);
+        vertex.Normal = glm::vec3(he->vStart->normal.x, he->vStart->normal.y, he->vStart->normal.z);
 
         vertices.push_back(vertex);
 
@@ -45,6 +45,7 @@ Mesh::Mesh(const CRAB::solid* solid)
         {
             if (he->next == he->opp) break;
             vertex.Position = glm::vec3(he->vStart->point.x, he->vStart->point.y, he->vStart->point.z);
+            vertex.Normal = glm::vec3(he->vStart->normal.x, he->vStart->normal.y, he->vStart->normal.z);
             vertices.push_back(vertex);
         }
     }
