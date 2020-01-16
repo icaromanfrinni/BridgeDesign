@@ -27,9 +27,6 @@
     <ClInclude Include="src\DataStructures\Linear_Algebra.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\DataStructures\Bridges\BoxGirder.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="src\RenderEngine\Camera.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -45,11 +42,11 @@
     <ClInclude Include="src\DataIO\ObjFile.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\DataStructures\Geometry\Bridges.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\DataStructures\Bridges\BoxGirder.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="src\RenderEngine\Camera.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>

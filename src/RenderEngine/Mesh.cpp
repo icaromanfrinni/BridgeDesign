@@ -29,13 +29,13 @@ Mesh::Mesh(const obj& object)
     setupMesh();
 }
 // constructor (from HalfEdge struct)
-Mesh::Mesh(const CRAB::solid* solid)
+Mesh::Mesh(const HED::solid* solid)
 {
     for (int i = 0; i < solid->faces.size(); i++)
     {
         Mesh::Vertex vertex;
 
-        CRAB::halfEdge* he = solid->faces[i]->hEdge;
+        HED::halfEdge* he = solid->faces[i]->hEdge;
         vertex.Position = glm::vec3(he->vStart->point.x, he->vStart->point.y, he->vStart->point.z);
         vertex.Normal = glm::vec3(he->vStart->normal.x, he->vStart->normal.y, he->vStart->normal.z);
 

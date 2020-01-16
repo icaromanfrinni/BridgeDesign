@@ -2,16 +2,16 @@
 #include "HalfEdge.h"
 #include "Linear_Algebra.h"
 
-namespace CRAB
+namespace EulerOp
 {
 	//MAKE Vertex Face Solid
-	void mvfs(std::vector<CRAB::solid*>& model, const CRAB::Vector4Df& point)
+	void mvfs(std::vector<HED::solid*>& model, const CRAB::Vector4Df& point)
 	{
 		//Initialize
-		CRAB::solid* newSolid = new CRAB::solid;
-		CRAB::vertex* newVertex = new CRAB::vertex;
-		CRAB::face* newFace = new CRAB::face;
-		CRAB::halfEdge* newHE = new CRAB::halfEdge;
+		HED::solid* newSolid = new HED::solid;
+		HED::vertex* newVertex = new HED::vertex;
+		HED::face* newFace = new HED::face;
+		HED::halfEdge* newHE = new HED::halfEdge;
 
 		//Solid
 		newSolid->id = model.size();
@@ -41,15 +41,15 @@ namespace CRAB
 	}
 
 	//MAKE Edge Vertex
-	void mev(CRAB::halfEdge* he1, CRAB::halfEdge* he2, const int& v, const CRAB::Vector4Df& point)
+	void mev(HED::halfEdge* he1, HED::halfEdge* he2, const int& v, const CRAB::Vector4Df& point)
 	{
 		//Get Solid
-		CRAB::solid* currentSolid = he1->leftFace->HedSolid;
+		HED::solid* currentSolid = he1->leftFace->HedSolid;
 
 		//Initialize
-		CRAB::vertex* newVertex = new CRAB::vertex;
-		CRAB::halfEdge* newHE1 = new CRAB::halfEdge;
-		CRAB::halfEdge* newHE2 = new CRAB::halfEdge;
+		HED::vertex* newVertex = new HED::vertex;
+		HED::halfEdge* newHE1 = new HED::halfEdge;
+		HED::halfEdge* newHE2 = new HED::halfEdge;
 
 		//Vertex
 		newVertex->id = currentSolid->vertices.size();
@@ -92,7 +92,7 @@ namespace CRAB
 
 			std::cout << "entrou" << std::endl;
 
-			for (CRAB::halfEdge* he = he1; he != he2; he = he->opp->next)
+			for (HED::halfEdge* he = he1; he != he2; he = he->opp->next)
 				he->vStart = currentSolid->vertices.back();
 
 			std::cout << "meio" << std::endl;
@@ -117,15 +117,15 @@ namespace CRAB
 	}
 
 	//MAKE Edge Face
-	void mef(CRAB::halfEdge* he1, CRAB::halfEdge* he2, const int& f)
+	void mef(HED::halfEdge* he1, HED::halfEdge* he2, const int& f)
 	{
 		//Get Solid
-		CRAB::solid* currentSolid = he1->leftFace->HedSolid;
+		HED::solid* currentSolid = he1->leftFace->HedSolid;
 
 		//Initialize
-		CRAB::face* newFace = new CRAB::face;
-		CRAB::halfEdge* newHE1 = new CRAB::halfEdge;
-		CRAB::halfEdge* newHE2 = new CRAB::halfEdge;
+		HED::face* newFace = new HED::face;
+		HED::halfEdge* newHE1 = new HED::halfEdge;
+		HED::halfEdge* newHE2 = new HED::halfEdge;
 
 		/* FUNCIONANDO PRA APENAS UMA ORIENTAÇÃO */
 
@@ -138,7 +138,7 @@ namespace CRAB
 			//nok
 			newFace->hEdge = he1;
 			//nok
-			for (CRAB::halfEdge* he = he1; he != he2; he = he->next)
+			for (HED::halfEdge* he = he1; he != he2; he = he->next)
 				he->leftFace = newFace; //currentSolid->faces.back();
 		}
 

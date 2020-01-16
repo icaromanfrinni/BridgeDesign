@@ -8,7 +8,7 @@
 //#include "LoadOBJ.h"
 #include "ObjFile.h"
 
-namespace CRAB
+namespace HED
 {
 	typedef struct vertex Vertex;
 	//typedef struct edge Edge;
@@ -80,13 +80,13 @@ namespace CRAB
 
 			for (int i = 0; i < OBJ.Faces.size(); i++)
 				for (int j = 0; j < OBJ.Faces[i].vertices.size(); j++)
-					halfEdges.push_back(new CRAB::halfEdge);
+					halfEdges.push_back(new HED::halfEdge);
 
 			//Vertices
 			for (int i = 0; i < OBJ.Vertices.size(); i++)
 			{
 				//PEGA CADA VÉRTICE DO *.OBJ
-				vertices[i] = new CRAB::vertex;
+				vertices[i] = new HED::vertex;
 				vertices[i]->id = i;
 				vertices[i]->point = OBJ.Vertices[i];
 				vertices[i]->normal = { 0.0f, 0.0f, 0.0f, 0.0f };
@@ -98,7 +98,7 @@ namespace CRAB
 			for (int i = 0; i < OBJ.Faces.size(); i++)
 			{
 				//PARA CADA FACE DO *.OBJ
-				faces[i] = new CRAB::face;
+				faces[i] = new HED::face;
 				faces[i]->id = i; //atribui um 'id'
 				faces[i]->hEdge = halfEdges[heCount]; //primeira 'half-edge' da face fica sendo a referência
 				faces[i]->HedSolid = this;
@@ -155,7 +155,7 @@ namespace CRAB
 
 			for (int j = 0; j < faces.size(); j++)
 			{
-				CRAB::halfEdge* he = faces[j]->hEdge->next;
+				HED::halfEdge* he = faces[j]->hEdge->next;
 
 				while (he != faces[j]->hEdge)
 				{

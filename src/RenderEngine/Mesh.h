@@ -39,7 +39,7 @@ public:
     // constructor (from OBJ struct)
     Mesh(const obj& object);
     // constructor (from HalfEdge struct)
-    Mesh(const CRAB::solid* solid);
+    Mesh(const HED::solid* solid);
 	// destructor
 	~Mesh();
 

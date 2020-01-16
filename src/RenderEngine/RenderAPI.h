@@ -13,7 +13,7 @@
 #include "LoadOBJ.h"
 #include "ObjFile.h"
 
-#include "BoxGirder.h"
+#include "Bridges.h"
 
 #include <iostream>
 #include <Windows.h>
@@ -49,7 +49,7 @@ namespace CRAB
     int TheKeyState = GLFW_KEY_LEFT_CONTROL;
 
     //List of Solids
-    std::vector<CRAB::solid*> solids;
+    std::vector<HED::solid*> solids;
 
     // List of Meshes
     std::vector<Mesh> ourMesh_List;
@@ -104,6 +104,12 @@ namespace CRAB
         // ---------------------------
         //std::vector<Mesh> ourMesh_List;
         //ourMesh_List = CRAB::LoadOBJ("objects/cubes.obj");
+
+        // load models (primitives)
+        // ------------------------
+        BRIDGES::BoxGirder(solids, 10.80f, 35.00f, { 0.0f, 5.0f, 0.0f, 1.0f }, { 0.0f, 0.0f, -1.0f, 0.0f });
+        for (int i = 0; i < solids.size(); i++)
+            ourMesh_List.push_back(Mesh(solids[i]));
 
         // draw in wireframe
         /*glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);*/
@@ -216,7 +222,9 @@ namespace CRAB
                 solids.clear();
                 for (int i = 0; i < inputObjFile.objectList.size(); i++)
                 {
+                    // from OBJ -> Mesh
                     ourMesh_List.push_back(Mesh(inputObjFile.objectList[i]));
+                    // from OBJ -> HalfEdhe -> Mesh
                     /*solids.push_back(new CRAB::solid(i, inputObjFile.objectList[i]));
                     ourMesh_List.push_back(Mesh(solids[i]));*/
                 }
