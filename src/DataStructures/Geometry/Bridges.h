@@ -4,9 +4,8 @@
 
 // Default bridge values
 const float SLOPE = 0.02f;
-const float REV = 0.07f;
-const float GUARDRAIL = 0.40f;
-const float HM = 0.10f;
+const float TOP_LAYER = 0.07f;
+const float GUARD_RAIL = 0.40f;
 
 namespace BRIDGES
 {

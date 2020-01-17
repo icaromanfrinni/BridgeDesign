@@ -34,18 +34,29 @@ Mesh::Mesh(const HED::solid* solid)
     for (int i = 0; i < solid->faces.size(); i++)
     {
         Mesh::Vertex vertex;
-
         HED::halfEdge* he = solid->faces[i]->hEdge;
+
+        // Position
         vertex.Position = glm::vec3(he->vStart->point.x, he->vStart->point.y, he->vStart->point.z);
-        vertex.Normal = glm::vec3(he->vStart->normal.x, he->vStart->normal.y, he->vStart->normal.z);
+        // Normal
+        CRAB::Vector4Df P1P2 = he->next->vStart->point - he->vStart->point;
+        CRAB::Vector4Df P1P3 = he->next->next->vStart->point - he->vStart->point;
+        CRAB::Vector4Df vertex_normal = CRAB::cross(P1P2, P1P3).to_unitary();
+        vertex.Normal = glm::vec3(vertex_normal.x, vertex_normal.y, vertex_normal.z);
 
         vertices.push_back(vertex);
 
         for (he = solid->faces[i]->hEdge->next; he != solid->faces[i]->hEdge; he = he->next)
         {
             if (he->next == he->opp) break;
+            // Position
             vertex.Position = glm::vec3(he->vStart->point.x, he->vStart->point.y, he->vStart->point.z);
-            vertex.Normal = glm::vec3(he->vStart->normal.x, he->vStart->normal.y, he->vStart->normal.z);
+            // Normal
+            CRAB::Vector4Df P1P2 = he->next->vStart->point - he->vStart->point;
+            CRAB::Vector4Df P1P3 = he->next->next->vStart->point - he->vStart->point;
+            CRAB::Vector4Df vertex_normal = CRAB::cross(P1P2, P1P3).to_unitary();
+            vertex.Normal = glm::vec3(vertex_normal.x, vertex_normal.y, vertex_normal.z);
+
             vertices.push_back(vertex);
         }
     }

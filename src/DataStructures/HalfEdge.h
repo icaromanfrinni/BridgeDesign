@@ -21,7 +21,6 @@ namespace HED
 		int id;
 		//halfEdge *hEdge;
 		CRAB::Vector4Df point;
-		CRAB::Vector4Df normal;
 		int enable;
 	};
 
@@ -43,7 +42,6 @@ namespace HED
 	struct face
 	{
 		int id;
-		//CRAB::Vector4Df normal;
 		halfEdge* hEdge;
 		solid* HedSolid;
 	};
@@ -89,7 +87,6 @@ namespace HED
 				vertices[i] = new HED::vertex;
 				vertices[i]->id = i;
 				vertices[i]->point = OBJ.Vertices[i];
-				vertices[i]->normal = { 0.0f, 0.0f, 0.0f, 0.0f };
 				vertices[i]->enable = 0;
 			}
 
@@ -105,9 +102,6 @@ namespace HED
 
 				for (int j = 0; j < OBJ.Faces[i].vertices.size(); j++)
 				{
-					vertices[OBJ.Faces[i].vertices[j] - 1]->normal += OBJ.vNormals[OBJ.Faces[i].normals[j] - 1]; //para cada nova normal encontrada nas faces do OBJ, soma e normaliza
-					vertices[OBJ.Faces[i].vertices[j] - 1]->normal.normalize();
-
 					halfEdges[heCount]->id = heCount; //atribui um 'id'
 					halfEdges[heCount]->leftFace = faces[i]; //todas as 'half-edges' da face recebem como referência a face corrente
 					halfEdges[heCount]->vStart = vertices[OBJ.Faces[i].vertices[j] - 1];

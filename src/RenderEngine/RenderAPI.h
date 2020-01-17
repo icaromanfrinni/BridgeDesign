@@ -220,13 +220,14 @@ namespace CRAB
             }
             else {
                 solids.clear();
+                ourMesh_List.clear();
                 for (int i = 0; i < inputObjFile.objectList.size(); i++)
                 {
                     // from OBJ -> Mesh
-                    ourMesh_List.push_back(Mesh(inputObjFile.objectList[i]));
-                    // from OBJ -> HalfEdhe -> Mesh
-                    /*solids.push_back(new CRAB::solid(i, inputObjFile.objectList[i]));
-                    ourMesh_List.push_back(Mesh(solids[i]));*/
+                    //ourMesh_List.push_back(Mesh(inputObjFile.objectList[i]));
+                    // from OBJ -> HalfEdge -> Mesh
+                    solids.push_back(new HED::solid(i, inputObjFile.objectList[i]));
+                    ourMesh_List.push_back(Mesh(solids[i]));
                 }
             }
         }
