@@ -10,10 +10,11 @@
 #include "Shader.h"
 #include "Camera.h"
 #include "Mesh.h"
-#include "LoadOBJ.h"
+//#include "LoadOBJ.h"
 #include "ObjFile.h"
 
-#include "Bridges.h"
+//#include "Bridges.h"
+#include "BoxGirder.h"
 
 #include <iostream>
 #include <Windows.h>
@@ -107,7 +108,8 @@ namespace CRAB
 
         // load models (primitives)
         // ------------------------
-        BRIDGES::BoxGirder(solids, 10.80f, 35.00f, { 0.0f, 5.0f, 0.0f, 1.0f }, { 0.0f, 0.0f, -1.0f, 0.0f });
+        //BRIDGES::BoxGirder(solids, 10.80f, 35.00f, { 0.0f, 5.0f, 0.0f, 1.0f }, { 0.0f, 0.0f, -1.0f, 0.0f });
+        solids.push_back(BoxGirder().model);
         for (int i = 0; i < solids.size(); i++)
             ourMesh_List.push_back(Mesh(solids[i]));
 

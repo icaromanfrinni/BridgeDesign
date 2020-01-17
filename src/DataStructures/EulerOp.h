@@ -5,7 +5,7 @@
 namespace EulerOp
 {
 	//MAKE Vertex Face Solid
-	void mvfs(std::vector<HED::solid*>& model, const CRAB::Vector4Df& point)
+	void mvfs(HED::solid* &model, const CRAB::Vector4Df& point)
 	{
 		//Initialize
 		HED::solid* newSolid = new HED::solid;
@@ -14,7 +14,7 @@ namespace EulerOp
 		HED::halfEdge* newHE = new HED::halfEdge;
 
 		//Solid
-		newSolid->id = model.size();
+		newSolid->id = 0;
 
 		//Vertex
 		newVertex->id = 0;
@@ -37,7 +37,7 @@ namespace EulerOp
 		newHE->vStart = newVertex;
 
 		//RETURN
-		model.push_back(newSolid);
+		model = newSolid;
 	}
 
 	//MAKE Edge Vertex
