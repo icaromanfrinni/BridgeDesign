@@ -162,5 +162,60 @@ namespace HED
 
 			return area / 2.0f;
 		}
+
+		//WRITE Half-Edge FILE
+		void WriteHalfEdgeFile()
+		{
+			std::string outName = name + ".hed";
+			std::ofstream outFile(outName);
+			if (!outFile.is_open())
+			{
+				std::cerr << "\n\t!!! FILE COULD NOT BE OPENED !!!\n" << std::endl;
+				system("pause");
+				exit(EXIT_FAILURE);
+			}
+
+			/*-------------------* HEADER *-------------------*/
+
+			outFile << "# ICARO 2019 Half-Edge Structure File" << std::endl;
+			outFile << "# icaro@lia.ufc.br" << std::endl;
+
+			/*------------------* OBJECTS *-------------------*/
+
+			//group name (o)
+			outFile << "o " << name << std::endl;
+
+			//geometric vertices
+			outFile << "/* VERTICES */" << std::endl;
+			for (int j = 0; j < vertices.size(); j++)
+				outFile << "vertices[" << j << "].id = " << vertices[j]->id << "; vertices[" << j << "].point = { " << vertices[j]->point.x << ", " << vertices[j]->point.y << ", " << vertices[j]->point.z << ", 1.0 };" << std::endl;
+			//outFile << "# " << vertices.size() << " vertices" << std::endl;
+
+			//loop faces
+			outFile << "/* FACES */" << std::endl;
+			for (int j = 0; j < faces.size(); j++)
+				outFile << "faces[" << j << "].id = " << faces[j]->id << "; faces[" << j << "].hEdge = &halfEdges[" << faces[j]->hEdge->id << "];" << std::endl;
+			//outFile << "# " << faces.size() << " faces" << std::endl;
+
+			for (int j = 0; j < halfEdges.size(); j++)
+			{
+				outFile << "//Half-edge " << j << std::endl;
+
+				outFile << "halfEdges[" << j << "].id = " << halfEdges[j]->id << ";" << std::endl;
+				outFile << "halfEdges[" << j << "].leftFace = &faces[" << halfEdges[j]->leftFace->id << "];" << std::endl;
+				outFile << "halfEdges[" << j << "].next = &halfEdges[" << halfEdges[j]->next->id << "];" << std::endl;
+				outFile << "halfEdges[" << j << "].opp = &halfEdges[" << halfEdges[j]->opp->id << "];" << std::endl;
+				outFile << "halfEdges[" << j << "].prev = &halfEdges[" << halfEdges[j]->prev->id << "];" << std::endl;
+				outFile << "halfEdges[" << j << "].vStart = &vertices[" << halfEdges[j]->vStart->id << "];" << std::endl;
+			}
+			//outFile << "# " << halfEdges.size() << " halfedges" << std::endl;
+
+			/*--------------------* END *--------------------*/
+
+			outFile.close();
+
+			std::cout << "\n\tFile [" << outName << "] has been created successfully!" << std::endl;
+		}
 	};
+
 } // end namespace

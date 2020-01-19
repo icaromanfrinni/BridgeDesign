@@ -42,10 +42,7 @@
     <ClInclude Include="src\DataIO\ObjFile.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\DataStructures\Geometry\Bridges.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\DataStructures\Bridges\BoxGirder.h">
+    <ClInclude Include="src\DataStructures\Bridges\V_section.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -68,7 +65,7 @@
     <ClCompile Include="src\DataIO\ObjFile.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\DataStructures\Bridges\BoxGirder.cpp">
+    <ClCompile Include="src\DataStructures\Bridges\V_section.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

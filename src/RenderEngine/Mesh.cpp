@@ -33,6 +33,14 @@ Mesh::Mesh(const HED::solid* solid)
 {
     for (int i = 0; i < solid->faces.size(); i++)
     {
+        //DEBUG
+        std::cout << "face ... " << solid->faces[i]->id << std::endl;
+        std::cout << "face->hEdge ... " << solid->faces[i]->hEdge->id << std::endl;
+        std::cout << "\n" << std::endl;
+
+        // check if current face is a triangle
+        if (solid->faces[i]->hEdge->next->next != solid->faces[i]->hEdge->prev) continue;
+
         Mesh::Vertex vertex;
         HED::halfEdge* he = solid->faces[i]->hEdge;
 
@@ -51,11 +59,6 @@ Mesh::Mesh(const HED::solid* solid)
             if (he->next == he->opp) break;
             // Position
             vertex.Position = glm::vec3(he->vStart->point.x, he->vStart->point.y, he->vStart->point.z);
-            // Normal
-            CRAB::Vector4Df P1P2 = he->next->vStart->point - he->vStart->point;
-            CRAB::Vector4Df P1P3 = he->next->next->vStart->point - he->vStart->point;
-            CRAB::Vector4Df vertex_normal = CRAB::cross(P1P2, P1P3).to_unitary();
-            vertex.Normal = glm::vec3(vertex_normal.x, vertex_normal.y, vertex_normal.z);
 
             vertices.push_back(vertex);
         }
@@ -74,7 +77,7 @@ void Mesh::Draw(Shader shader)
 {
     // draw mesh
     glBindVertexArray(VAO);
-    glDrawArrays(GL_TRIANGLES, 0, vertices.size());
+    glDrawArrays(GL_TRIANGLE_FAN, 0, vertices.size());
 }
 
 // initializes all the buffer objects/arrays

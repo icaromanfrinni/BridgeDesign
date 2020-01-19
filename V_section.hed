@@ -1,0 +1,82 @@
+# ICARO 2019 Half-Edge Structure File
+# icaro@lia.ufc.br
+o V_section
+/* VERTICES */
+vertices[0].id = 0; vertices[0].point = { 0, -0.07, 0, 1.0 };
+vertices[1].id = 1; vertices[1].point = { -5.4, -0.178, 0, 1.0 };
+vertices[2].id = 2; vertices[2].point = { -2.45, -0.428, 0, 1.0 };
+vertices[3].id = 3; vertices[3].point = { -2.45, -2.328, 0, 1.0 };
+/* FACES */
+faces[0].id = 0; faces[0].hEdge = &halfEdges[0];
+faces[1].id = 1; faces[1].hEdge = &halfEdges[3];
+faces[2].id = 2; faces[2].hEdge = &halfEdges[7];
+//Half-edge 0
+halfEdges[0].id = 0;
+halfEdges[0].leftFace = &faces[0];
+halfEdges[0].next = &halfEdges[2];
+halfEdges[0].opp = &halfEdges[1];
+halfEdges[0].prev = &halfEdges[5];
+halfEdges[0].vStart = &vertices[0];
+//Half-edge 1
+halfEdges[1].id = 1;
+halfEdges[1].leftFace = &faces[2];
+halfEdges[1].next = &halfEdges[4];
+halfEdges[1].opp = &halfEdges[0];
+halfEdges[1].prev = &halfEdges[7];
+halfEdges[1].vStart = &vertices[1];
+//Half-edge 2
+halfEdges[2].id = 2;
+halfEdges[2].leftFace = &faces[0];
+halfEdges[2].next = &halfEdges[5];
+halfEdges[2].opp = &halfEdges[3];
+halfEdges[2].prev = &halfEdges[0];
+halfEdges[2].vStart = &vertices[1];
+//Half-edge 3
+halfEdges[3].id = 3;
+halfEdges[3].leftFace = &faces[1];
+halfEdges[3].next = &halfEdges[6];
+halfEdges[3].opp = &halfEdges[2];
+halfEdges[3].prev = &halfEdges[9];
+halfEdges[3].vStart = &vertices[2];
+//Half-edge 4
+halfEdges[4].id = 4;
+halfEdges[4].leftFace = &faces[2];
+halfEdges[4].next = &halfEdges[8];
+halfEdges[4].opp = &halfEdges[5];
+halfEdges[4].prev = &halfEdges[1];
+halfEdges[4].vStart = &vertices[0];
+//Half-edge 5
+halfEdges[5].id = 5;
+halfEdges[5].leftFace = &faces[0];
+halfEdges[5].next = &halfEdges[0];
+halfEdges[5].opp = &halfEdges[4];
+halfEdges[5].prev = &halfEdges[2];
+halfEdges[5].vStart = &vertices[2];
+//Half-edge 6
+halfEdges[6].id = 6;
+halfEdges[6].leftFace = &faces[1];
+halfEdges[6].next = &halfEdges[9];
+halfEdges[6].opp = &halfEdges[7];
+halfEdges[6].prev = &halfEdges[3];
+halfEdges[6].vStart = &vertices[1];
+//Half-edge 7
+halfEdges[7].id = 7;
+halfEdges[7].leftFace = &faces[2];
+halfEdges[7].next = &halfEdges[1];
+halfEdges[7].opp = &halfEdges[6];
+halfEdges[7].prev = &halfEdges[8];
+halfEdges[7].vStart = &vertices[3];
+//Half-edge 8
+halfEdges[8].id = 8;
+halfEdges[8].leftFace = &faces[2];
+halfEdges[8].next = &halfEdges[7];
+halfEdges[8].opp = &halfEdges[9];
+halfEdges[8].prev = &halfEdges[4];
+halfEdges[8].vStart = &vertices[2];
+//Half-edge 9
+halfEdges[9].id = 9;
+halfEdges[9].leftFace = &faces[1];
+halfEdges[9].next = &halfEdges[3];
+halfEdges[9].opp = &halfEdges[8];
+halfEdges[9].prev = &halfEdges[6];
+halfEdges[9].vStart = &vertices[3];

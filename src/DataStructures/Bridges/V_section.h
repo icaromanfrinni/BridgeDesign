@@ -1,17 +1,17 @@
 #pragma once
-#ifndef BOXGIRDER_H
-#define BOXGIRDER_H
+#ifndef V_SECTION_H
+#define V_SECTION_H
 
 #include "Linear_Algebra.h"
 #include "HalfEdge.h"
 
 // Default bridge values
-const float SLOPE = 0.30f;
+const float SLOPE = 0.02f;
 const float TOP_LAYER = 0.07f;
 const float GUARD_RAIL = 0.40f;
 const float INCLINATION_RATIO = 0.25f;
 
-class BoxGirder
+class V_section
 {
 public:
     // Road Attributes
@@ -33,14 +33,14 @@ public:
     HED::solid* model;
 
     // default Constructor
-    BoxGirder();
+    V_section();
     // overload constructor
-    BoxGirder(float B, float L, const CRAB::Vector4Df& refPoint, const CRAB::Vector4Df& dir);
+    V_section(float B, float L, const CRAB::Vector4Df& refPoint, const CRAB::Vector4Df& dir);
     // destructor
-    ~BoxGirder();
+    ~V_section();
 
 private:
     void update();
 };
 
-#endif // BOXGIRDER_H
+#endif // V_SECTION_H

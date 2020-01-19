@@ -164,9 +164,8 @@
   <ItemGroup>
     <ClInclude Include="src\DataIO\LoadOBJ.h" />
     <ClInclude Include="src\DataIO\ObjFile.h" />
-    <ClInclude Include="src\DataStructures\Bridges\BoxGirder.h" />
+    <ClInclude Include="src\DataStructures\Bridges\V_section.h" />
     <ClInclude Include="src\DataStructures\EulerOp.h" />
-    <ClInclude Include="src\DataStructures\Geometry\Bridges.h" />
     <ClInclude Include="src\DataStructures\HalfEdge.h" />
     <ClInclude Include="src\DataStructures\Linear_Algebra.h" />
     <ClInclude Include="src\RenderEngine\Camera.h" />
@@ -176,7 +175,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\DataIO\ObjFile.cpp" />
-    <ClCompile Include="src\DataStructures\Bridges\BoxGirder.cpp" />
+    <ClCompile Include="src\DataStructures\Bridges\V_section.cpp" />
     <ClCompile Include="src\glad.c" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\RenderEngine\Camera.cpp" />

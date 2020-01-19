@@ -1,3 +1,4 @@
+
 #pragma once
 
 #include <glad/glad.h>
@@ -14,7 +15,7 @@
 #include "ObjFile.h"
 
 //#include "Bridges.h"
-#include "BoxGirder.h"
+#include "V_section.h"
 
 #include <iostream>
 #include <Windows.h>
@@ -44,7 +45,7 @@ namespace CRAB
     float lastFrame = 0.0f;
 
     // lighting
-    glm::vec3 lightPos(10.0f, 10.0f, 10.0f);
+    glm::vec3 lightPos(10.0f, 10.0f, 0.0f);
 
     // mouse event handlers
     int TheKeyState = GLFW_KEY_LEFT_CONTROL;
@@ -109,16 +110,16 @@ namespace CRAB
         // load models (primitives)
         // ------------------------
         //BRIDGES::BoxGirder(solids, 10.80f, 35.00f, { 0.0f, 5.0f, 0.0f, 1.0f }, { 0.0f, 0.0f, -1.0f, 0.0f });
-        solids.push_back(BoxGirder().model);
+        solids.push_back(V_section().model);
         for (int i = 0; i < solids.size(); i++)
             ourMesh_List.push_back(Mesh(solids[i]));
 
         // draw in wireframe
-        /*glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);*/
+        //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
         // pass projection matrix to shader (as projection matrix rarely changes there's no need to do this per frame)
         // -----------------------------------------------------------------------------------------------------------
-        projection = glm::perspective(glm::radians(camera.Zoom), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 500.0f);
+        projection = glm::perspective(glm::radians(camera.FieldOfView), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 500.0f);
 
         // render loop
         // -----------
@@ -136,7 +137,8 @@ namespace CRAB
 
             // render
             // ------
-            glClearColor(0.05f, 0.05f, 0.05f, 1.0f);
+            glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+            //glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
             // be sure to activate shader when setting uniforms/drawing objects
@@ -145,7 +147,7 @@ namespace CRAB
             ourShader.setVec3("viewPos", camera.Position);
 
             // light properties
-            glm::vec3 lightColor(1.0f, 1.0f, 1.0f);
+            glm::vec3 lightColor(0.8f, 0.8f, 0.8f);
             ourShader.setVec3("light.intensity", lightColor);
             ourShader.setFloat("light.constant", 1.0f);
             ourShader.setFloat("light.linear", 0.02f);
@@ -207,8 +209,16 @@ namespace CRAB
         if (glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS)
             TheKeyState = GLFW_KEY_LEFT_SHIFT;
 
+        if (glfwGetKey(window, GLFW_KEY_E) == GLFW_PRESS)
+        {
+            for (int i = 0; i < solids.size(); i++)
+                solids[i]->WriteHalfEdgeFile();
+        }
         if (glfwGetKey(window, GLFW_KEY_N) == GLFW_PRESS)
+        {
+            solids.clear();
             ourMesh_List.clear();
+        }
         if (glfwGetKey(window, GLFW_KEY_L) == GLFW_PRESS)
         {
             std::string fileName;
@@ -244,7 +254,7 @@ namespace CRAB
         glViewport(0, 0, width, height);
 
         // update
-        projection = glm::perspective(glm::radians(camera.Zoom), (float)width / (float)height, 0.1f, 500.0f);
+        projection = glm::perspective(glm::radians(camera.FieldOfView), (float)width / (float)height, 0.1f, 500.0f);
     }
 
     // glfw: whenever the mouse moves, this callback is called
