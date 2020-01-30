@@ -1,4 +1,5 @@
 #include "Mesh.h"
+#include "Comp_Geometry.h"
 
 // constructor
 Mesh::Mesh(std::vector<Mesh::Vertex> vertices)
@@ -38,29 +39,54 @@ Mesh::Mesh(const HED::solid* solid)
         std::cout << "face->hEdge ... " << solid->faces[i]->hEdge->id << std::endl;
         std::cout << "\n" << std::endl;
 
-        // check if current face is a triangle
-        if (solid->faces[i]->hEdge->next->next != solid->faces[i]->hEdge->prev) continue;
+        //// check if current face is a triangle
+        //if (solid->faces[i]->hEdge->next->next != solid->faces[i]->hEdge->prev) continue;
 
-        Mesh::Vertex vertex;
+        //Mesh::Vertex vertex;
+        //HED::halfEdge* he = solid->faces[i]->hEdge;
+
+        //// Position
+        //vertex.Position = glm::vec3(he->vStart->point.x, he->vStart->point.y, he->vStart->point.z);
+        //// Normal
+        //CRAB::Vector4Df P1P2 = he->next->vStart->point - he->vStart->point;
+        //CRAB::Vector4Df P1P3 = he->next->next->vStart->point - he->vStart->point;
+        //CRAB::Vector4Df vertex_normal = CRAB::cross(P1P2, P1P3).to_unitary();
+        //vertex.Normal = glm::vec3(vertex_normal.x, vertex_normal.y, vertex_normal.z);
+
+        //vertices.push_back(vertex);
+
+        //for (he = solid->faces[i]->hEdge->next; he != solid->faces[i]->hEdge; he = he->next)
+        //{
+        //    if (he->next == he->opp) break;
+        //    // Position
+        //    vertex.Position = glm::vec3(he->vStart->point.x, he->vStart->point.y, he->vStart->point.z);
+
+        //    vertices.push_back(vertex);
+        //}
+
+        // Initialize Polygon
+        CRAB::Polygon p;
         HED::halfEdge* he = solid->faces[i]->hEdge;
-
-        // Position
-        vertex.Position = glm::vec3(he->vStart->point.x, he->vStart->point.y, he->vStart->point.z);
-        // Normal
-        CRAB::Vector4Df P1P2 = he->next->vStart->point - he->vStart->point;
-        CRAB::Vector4Df P1P3 = he->next->next->vStart->point - he->vStart->point;
-        CRAB::Vector4Df vertex_normal = CRAB::cross(P1P2, P1P3).to_unitary();
-        vertex.Normal = glm::vec3(vertex_normal.x, vertex_normal.y, vertex_normal.z);
-
-        vertices.push_back(vertex);
-
+        p.v.push_back(he->vStart->point);
         for (he = solid->faces[i]->hEdge->next; he != solid->faces[i]->hEdge; he = he->next)
         {
-            if (he->next == he->opp) break;
-            // Position
-            vertex.Position = glm::vec3(he->vStart->point.x, he->vStart->point.y, he->vStart->point.z);
+            p.v.push_back(he->vStart->point);
+        }
 
-            vertices.push_back(vertex);
+        // Triangulate
+        std::vector<CRAB::Triangle> t;
+        p.triangulate(t);
+
+        // MESH
+        for (int j = 0; j < t.size(); j++)
+        {
+            Mesh::Vertex vertex;
+            vertex.Normal = glm::vec3(t[j].normal().to_unitary().x, t[j].normal().to_unitary().y, t[j].normal().to_unitary().z);
+            for (int k = 0; k < 3; k++)
+            {
+                vertex.Position = glm::vec3(t[j].v[k].x, t[j].v[k].y, t[j].v[k].z);
+                vertices.push_back(vertex);
+            }
         }
     }
 
@@ -77,7 +103,7 @@ void Mesh::Draw(Shader shader)
 {
     // draw mesh
     glBindVertexArray(VAO);
-    glDrawArrays(GL_TRIANGLE_FAN, 0, vertices.size());
+    glDrawArrays(GL_TRIANGLES, 0, vertices.size());
 }
 
 // initializes all the buffer objects/arrays

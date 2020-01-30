@@ -45,7 +45,7 @@ namespace CRAB
     float lastFrame = 0.0f;
 
     // lighting
-    glm::vec3 lightPos(10.0f, 10.0f, 0.0f);
+    glm::vec3 lightPos(10.0f, 10.0f, 10.0f);
 
     // mouse event handlers
     int TheKeyState = GLFW_KEY_LEFT_CONTROL;
@@ -109,8 +109,7 @@ namespace CRAB
 
         // load models (primitives)
         // ------------------------
-        //BRIDGES::BoxGirder(solids, 10.80f, 35.00f, { 0.0f, 5.0f, 0.0f, 1.0f }, { 0.0f, 0.0f, -1.0f, 0.0f });
-        solids.push_back(V_section().model);
+        solids = V_section().model;
         for (int i = 0; i < solids.size(); i++)
             ourMesh_List.push_back(Mesh(solids[i]));
 
@@ -236,10 +235,12 @@ namespace CRAB
                 for (int i = 0; i < inputObjFile.objectList.size(); i++)
                 {
                     // from OBJ -> Mesh
-                    //ourMesh_List.push_back(Mesh(inputObjFile.objectList[i]));
+                    // ----------------
+                    ourMesh_List.push_back(Mesh(inputObjFile.objectList[i]));
                     // from OBJ -> HalfEdge -> Mesh
-                    solids.push_back(new HED::solid(i, inputObjFile.objectList[i]));
-                    ourMesh_List.push_back(Mesh(solids[i]));
+                    // ----------------------------
+                    //solids.push_back(new HED::solid(i, inputObjFile.objectList[i]));
+                    //ourMesh_List.push_back(Mesh(solids[i]));
                 }
             }
         }

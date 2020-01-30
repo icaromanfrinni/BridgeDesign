@@ -3,80 +3,500 @@
 o V_section
 /* VERTICES */
 vertices[0].id = 0; vertices[0].point = { 0, -0.07, 0, 1.0 };
-vertices[1].id = 1; vertices[1].point = { -5.4, -0.178, 0, 1.0 };
-vertices[2].id = 2; vertices[2].point = { -2.45, -0.428, 0, 1.0 };
-vertices[3].id = 3; vertices[3].point = { -2.45, -2.328, 0, 1.0 };
+vertices[1].id = 1; vertices[1].point = { -5.4, -5.47, 0, 1.0 };
+vertices[2].id = 2; vertices[2].point = { 5.4, -5.47, 0, 1.0 };
+vertices[3].id = 3; vertices[3].point = { 0, -0.07, -35, 1.0 };
+vertices[4].id = 4; vertices[4].point = { 5.4, -5.47, -35, 1.0 };
+vertices[5].id = 5; vertices[5].point = { -5.4, -5.47, -35, 1.0 };
+vertices[6].id = 6; vertices[6].point = { 0, 0.801557, -44.9619, 1.0 };
+vertices[7].id = 7; vertices[7].point = { 5.4, -4.5164, -45.8996, 1.0 };
+vertices[8].id = 8; vertices[8].point = { -5.4, -4.5164, -45.8996, 1.0 };
+vertices[9].id = 9; vertices[9].point = { 0, 3.38975, -54.6212, 1.0 };
+vertices[10].id = 10; vertices[10].point = { 5.4, -1.68459, -56.4681, 1.0 };
+vertices[11].id = 11; vertices[11].point = { -5.4, -1.68459, -56.4681, 1.0 };
+vertices[12].id = 12; vertices[12].point = { 0, 7.61593, -63.6843, 1.0 };
+vertices[13].id = 13; vertices[13].point = { 5.4, 2.93939, -66.3843, 1.0 };
+vertices[14].id = 14; vertices[14].point = { -5.4, 2.93939, -66.3843, 1.0 };
+vertices[15].id = 15; vertices[15].point = { 0, 10.2041, -73.3435, 1.0 };
+vertices[16].id = 16; vertices[16].point = { 5.4, 4.80412, -73.3435, 1.0 };
+vertices[17].id = 17; vertices[17].point = { -5.4, 4.80412, -73.3435, 1.0 };
 /* FACES */
-faces[0].id = 0; faces[0].hEdge = &halfEdges[0];
-faces[1].id = 1; faces[1].hEdge = &halfEdges[3];
+faces[0].id = 0; faces[0].hEdge = &halfEdges[8];
+faces[1].id = 1; faces[1].hEdge = &halfEdges[0];
 faces[2].id = 2; faces[2].hEdge = &halfEdges[7];
+faces[3].id = 3; faces[3].hEdge = &halfEdges[11];
+faces[4].id = 4; faces[4].hEdge = &halfEdges[15];
+faces[5].id = 5; faces[5].hEdge = &halfEdges[19];
+faces[6].id = 6; faces[6].hEdge = &halfEdges[21];
+faces[7].id = 7; faces[7].hEdge = &halfEdges[23];
+faces[8].id = 8; faces[8].hEdge = &halfEdges[31];
+faces[9].id = 9; faces[9].hEdge = &halfEdges[33];
+faces[10].id = 10; faces[10].hEdge = &halfEdges[35];
+faces[11].id = 11; faces[11].hEdge = &halfEdges[43];
+faces[12].id = 12; faces[12].hEdge = &halfEdges[45];
+faces[13].id = 13; faces[13].hEdge = &halfEdges[47];
+faces[14].id = 14; faces[14].hEdge = &halfEdges[56];
+faces[15].id = 15; faces[15].hEdge = &halfEdges[58];
+faces[16].id = 16; faces[16].hEdge = &halfEdges[54];
 //Half-edge 0
 halfEdges[0].id = 0;
-halfEdges[0].leftFace = &faces[0];
+halfEdges[0].leftFace = &faces[1];
 halfEdges[0].next = &halfEdges[2];
 halfEdges[0].opp = &halfEdges[1];
-halfEdges[0].prev = &halfEdges[5];
+halfEdges[0].prev = &halfEdges[4];
 halfEdges[0].vStart = &vertices[0];
 //Half-edge 1
 halfEdges[1].id = 1;
-halfEdges[1].leftFace = &faces[2];
-halfEdges[1].next = &halfEdges[4];
+halfEdges[1].leftFace = &faces[4];
+halfEdges[1].next = &halfEdges[6];
 halfEdges[1].opp = &halfEdges[0];
-halfEdges[1].prev = &halfEdges[7];
+halfEdges[1].prev = &halfEdges[15];
 halfEdges[1].vStart = &vertices[1];
 //Half-edge 2
 halfEdges[2].id = 2;
-halfEdges[2].leftFace = &faces[0];
-halfEdges[2].next = &halfEdges[5];
+halfEdges[2].leftFace = &faces[1];
+halfEdges[2].next = &halfEdges[4];
 halfEdges[2].opp = &halfEdges[3];
 halfEdges[2].prev = &halfEdges[0];
 halfEdges[2].vStart = &vertices[1];
 //Half-edge 3
 halfEdges[3].id = 3;
-halfEdges[3].leftFace = &faces[1];
-halfEdges[3].next = &halfEdges[6];
+halfEdges[3].leftFace = &faces[3];
+halfEdges[3].next = &halfEdges[14];
 halfEdges[3].opp = &halfEdges[2];
-halfEdges[3].prev = &halfEdges[9];
+halfEdges[3].prev = &halfEdges[11];
 halfEdges[3].vStart = &vertices[2];
 //Half-edge 4
 halfEdges[4].id = 4;
-halfEdges[4].leftFace = &faces[2];
-halfEdges[4].next = &halfEdges[8];
+halfEdges[4].leftFace = &faces[1];
+halfEdges[4].next = &halfEdges[0];
 halfEdges[4].opp = &halfEdges[5];
-halfEdges[4].prev = &halfEdges[1];
-halfEdges[4].vStart = &vertices[0];
+halfEdges[4].prev = &halfEdges[2];
+halfEdges[4].vStart = &vertices[2];
 //Half-edge 5
 halfEdges[5].id = 5;
-halfEdges[5].leftFace = &faces[0];
-halfEdges[5].next = &halfEdges[0];
+halfEdges[5].leftFace = &faces[2];
+halfEdges[5].next = &halfEdges[10];
 halfEdges[5].opp = &halfEdges[4];
-halfEdges[5].prev = &halfEdges[2];
-halfEdges[5].vStart = &vertices[2];
+halfEdges[5].prev = &halfEdges[7];
+halfEdges[5].vStart = &vertices[0];
 //Half-edge 6
 halfEdges[6].id = 6;
-halfEdges[6].leftFace = &faces[1];
-halfEdges[6].next = &halfEdges[9];
+halfEdges[6].leftFace = &faces[4];
+halfEdges[6].next = &halfEdges[29];
 halfEdges[6].opp = &halfEdges[7];
-halfEdges[6].prev = &halfEdges[3];
-halfEdges[6].vStart = &vertices[1];
+halfEdges[6].prev = &halfEdges[1];
+halfEdges[6].vStart = &vertices[0];
 //Half-edge 7
 halfEdges[7].id = 7;
 halfEdges[7].leftFace = &faces[2];
-halfEdges[7].next = &halfEdges[1];
+halfEdges[7].next = &halfEdges[5];
 halfEdges[7].opp = &halfEdges[6];
-halfEdges[7].prev = &halfEdges[8];
+halfEdges[7].prev = &halfEdges[25];
 halfEdges[7].vStart = &vertices[3];
 //Half-edge 8
 halfEdges[8].id = 8;
-halfEdges[8].leftFace = &faces[2];
-halfEdges[8].next = &halfEdges[7];
+halfEdges[8].leftFace = &faces[0];
+halfEdges[8].next = &halfEdges[12];
 halfEdges[8].opp = &halfEdges[9];
-halfEdges[8].prev = &halfEdges[4];
-halfEdges[8].vStart = &vertices[2];
+halfEdges[8].prev = &halfEdges[17];
+halfEdges[8].vStart = &vertices[15];
 //Half-edge 9
 halfEdges[9].id = 9;
-halfEdges[9].leftFace = &faces[1];
-halfEdges[9].next = &halfEdges[3];
+halfEdges[9].leftFace = &faces[14];
+halfEdges[9].next = &halfEdges[55];
 halfEdges[9].opp = &halfEdges[8];
-halfEdges[9].prev = &halfEdges[6];
-halfEdges[9].vStart = &vertices[3];
+halfEdges[9].prev = &halfEdges[56];
+halfEdges[9].vStart = &vertices[16];
+//Half-edge 10
+halfEdges[10].id = 10;
+halfEdges[10].leftFace = &faces[2];
+halfEdges[10].next = &halfEdges[25];
+halfEdges[10].opp = &halfEdges[11];
+halfEdges[10].prev = &halfEdges[5];
+halfEdges[10].vStart = &vertices[2];
+//Half-edge 11
+halfEdges[11].id = 11;
+halfEdges[11].leftFace = &faces[3];
+halfEdges[11].next = &halfEdges[3];
+halfEdges[11].opp = &halfEdges[10];
+halfEdges[11].prev = &halfEdges[27];
+halfEdges[11].vStart = &vertices[4];
+//Half-edge 12
+halfEdges[12].id = 12;
+halfEdges[12].leftFace = &faces[0];
+halfEdges[12].next = &halfEdges[17];
+halfEdges[12].opp = &halfEdges[13];
+halfEdges[12].prev = &halfEdges[8];
+halfEdges[12].vStart = &vertices[16];
+//Half-edge 13
+halfEdges[13].id = 13;
+halfEdges[13].leftFace = &faces[15];
+halfEdges[13].next = &halfEdges[57];
+halfEdges[13].opp = &halfEdges[12];
+halfEdges[13].prev = &halfEdges[58];
+halfEdges[13].vStart = &vertices[17];
+//Half-edge 14
+halfEdges[14].id = 14;
+halfEdges[14].leftFace = &faces[3];
+halfEdges[14].next = &halfEdges[27];
+halfEdges[14].opp = &halfEdges[15];
+halfEdges[14].prev = &halfEdges[3];
+halfEdges[14].vStart = &vertices[1];
+//Half-edge 15
+halfEdges[15].id = 15;
+halfEdges[15].leftFace = &faces[4];
+halfEdges[15].next = &halfEdges[1];
+halfEdges[15].opp = &halfEdges[14];
+halfEdges[15].prev = &halfEdges[29];
+halfEdges[15].vStart = &vertices[5];
+//Half-edge 16
+halfEdges[16].id = 16;
+halfEdges[16].leftFace = &faces[16];
+halfEdges[16].next = &halfEdges[59];
+halfEdges[16].opp = &halfEdges[17];
+halfEdges[16].prev = &halfEdges[54];
+halfEdges[16].vStart = &vertices[15];
+//Half-edge 17
+halfEdges[17].id = 17;
+halfEdges[17].leftFace = &faces[0];
+halfEdges[17].next = &halfEdges[8];
+halfEdges[17].opp = &halfEdges[16];
+halfEdges[17].prev = &halfEdges[12];
+halfEdges[17].vStart = &vertices[17];
+//Half-edge 18
+halfEdges[18].id = 18;
+halfEdges[18].leftFace = &faces[7];
+halfEdges[18].next = &halfEdges[41];
+halfEdges[18].opp = &halfEdges[19];
+halfEdges[18].prev = &halfEdges[28];
+halfEdges[18].vStart = &vertices[3];
+//Half-edge 19
+halfEdges[19].id = 19;
+halfEdges[19].leftFace = &faces[5];
+halfEdges[19].next = &halfEdges[24];
+halfEdges[19].opp = &halfEdges[18];
+halfEdges[19].prev = &halfEdges[37];
+halfEdges[19].vStart = &vertices[6];
+//Half-edge 20
+halfEdges[20].id = 20;
+halfEdges[20].leftFace = &faces[5];
+halfEdges[20].next = &halfEdges[37];
+halfEdges[20].opp = &halfEdges[21];
+halfEdges[20].prev = &halfEdges[24];
+halfEdges[20].vStart = &vertices[4];
+//Half-edge 21
+halfEdges[21].id = 21;
+halfEdges[21].leftFace = &faces[6];
+halfEdges[21].next = &halfEdges[26];
+halfEdges[21].opp = &halfEdges[20];
+halfEdges[21].prev = &halfEdges[39];
+halfEdges[21].vStart = &vertices[7];
+//Half-edge 22
+halfEdges[22].id = 22;
+halfEdges[22].leftFace = &faces[6];
+halfEdges[22].next = &halfEdges[39];
+halfEdges[22].opp = &halfEdges[23];
+halfEdges[22].prev = &halfEdges[26];
+halfEdges[22].vStart = &vertices[5];
+//Half-edge 23
+halfEdges[23].id = 23;
+halfEdges[23].leftFace = &faces[7];
+halfEdges[23].next = &halfEdges[28];
+halfEdges[23].opp = &halfEdges[22];
+halfEdges[23].prev = &halfEdges[41];
+halfEdges[23].vStart = &vertices[8];
+//Half-edge 24
+halfEdges[24].id = 24;
+halfEdges[24].leftFace = &faces[5];
+halfEdges[24].next = &halfEdges[20];
+halfEdges[24].opp = &halfEdges[25];
+halfEdges[24].prev = &halfEdges[19];
+halfEdges[24].vStart = &vertices[3];
+//Half-edge 25
+halfEdges[25].id = 25;
+halfEdges[25].leftFace = &faces[2];
+halfEdges[25].next = &halfEdges[7];
+halfEdges[25].opp = &halfEdges[24];
+halfEdges[25].prev = &halfEdges[10];
+halfEdges[25].vStart = &vertices[4];
+//Half-edge 26
+halfEdges[26].id = 26;
+halfEdges[26].leftFace = &faces[6];
+halfEdges[26].next = &halfEdges[22];
+halfEdges[26].opp = &halfEdges[27];
+halfEdges[26].prev = &halfEdges[21];
+halfEdges[26].vStart = &vertices[4];
+//Half-edge 27
+halfEdges[27].id = 27;
+halfEdges[27].leftFace = &faces[3];
+halfEdges[27].next = &halfEdges[11];
+halfEdges[27].opp = &halfEdges[26];
+halfEdges[27].prev = &halfEdges[14];
+halfEdges[27].vStart = &vertices[5];
+//Half-edge 28
+halfEdges[28].id = 28;
+halfEdges[28].leftFace = &faces[7];
+halfEdges[28].next = &halfEdges[18];
+halfEdges[28].opp = &halfEdges[29];
+halfEdges[28].prev = &halfEdges[23];
+halfEdges[28].vStart = &vertices[5];
+//Half-edge 29
+halfEdges[29].id = 29;
+halfEdges[29].leftFace = &faces[4];
+halfEdges[29].next = &halfEdges[15];
+halfEdges[29].opp = &halfEdges[28];
+halfEdges[29].prev = &halfEdges[6];
+halfEdges[29].vStart = &vertices[3];
+//Half-edge 30
+halfEdges[30].id = 30;
+halfEdges[30].leftFace = &faces[10];
+halfEdges[30].next = &halfEdges[53];
+halfEdges[30].opp = &halfEdges[31];
+halfEdges[30].prev = &halfEdges[40];
+halfEdges[30].vStart = &vertices[6];
+//Half-edge 31
+halfEdges[31].id = 31;
+halfEdges[31].leftFace = &faces[8];
+halfEdges[31].next = &halfEdges[36];
+halfEdges[31].opp = &halfEdges[30];
+halfEdges[31].prev = &halfEdges[49];
+halfEdges[31].vStart = &vertices[9];
+//Half-edge 32
+halfEdges[32].id = 32;
+halfEdges[32].leftFace = &faces[8];
+halfEdges[32].next = &halfEdges[49];
+halfEdges[32].opp = &halfEdges[33];
+halfEdges[32].prev = &halfEdges[36];
+halfEdges[32].vStart = &vertices[7];
+//Half-edge 33
+halfEdges[33].id = 33;
+halfEdges[33].leftFace = &faces[9];
+halfEdges[33].next = &halfEdges[38];
+halfEdges[33].opp = &halfEdges[32];
+halfEdges[33].prev = &halfEdges[51];
+halfEdges[33].vStart = &vertices[10];
+//Half-edge 34
+halfEdges[34].id = 34;
+halfEdges[34].leftFace = &faces[9];
+halfEdges[34].next = &halfEdges[51];
+halfEdges[34].opp = &halfEdges[35];
+halfEdges[34].prev = &halfEdges[38];
+halfEdges[34].vStart = &vertices[8];
+//Half-edge 35
+halfEdges[35].id = 35;
+halfEdges[35].leftFace = &faces[10];
+halfEdges[35].next = &halfEdges[40];
+halfEdges[35].opp = &halfEdges[34];
+halfEdges[35].prev = &halfEdges[53];
+halfEdges[35].vStart = &vertices[11];
+//Half-edge 36
+halfEdges[36].id = 36;
+halfEdges[36].leftFace = &faces[8];
+halfEdges[36].next = &halfEdges[32];
+halfEdges[36].opp = &halfEdges[37];
+halfEdges[36].prev = &halfEdges[31];
+halfEdges[36].vStart = &vertices[6];
+//Half-edge 37
+halfEdges[37].id = 37;
+halfEdges[37].leftFace = &faces[5];
+halfEdges[37].next = &halfEdges[19];
+halfEdges[37].opp = &halfEdges[36];
+halfEdges[37].prev = &halfEdges[20];
+halfEdges[37].vStart = &vertices[7];
+//Half-edge 38
+halfEdges[38].id = 38;
+halfEdges[38].leftFace = &faces[9];
+halfEdges[38].next = &halfEdges[34];
+halfEdges[38].opp = &halfEdges[39];
+halfEdges[38].prev = &halfEdges[33];
+halfEdges[38].vStart = &vertices[7];
+//Half-edge 39
+halfEdges[39].id = 39;
+halfEdges[39].leftFace = &faces[6];
+halfEdges[39].next = &halfEdges[21];
+halfEdges[39].opp = &halfEdges[38];
+halfEdges[39].prev = &halfEdges[22];
+halfEdges[39].vStart = &vertices[8];
+//Half-edge 40
+halfEdges[40].id = 40;
+halfEdges[40].leftFace = &faces[10];
+halfEdges[40].next = &halfEdges[30];
+halfEdges[40].opp = &halfEdges[41];
+halfEdges[40].prev = &halfEdges[35];
+halfEdges[40].vStart = &vertices[8];
+//Half-edge 41
+halfEdges[41].id = 41;
+halfEdges[41].leftFace = &faces[7];
+halfEdges[41].next = &halfEdges[23];
+halfEdges[41].opp = &halfEdges[40];
+halfEdges[41].prev = &halfEdges[18];
+halfEdges[41].vStart = &vertices[6];
+//Half-edge 42
+halfEdges[42].id = 42;
+halfEdges[42].leftFace = &faces[13];
+halfEdges[42].next = &halfEdges[65];
+halfEdges[42].opp = &halfEdges[43];
+halfEdges[42].prev = &halfEdges[52];
+halfEdges[42].vStart = &vertices[9];
+//Half-edge 43
+halfEdges[43].id = 43;
+halfEdges[43].leftFace = &faces[11];
+halfEdges[43].next = &halfEdges[48];
+halfEdges[43].opp = &halfEdges[42];
+halfEdges[43].prev = &halfEdges[61];
+halfEdges[43].vStart = &vertices[12];
+//Half-edge 44
+halfEdges[44].id = 44;
+halfEdges[44].leftFace = &faces[11];
+halfEdges[44].next = &halfEdges[61];
+halfEdges[44].opp = &halfEdges[45];
+halfEdges[44].prev = &halfEdges[48];
+halfEdges[44].vStart = &vertices[10];
+//Half-edge 45
+halfEdges[45].id = 45;
+halfEdges[45].leftFace = &faces[12];
+halfEdges[45].next = &halfEdges[50];
+halfEdges[45].opp = &halfEdges[44];
+halfEdges[45].prev = &halfEdges[63];
+halfEdges[45].vStart = &vertices[13];
+//Half-edge 46
+halfEdges[46].id = 46;
+halfEdges[46].leftFace = &faces[12];
+halfEdges[46].next = &halfEdges[63];
+halfEdges[46].opp = &halfEdges[47];
+halfEdges[46].prev = &halfEdges[50];
+halfEdges[46].vStart = &vertices[11];
+//Half-edge 47
+halfEdges[47].id = 47;
+halfEdges[47].leftFace = &faces[13];
+halfEdges[47].next = &halfEdges[52];
+halfEdges[47].opp = &halfEdges[46];
+halfEdges[47].prev = &halfEdges[65];
+halfEdges[47].vStart = &vertices[14];
+//Half-edge 48
+halfEdges[48].id = 48;
+halfEdges[48].leftFace = &faces[11];
+halfEdges[48].next = &halfEdges[44];
+halfEdges[48].opp = &halfEdges[49];
+halfEdges[48].prev = &halfEdges[43];
+halfEdges[48].vStart = &vertices[9];
+//Half-edge 49
+halfEdges[49].id = 49;
+halfEdges[49].leftFace = &faces[8];
+halfEdges[49].next = &halfEdges[31];
+halfEdges[49].opp = &halfEdges[48];
+halfEdges[49].prev = &halfEdges[32];
+halfEdges[49].vStart = &vertices[10];
+//Half-edge 50
+halfEdges[50].id = 50;
+halfEdges[50].leftFace = &faces[12];
+halfEdges[50].next = &halfEdges[46];
+halfEdges[50].opp = &halfEdges[51];
+halfEdges[50].prev = &halfEdges[45];
+halfEdges[50].vStart = &vertices[10];
+//Half-edge 51
+halfEdges[51].id = 51;
+halfEdges[51].leftFace = &faces[9];
+halfEdges[51].next = &halfEdges[33];
+halfEdges[51].opp = &halfEdges[50];
+halfEdges[51].prev = &halfEdges[34];
+halfEdges[51].vStart = &vertices[11];
+//Half-edge 52
+halfEdges[52].id = 52;
+halfEdges[52].leftFace = &faces[13];
+halfEdges[52].next = &halfEdges[42];
+halfEdges[52].opp = &halfEdges[53];
+halfEdges[52].prev = &halfEdges[47];
+halfEdges[52].vStart = &vertices[11];
+//Half-edge 53
+halfEdges[53].id = 53;
+halfEdges[53].leftFace = &faces[10];
+halfEdges[53].next = &halfEdges[35];
+halfEdges[53].opp = &halfEdges[52];
+halfEdges[53].prev = &halfEdges[30];
+halfEdges[53].vStart = &vertices[9];
+//Half-edge 54
+halfEdges[54].id = 54;
+halfEdges[54].leftFace = &faces[16];
+halfEdges[54].next = &halfEdges[16];
+halfEdges[54].opp = &halfEdges[55];
+halfEdges[54].prev = &halfEdges[64];
+halfEdges[54].vStart = &vertices[12];
+//Half-edge 55
+halfEdges[55].id = 55;
+halfEdges[55].leftFace = &faces[14];
+halfEdges[55].next = &halfEdges[60];
+halfEdges[55].opp = &halfEdges[54];
+halfEdges[55].prev = &halfEdges[9];
+halfEdges[55].vStart = &vertices[15];
+//Half-edge 56
+halfEdges[56].id = 56;
+halfEdges[56].leftFace = &faces[14];
+halfEdges[56].next = &halfEdges[9];
+halfEdges[56].opp = &halfEdges[57];
+halfEdges[56].prev = &halfEdges[60];
+halfEdges[56].vStart = &vertices[13];
+//Half-edge 57
+halfEdges[57].id = 57;
+halfEdges[57].leftFace = &faces[15];
+halfEdges[57].next = &halfEdges[62];
+halfEdges[57].opp = &halfEdges[56];
+halfEdges[57].prev = &halfEdges[13];
+halfEdges[57].vStart = &vertices[16];
+//Half-edge 58
+halfEdges[58].id = 58;
+halfEdges[58].leftFace = &faces[15];
+halfEdges[58].next = &halfEdges[13];
+halfEdges[58].opp = &halfEdges[59];
+halfEdges[58].prev = &halfEdges[62];
+halfEdges[58].vStart = &vertices[14];
+//Half-edge 59
+halfEdges[59].id = 59;
+halfEdges[59].leftFace = &faces[16];
+halfEdges[59].next = &halfEdges[64];
+halfEdges[59].opp = &halfEdges[58];
+halfEdges[59].prev = &halfEdges[16];
+halfEdges[59].vStart = &vertices[17];
+//Half-edge 60
+halfEdges[60].id = 60;
+halfEdges[60].leftFace = &faces[14];
+halfEdges[60].next = &halfEdges[56];
+halfEdges[60].opp = &halfEdges[61];
+halfEdges[60].prev = &halfEdges[55];
+halfEdges[60].vStart = &vertices[12];
+//Half-edge 61
+halfEdges[61].id = 61;
+halfEdges[61].leftFace = &faces[11];
+halfEdges[61].next = &halfEdges[43];
+halfEdges[61].opp = &halfEdges[60];
+halfEdges[61].prev = &halfEdges[44];
+halfEdges[61].vStart = &vertices[13];
+//Half-edge 62
+halfEdges[62].id = 62;
+halfEdges[62].leftFace = &faces[15];
+halfEdges[62].next = &halfEdges[58];
+halfEdges[62].opp = &halfEdges[63];
+halfEdges[62].prev = &halfEdges[57];
+halfEdges[62].vStart = &vertices[13];
+//Half-edge 63
+halfEdges[63].id = 63;
+halfEdges[63].leftFace = &faces[12];
+halfEdges[63].next = &halfEdges[45];
+halfEdges[63].opp = &halfEdges[62];
+halfEdges[63].prev = &halfEdges[46];
+halfEdges[63].vStart = &vertices[14];
+//Half-edge 64
+halfEdges[64].id = 64;
+halfEdges[64].leftFace = &faces[16];
+halfEdges[64].next = &halfEdges[54];
+halfEdges[64].opp = &halfEdges[65];
+halfEdges[64].prev = &halfEdges[59];
+halfEdges[64].vStart = &vertices[14];
+//Half-edge 65
+halfEdges[65].id = 65;
+halfEdges[65].leftFace = &faces[13];
+halfEdges[65].next = &halfEdges[47];
+halfEdges[65].opp = &halfEdges[64];
+halfEdges[65].prev = &halfEdges[42];
+halfEdges[65].vStart = &vertices[12];

@@ -45,6 +45,9 @@
     <ClInclude Include="src\DataStructures\Bridges\V_section.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\DataStructures\Comp_Geometry.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\RenderEngine\Camera.cpp">

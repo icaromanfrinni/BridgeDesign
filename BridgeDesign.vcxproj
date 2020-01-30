@@ -165,6 +165,7 @@
     <ClInclude Include="src\DataIO\LoadOBJ.h" />
     <ClInclude Include="src\DataIO\ObjFile.h" />
     <ClInclude Include="src\DataStructures\Bridges\V_section.h" />
+    <ClInclude Include="src\DataStructures\Comp_Geometry.h" />
     <ClInclude Include="src\DataStructures\EulerOp.h" />
     <ClInclude Include="src\DataStructures\HalfEdge.h" />
     <ClInclude Include="src\DataStructures\Linear_Algebra.h" />

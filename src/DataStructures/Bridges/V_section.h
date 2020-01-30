@@ -30,7 +30,7 @@ public:
     float tv;   // vertical haunch
 
     // Model
-    HED::solid* model;
+    std::vector<HED::solid*> model;
 
     // default Constructor
     V_section();

@@ -47,21 +47,30 @@ void V_section::update()
 	//Initialize New Vertex
 	CRAB::Vector4Df newVertex;
 
-	// POLYGON FACE (GL_TRIANGLE_FAN)
-	// ------------------------------
+	// POLYGON FACE
+	// ------------
 	// TOP_LAYER
 	// v0
 	newVertex = start_point - (vUp * TOP_LAYER);
 	EulerOp::mvfs(model, newVertex);
-	model->name = "V_section";
+	model.back()->name = "V_section";
 	// v1
-	newVertex = model->vertices.back()->point - (vRight * B / 2.0f) - (vUp * B / 2.0f * SLOPE);
-	EulerOp::mev(model->faces[0]->hEdge, NULL, 0, newVertex);
+	newVertex = model.back()->vertices.back()->point - (vRight * B / 2.0f) - (vUp * B / 2.0f /** SLOPE*/);
+	EulerOp::mev(model.back()->faces[0]->hEdge, NULL, 0, newVertex);
 	// v2
-	newVertex = model->vertices.back()->point + (vRight * B);
-	EulerOp::mev(model->halfEdges[0], NULL, 1, newVertex);
+	newVertex = model.back()->vertices.back()->point + (vRight * B);
+	EulerOp::mev(model.back()->halfEdges[0], NULL, 1, newVertex);
 	// f1
-	EulerOp::mef(model->halfEdges[0], model->halfEdges[3], 0);
+	EulerOp::mef(model.back()->halfEdges[0], model.back()->halfEdges[3], 0);
+	// Extrude
+	EulerOp::EXTRUDE(model.back()->faces.back(), direction, L);
+	// Sweep
+	for (int i = 10; i <= 30; i += 10)
+	{
+		float angle = M_PI * i / 180.0f;
+		EulerOp::SWEEP(model.back()->faces[0], CRAB::Vector4Df{ 0.0f, sinf(angle), -cosf(angle), 0.0f }.to_unitary(), 10.0f);
+	}
+	EulerOp::SWEEP(model.back()->faces[0], CRAB::Vector4Df{ 0.0f, 0.0f, -1.0f, 0.0f }.to_unitary(), 10.0f);
 	
 	// "U" SECTION
 		
