@@ -45,7 +45,8 @@ namespace CRAB
     float lastFrame = 0.0f;
 
     // lighting
-    glm::vec3 lightPos(10.0f, 10.0f, 10.0f);
+    //glm::vec3 lightPos(10.0f, 10.0f, 10.0f);
+    glm::vec3 lightDir(-0.5f, -1.0f, -0.5f);
 
     // mouse event handlers
     int TheKeyState = GLFW_KEY_LEFT_CONTROL;
@@ -142,15 +143,16 @@ namespace CRAB
 
             // be sure to activate shader when setting uniforms/drawing objects
             ourShader.use();
-            ourShader.setVec3("light.position", lightPos);
+            //ourShader.setVec3("pLight.position", lightPos);
+            ourShader.setVec3("dLight.direction", lightDir);
             ourShader.setVec3("viewPos", camera.Position);
 
             // light properties
-            glm::vec3 lightColor(0.8f, 0.8f, 0.8f);
-            ourShader.setVec3("light.intensity", lightColor);
-            ourShader.setFloat("light.constant", 1.0f);
-            ourShader.setFloat("light.linear", 0.02f);
-            ourShader.setFloat("light.quadratic", 0.004f);
+            glm::vec3 lightColor(0.4f, 0.4f, 0.4f);
+            ourShader.setVec3("dLight.intensity", lightColor);
+            /*ourShader.setFloat("pLight.constant", 1.0f);
+            ourShader.setFloat("pLight.linear", 0.02f);
+            ourShader.setFloat("pLight.quadratic", 0.004f);*/
 
             // material properties
             ourShader.setVec3("material.ka", 0.8f, 0.8f, 0.8f);
