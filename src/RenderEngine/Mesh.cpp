@@ -34,11 +34,6 @@ Mesh::Mesh(const HED::solid* solid)
 {
     for (int i = 0; i < solid->faces.size(); i++)
     {
-        //DEBUG
-        std::cout << "face ... " << solid->faces[i]->id << std::endl;
-        std::cout << "face->hEdge ... " << solid->faces[i]->hEdge->id << std::endl;
-        std::cout << "\n" << std::endl;
-
         //// check if current face is a triangle
         //if (solid->faces[i]->hEdge->next->next != solid->faces[i]->hEdge->prev) continue;
 

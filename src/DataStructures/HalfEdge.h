@@ -71,9 +71,6 @@ namespace HED
 		std::vector<halfEdge*> halfEdges;
 		std::vector<face*> faces;
 
-		// color
-		Vector4Df material;
-
 		//transform
 		CRAB::Vector4Df location, scale;
 
@@ -81,7 +78,6 @@ namespace HED
 		solid() {
 			location = { 0.0f, 0.0f, 0.0f, 1.0f };
 			scale = { 1.0f, 1.0f, 1.0f, 0.0f };
-			material = { 1.0f, 1.0f, 1.0f, 1.0f };
 		}
 
 		//Overload Constructor (from OBJ File)
@@ -94,7 +90,6 @@ namespace HED
 			faces.resize(OBJ.Faces.size());
 			location = { 0.0f, 0.0f, 0.0f, 1.0f };
 			scale = { 1.0f, 1.0f, 1.0f, 0.0f };
-			material = { 1.0f, 1.0f, 1.0f, 1.0f };
 
 			for (int i = 0; i < OBJ.Faces.size(); i++)
 				for (int j = 0; j < OBJ.Faces[i].vertices.size(); j++)

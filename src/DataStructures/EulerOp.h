@@ -384,7 +384,8 @@ namespace EulerOp
 		if (currentSolid->faces.size() == 2)
 		{
 			// new vertex
-			CRAB::Vector4Df n = cross(he->next->vStart->point - he->vStart->point, he->next->next->vStart->point - he->next->vStart->point).to_unitary();
+			//CRAB::Vector4Df n = cross(he->next->vStart->point - he->vStart->point, he->next->next->vStart->point - he->next->vStart->point).to_unitary();
+			CRAB::Vector4Df n = f->normal();
 			CRAB::Vector4Df d = (n * (-1.0f) + tan_dir).to_unitary();
 			CRAB::Vector4Df newVertex = refPoint + d * depth;
 			// first edge
@@ -410,7 +411,8 @@ namespace EulerOp
 		else if (currentSolid->faces.size() > 2)
 		{
 			// first edge
-			CRAB::Vector4Df n = cross(he->next->vStart->point - he->vStart->point, he->next->next->vStart->point - he->next->vStart->point).to_unitary();
+			//CRAB::Vector4Df n = cross(he->next->vStart->point - he->vStart->point, he->next->next->vStart->point - he->next->vStart->point).to_unitary();
+			CRAB::Vector4Df n = f->normal();
 			CRAB::Vector4Df d = (n + tan_dir).to_unitary();
 			CRAB::Vector4Df newVertex = refPoint + d * depth;
 			mev(he->prev->opp, he->opp->next, he->vStart->id, newVertex);

@@ -4,6 +4,7 @@
 
 #include "Linear_Algebra.h"
 #include "HalfEdge.h"
+#include "Bezier.h"
 
 // Default bridge values
 const float SLOPE = 0.02f;
@@ -15,8 +16,7 @@ class V_section
 {
 public:
     // Road Attributes
-    CRAB::Vector4Df start_point;
-    CRAB::Vector4Df direction;
+    CURVE::Bezier alignment;
     // Input Parameters
     float B;    // Width
     float L;    // Length
@@ -35,7 +35,7 @@ public:
     // default Constructor
     V_section();
     // overload constructor
-    V_section(float B, float L, const CRAB::Vector4Df& refPoint, const CRAB::Vector4Df& dir);
+    V_section(float B, float L, const CURVE::Bezier& alignment);
     // destructor
     ~V_section();
 
