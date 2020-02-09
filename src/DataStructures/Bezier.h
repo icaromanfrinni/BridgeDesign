@@ -20,14 +20,14 @@ namespace CURVE
 			segments = 50;
 			// VERTICAL CURVE
 			control_points.push_back({ 0.0f, 10.0f, 0.0f, 1.0f });
-			control_points.push_back({ 0.0f, 0.0f, -10.0f, 1.0f });
-			control_points.push_back({ 0.0f, 20.0f, -30.0f, 1.0f });
+			control_points.push_back({ 0.0f, 15.0f, -10.0f, 1.0f });
+			control_points.push_back({ 0.0f, 15.0f, -30.0f, 1.0f });
 			control_points.push_back({ 0.0f, 10.0f, -40.0f, 1.0f });
 			// HORIZONTAL CURVE
 			/*control_points.push_back({ 0.0f, 10.0f, 0.0f, 1.0f });
-			control_points.push_back({ -10.0f, 10.0f, -10.0f, 1.0f });
-			control_points.push_back({ 10.0f, 10.0f, -30.0f, 1.0f });
-			control_points.push_back({ 0.0f, 10.0f, -40.0f, 1.0f });*/
+			control_points.push_back({ 0.0f, 10.0f, -20.0f, 1.0f });
+			control_points.push_back({ 10.0f, 10.0f, -40.0f, 1.0f });
+			control_points.push_back({ 30.0f, 10.0f, -60.0f, 1.0f });*/
 		}
 
 		// OVERLOAD CONSTRUCTOR (from point list)

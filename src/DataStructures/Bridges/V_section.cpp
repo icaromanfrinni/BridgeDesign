@@ -170,16 +170,35 @@ void V_section::update()
 	newVertex = model.back()->vertices.back()->point + (vRight * (b / 2.0f));
 	EulerOp::mev(model.back()->faces[0]->hEdge, NULL, 0, newVertex);
 	// v2
-	newVertex = model.back()->vertices.back()->point + (vUp * h);
+	newVertex = model.back()->vertices.back()->point + (vRight * (B - b - 2 * Lb) / 2.0f) + (vUp * (H - h - tv));
 	EulerOp::mev(model.back()->halfEdges[0], NULL, 1, newVertex);
 	// v3
-	newVertex = model.back()->vertices.back()->point - (vRight * b);
+	newVertex = model.back()->vertices.back()->point - (vRight * hyp);
 	EulerOp::mev(model.back()->halfEdges[2], NULL, 2, newVertex);
 	// v4
-	newVertex = model.back()->vertices.back()->point - (vUp * h);
+	newVertex = model.back()->vertices.back()->point - (vUp * (H - 2 * (h + tv))) - (vRight * (INCLINATION_RATIO * ((H - 2 * (h + tv)))));
 	EulerOp::mev(model.back()->halfEdges[4], NULL, 3, newVertex);
+	// v5
+	newVertex = model.back()->vertices.back()->point - (vUp * tv) - (vRight * th);
+	EulerOp::mev(model.back()->halfEdges[6], NULL, 4, newVertex);
+	// MIRROR
+	// v6
+	newVertex = model.back()->vertices[0]->point + reflection(model.back()->vertices[5]->point - model.back()->vertices[0]->point, vUp);
+	EulerOp::mev(model.back()->halfEdges[8], NULL, 5, newVertex);
+	// v7
+	newVertex = model.back()->vertices[0]->point + reflection(model.back()->vertices[4]->point - model.back()->vertices[0]->point, vUp);
+	EulerOp::mev(model.back()->halfEdges[10], NULL, 6, newVertex);
+	// v8
+	newVertex = model.back()->vertices[0]->point + reflection(model.back()->vertices[3]->point - model.back()->vertices[0]->point, vUp);
+	EulerOp::mev(model.back()->halfEdges[12], NULL, 7, newVertex);
+	// v9
+	newVertex = model.back()->vertices[0]->point + reflection(model.back()->vertices[2]->point - model.back()->vertices[0]->point, vUp);
+	EulerOp::mev(model.back()->halfEdges[14], NULL, 8, newVertex);
+	// v10
+	newVertex = model.back()->vertices[0]->point + reflection(model.back()->vertices[1]->point - model.back()->vertices[0]->point, vUp);
+	EulerOp::mev(model.back()->halfEdges[16], NULL, 9, newVertex);
 	// f1
-	EulerOp::mef(model.back()->halfEdges[0], model.back()->halfEdges[7], 0);
+	EulerOp::mef(model.back()->halfEdges[0], model.back()->halfEdges[19], 0);
 
 	// FIRST SWEEP
 	// -----------
