@@ -44,6 +44,22 @@ namespace HED
 		int id;
 		halfEdge* hEdge;
 		solid* HedSolid;
+
+		CRAB::Vector4Df normal()
+		{
+			HED::halfEdge* he = hEdge->next;
+			CRAB::Vector4Df n = { 0.0f, 0.0f, 0.0f, 0.0f };
+
+			while (he != hEdge)
+			{
+				CRAB::Vector4Df P1P2 = he->vStart->point - hEdge->vStart->point;
+				CRAB::Vector4Df P1P3 = he->next->vStart->point - hEdge->vStart->point;
+				n += cross(P1P2, P1P3);
+				he = he->next;
+			}
+
+			return n.to_unitary();
+		}
 	};
 
 	struct solid
@@ -55,6 +71,9 @@ namespace HED
 		std::vector<halfEdge*> halfEdges;
 		std::vector<face*> faces;
 
+		// color
+		Vector4Df material;
+
 		//transform
 		CRAB::Vector4Df location, scale;
 
@@ -62,6 +81,7 @@ namespace HED
 		solid() {
 			location = { 0.0f, 0.0f, 0.0f, 1.0f };
 			scale = { 1.0f, 1.0f, 1.0f, 0.0f };
+			material = { 1.0f, 1.0f, 1.0f, 1.0f };
 		}
 
 		//Overload Constructor (from OBJ File)
@@ -74,7 +94,7 @@ namespace HED
 			faces.resize(OBJ.Faces.size());
 			location = { 0.0f, 0.0f, 0.0f, 1.0f };
 			scale = { 1.0f, 1.0f, 1.0f, 0.0f };
-
+			material = { 1.0f, 1.0f, 1.0f, 1.0f };
 
 			for (int i = 0; i < OBJ.Faces.size(); i++)
 				for (int j = 0; j < OBJ.Faces[i].vertices.size(); j++)
