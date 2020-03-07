@@ -71,28 +71,28 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>C:\opengl\Includes;C:\opengl\Includes\glm;$(SolutionDir)src\RenderEngine;$(SolutionDir)src\DataIO;$(SolutionDir)src\DataStructures\Bridges;$(SolutionDir)src\DataStructures\Geometry;$(SolutionDir)src\DataStructures;$(IncludePath)</IncludePath>
+    <IncludePath>C:\opengl\Includes;C:\opengl\Includes\glm;$(SolutionDir)src\RenderEngine;$(SolutionDir)src\DataIO;$(SolutionDir)src\DataStructures\Segment;$(SolutionDir)src\DataStructures\Road;$(SolutionDir)src\DataStructures\Bridges;$(SolutionDir)src\DataStructures\Geometry;$(SolutionDir)src\DataStructures;$(IncludePath)</IncludePath>
     <LibraryPath>C:\opengl\Lib;$(LibraryPath)</LibraryPath>
     <ReferencePath>$(ReferencePath)</ReferencePath>
     <SourcePath>$(SourcePath)</SourcePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>C:\opengl\Includes;C:\opengl\Includes\glm;$(SolutionDir)src\RenderEngine;$(SolutionDir)src\DataIO;$(SolutionDir)src\DataStructures\Bridges;$(SolutionDir)src\DataStructures\Geometry;$(SolutionDir)src\DataStructures;$(IncludePath)</IncludePath>
+    <IncludePath>C:\opengl\Includes;C:\opengl\Includes\glm;$(SolutionDir)src\RenderEngine;$(SolutionDir)src\DataIO;$(SolutionDir)src\DataStructures\Segment;$(SolutionDir)src\DataStructures\Road;$(SolutionDir)src\DataStructures\Bridges;$(SolutionDir)src\DataStructures\Geometry;$(SolutionDir)src\DataStructures;$(IncludePath)</IncludePath>
     <LibraryPath>C:\opengl\Lib;$(LibraryPath)</LibraryPath>
     <ReferencePath>$(ReferencePath)</ReferencePath>
     <SourcePath>$(SourcePath)</SourcePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
-    <IncludePath>C:\opengl\Includes;C:\opengl\Includes\glm;$(SolutionDir)src\RenderEngine;$(SolutionDir)src\DataIO;$(SolutionDir)src\DataStructures\Bridges;$(SolutionDir)src\DataStructures\Geometry;$(SolutionDir)src\DataStructures;$(IncludePath)</IncludePath>
+    <IncludePath>C:\opengl\Includes;C:\opengl\Includes\glm;$(SolutionDir)src\RenderEngine;$(SolutionDir)src\DataIO;$(SolutionDir)src\DataStructures\Segment;$(SolutionDir)src\DataStructures\Road;$(SolutionDir)src\DataStructures\Bridges;$(SolutionDir)src\DataStructures\Geometry;$(SolutionDir)src\DataStructures;$(IncludePath)</IncludePath>
     <LibraryPath>C:\opengl\Lib;$(LibraryPath)</LibraryPath>
     <ReferencePath>$(ReferencePath)</ReferencePath>
     <SourcePath>$(SourcePath)</SourcePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
-    <IncludePath>C:\opengl\Includes;C:\opengl\Includes\glm;$(SolutionDir)src\RenderEngine;$(SolutionDir)src\DataIO;$(SolutionDir)src\DataStructures\Bridges;$(SolutionDir)src\DataStructures\Geometry;$(SolutionDir)src\DataStructures;$(IncludePath)</IncludePath>
+    <IncludePath>C:\opengl\Includes;C:\opengl\Includes\glm;$(SolutionDir)src\RenderEngine;$(SolutionDir)src\DataIO;$(SolutionDir)src\DataStructures\Segment;$(SolutionDir)src\DataStructures\Road;$(SolutionDir)src\DataStructures\Bridges;$(SolutionDir)src\DataStructures\Geometry;$(SolutionDir)src\DataStructures;$(IncludePath)</IncludePath>
     <LibraryPath>C:\opengl\Lib;$(LibraryPath)</LibraryPath>
     <ReferencePath>$(ReferencePath)</ReferencePath>
     <SourcePath>$(SourcePath)</SourcePath>
@@ -163,10 +163,19 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="src\DataIO\ObjFile.h" />
+    <ClInclude Include="src\DataStructures\Alignment.h" />
+    <ClInclude Include="src\DataStructures\Bridges\BoxGirder.h" />
+    <ClInclude Include="src\DataStructures\Bridges\Bridge.h" />
     <ClInclude Include="src\DataStructures\Comp_Geometry.h" />
+    <ClInclude Include="src\DataStructures\Coord_System.h" />
     <ClInclude Include="src\DataStructures\EulerOp.h" />
     <ClInclude Include="src\DataStructures\HalfEdge.h" />
     <ClInclude Include="src\DataStructures\Linear_Algebra.h" />
+    <ClInclude Include="src\DataStructures\Model.h" />
+    <ClInclude Include="src\DataStructures\Road\Road.h" />
+    <ClInclude Include="src\DataStructures\Segment\CircularArc.h" />
+    <ClInclude Include="src\DataStructures\Segment\Line.h" />
+    <ClInclude Include="src\DataStructures\Segment\Segment.h" />
     <ClInclude Include="src\RenderEngine\Camera.h" />
     <ClInclude Include="src\RenderEngine\Mesh.h" />
     <ClInclude Include="src\RenderEngine\RenderAPI.h" />
@@ -174,6 +183,14 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\DataIO\ObjFile.cpp" />
+    <ClCompile Include="src\DataStructures\Alignment.cpp" />
+    <ClCompile Include="src\DataStructures\Bridges\BoxGirder.cpp" />
+    <ClCompile Include="src\DataStructures\Bridges\Bridge.cpp" />
+    <ClCompile Include="src\DataStructures\Model.cpp" />
+    <ClCompile Include="src\DataStructures\Road\Road.cpp" />
+    <ClCompile Include="src\DataStructures\Segment\CircularArc.cpp" />
+    <ClCompile Include="src\DataStructures\Segment\Line.cpp" />
+    <ClCompile Include="src\DataStructures\Segment\Segment.cpp" />
     <ClCompile Include="src\glad.c" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\RenderEngine\Camera.cpp" />

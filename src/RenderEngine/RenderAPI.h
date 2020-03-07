@@ -1,6 +1,9 @@
 
 #pragma once
 
+#include <iostream>
+#include <Windows.h>
+
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
@@ -13,10 +16,11 @@
 #include "Mesh.h"
 #include "ObjFile.h"
 
-#include "V_section.h"
-
-#include <iostream>
-#include <Windows.h>
+#include "Alignment.h"
+#include "Line.h"
+#include "CircularArc.h"
+#include "Model.h"
+#include "BoxGirder.h"
 
 namespace CRAB
 {
@@ -49,8 +53,19 @@ namespace CRAB
     // mouse event handlers
     int TheKeyState = GLFW_KEY_LEFT_CONTROL;
 
-    //List of Solids
+    //List of Solids (to load .obj file)
     std::vector<HED::solid*> solids;
+
+    /* ================== BRIDGE DESIGN ================== */
+
+    //List of Bridge Models
+    std::vector<Model> models;
+    //List of Alignments
+    std::vector<Alignment> alignments;
+    //List of Roads
+    std::vector<Road*> roads;
+
+    /* ====================== END ====================== */
 
     // List of Meshes
     std::vector<Mesh> ourMesh_List;
@@ -106,11 +121,25 @@ namespace CRAB
         //std::vector<Mesh> ourMesh_List;
         //ourMesh_List = CRAB::LoadOBJ("objects/cubes.obj");
 
-        // load models (primitives)
+        //fill the road list
+        roads.push_back(new Road("Classe 0", 11.90f));
+        roads.push_back(new Road("Classe I-A", 11.60f));
+        roads.push_back(new Road("Classe I-B", 12.80f));
+        roads.push_back(new Road("Classe II", 12.80f));
+        roads.push_back(new Road("Classe III", 10.80f));
+        roads.push_back(new Road("Classe IV", 9.80f));
+
+        // EXEMPLO LONGO
+        alignments.push_back(Alignment("Rodovia_001", roads[3]));
+        alignments.back().AddSegment(new Line(CRAB::Station{ 0, 0.0f, 8.663f }, CRAB::Station{ 2, 0.0f, 11.269f }));
+        alignments.back().AddSegment(new CircularArc(CRAB::Station{ 2, 0.0f, 11.269f }, CRAB::Station{ 4, 5.0f, 14.200f }, CRAB::Station{ 6, 10.0f, 11.266f }));
+        alignments.back().AddSegment(new Line(CRAB::Station{ 6, 10.0f, 11.266f }, CRAB::Station{ 8, 0.0f, 9.310f }));
+
+        // load models (bridges)
         // ------------------------
-        solids = V_section().model;
-        for (int i = 0; i < solids.size(); i++)
-            ourMesh_List.push_back(Mesh(solids[i]));
+        models.push_back(Model("Rio_Pacoti", new BoxGirder(alignments.back(), { 1, 10.0f }, { 7, 0.0f })));
+        for (int i = 0; i < models.back().getBridge()->getModel().size(); i++)
+            ourMesh_List.push_back(Mesh(models.back().getBridge()->getModel()[i]));
 
         // draw in wireframe
         //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
@@ -210,8 +239,8 @@ namespace CRAB
 
         if (glfwGetKey(window, GLFW_KEY_E) == GLFW_PRESS)
         {
-            for (int i = 0; i < solids.size(); i++)
-                solids[i]->WriteHalfEdgeFile();
+            /*for (int i = 0; i < solids.size(); i++)
+                solids[i]->WriteHalfEdgeFile();*/
         }
         if (glfwGetKey(window, GLFW_KEY_N) == GLFW_PRESS)
         {
