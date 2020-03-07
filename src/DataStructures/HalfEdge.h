@@ -5,7 +5,6 @@
 #include <fstream>
 #include <sstream>
 #include "Linear_Algebra.h"
-//#include "LoadOBJ.h"
 #include "ObjFile.h"
 
 namespace HED
@@ -71,6 +70,9 @@ namespace HED
 		std::vector<halfEdge*> halfEdges;
 		std::vector<face*> faces;
 
+		// color
+		CRAB::Vector4Df material;
+
 		//transform
 		CRAB::Vector4Df location, scale;
 
@@ -78,6 +80,7 @@ namespace HED
 		solid() {
 			location = { 0.0f, 0.0f, 0.0f, 1.0f };
 			scale = { 1.0f, 1.0f, 1.0f, 0.0f };
+			material = { 1.0f, 1.0f, 1.0f, 1.0f };
 		}
 
 		//Overload Constructor (from OBJ File)
@@ -90,6 +93,8 @@ namespace HED
 			faces.resize(OBJ.Faces.size());
 			location = { 0.0f, 0.0f, 0.0f, 1.0f };
 			scale = { 1.0f, 1.0f, 1.0f, 0.0f };
+			material = { 1.0f, 1.0f, 1.0f, 1.0f };
+
 
 			for (int i = 0; i < OBJ.Faces.size(); i++)
 				for (int j = 0; j < OBJ.Faces[i].vertices.size(); j++)
@@ -177,60 +182,130 @@ namespace HED
 
 			return area / 2.0f;
 		}
-
-		//WRITE Half-Edge FILE
-		void WriteHalfEdgeFile()
-		{
-			std::string outName = name + ".hed";
-			std::ofstream outFile(outName);
-			if (!outFile.is_open())
-			{
-				std::cerr << "\n\t!!! FILE COULD NOT BE OPENED !!!\n" << std::endl;
-				system("pause");
-				exit(EXIT_FAILURE);
-			}
-
-			/*-------------------* HEADER *-------------------*/
-
-			outFile << "# ICARO 2019 Half-Edge Structure File" << std::endl;
-			outFile << "# icaro@lia.ufc.br" << std::endl;
-
-			/*------------------* OBJECTS *-------------------*/
-
-			//group name (o)
-			outFile << "o " << name << std::endl;
-
-			//geometric vertices
-			outFile << "/* VERTICES */" << std::endl;
-			for (int j = 0; j < vertices.size(); j++)
-				outFile << "vertices[" << j << "].id = " << vertices[j]->id << "; vertices[" << j << "].point = { " << vertices[j]->point.x << ", " << vertices[j]->point.y << ", " << vertices[j]->point.z << ", 1.0 };" << std::endl;
-			//outFile << "# " << vertices.size() << " vertices" << std::endl;
-
-			//loop faces
-			outFile << "/* FACES */" << std::endl;
-			for (int j = 0; j < faces.size(); j++)
-				outFile << "faces[" << j << "].id = " << faces[j]->id << "; faces[" << j << "].hEdge = &halfEdges[" << faces[j]->hEdge->id << "];" << std::endl;
-			//outFile << "# " << faces.size() << " faces" << std::endl;
-
-			for (int j = 0; j < halfEdges.size(); j++)
-			{
-				outFile << "//Half-edge " << j << std::endl;
-
-				outFile << "halfEdges[" << j << "].id = " << halfEdges[j]->id << ";" << std::endl;
-				outFile << "halfEdges[" << j << "].leftFace = &faces[" << halfEdges[j]->leftFace->id << "];" << std::endl;
-				outFile << "halfEdges[" << j << "].next = &halfEdges[" << halfEdges[j]->next->id << "];" << std::endl;
-				outFile << "halfEdges[" << j << "].opp = &halfEdges[" << halfEdges[j]->opp->id << "];" << std::endl;
-				outFile << "halfEdges[" << j << "].prev = &halfEdges[" << halfEdges[j]->prev->id << "];" << std::endl;
-				outFile << "halfEdges[" << j << "].vStart = &vertices[" << halfEdges[j]->vStart->id << "];" << std::endl;
-			}
-			//outFile << "# " << halfEdges.size() << " halfedges" << std::endl;
-
-			/*--------------------* END *--------------------*/
-
-			outFile.close();
-
-			std::cout << "\n\tFile [" << outName << "] has been created successfully!" << std::endl;
-		}
 	};
 
-} // end namespace
+	////WRITE Half-Edge FILE
+	//void WriteHalfEdgeFile(const std::vector<solid *> &he_List)
+	//{
+	//	std::cout << "Enter file name (*.hed): " << std::endl;
+	//	std::string outName;
+	//	std::cin >> outName;
+	//	outName += ".hed";
+
+	//	std::ofstream outFile(outName);
+	//	if (!outFile.is_open())
+	//	{
+	//		std::cerr << "\n\t!!! FILE COULD NOT BE OPENED !!!\n" << std::endl;
+	//		system("pause");
+	//		exit(EXIT_FAILURE);
+	//	}
+
+	//	/*-------------------* HEADER *-------------------*/
+
+	//	outFile << "# ICARO 2019 Half-Edge Structure File" << std::endl;
+	//	outFile << "# icaro@lia.ufc.br" << std::endl;
+
+	//	/*------------------* OBJECTS *-------------------*/
+
+	//	//int vCount = 0;
+	//	for (int i = 0; i < he_List.size(); i++)
+	//	{
+	//		//group name (o)
+	//		outFile << "o " << he_List[i]->name << std::endl;
+
+	//		//geometric vertices
+	//		//EX.: vertices[0].id = 0; vertices[0].point = { 1.0f, 1.0f, 1.0f, 1.0f };
+	//		outFile << "/* VERTICES */" << std::endl;
+	//		for (int j = 0; j < he_List[i]->vertices.size(); j++)
+	//			outFile << "vertices[" << j << "].id = " << he_List[i]->vertices[j]->id << "; vertices[" << j << "].point = { " << he_List[i]->vertices[j]->point.x << ", " << he_List[i]->vertices[j]->point.y << ", " << he_List[i]->vertices[j]->point.z << ", 1.0 };" << std::endl;
+	//		//outFile << "# " << he_List[i]->vertices.size() << " vertices" << std::endl;
+
+	//		//loop faces
+	//		//EX.: faces[0].id = 0; faces[0].hEdge = &halfEdges[0];
+	//		outFile << "/* FACES */" << std::endl;
+	//		for (int j = 0; j < he_List[i]->faces.size(); j++)
+	//			outFile << "faces[" << j << "].id = " << he_List[i]->faces[j]->id << "; faces[" << j << "].hEdge = &halfEdges[" << he_List[i]->faces[j]->hEdge->id << "];" << std::endl;
+	//		//outFile << "# " << he_List[i]->faces.size() << " faces" << std::endl;
+
+	//		//half-edges
+	//		//EX.:
+	//		/*halfEdges[0].id = 0;
+	//		halfEdges[0].leftFace = &faces[0];
+	//		halfEdges[0].next = &halfEdges[1];
+	//		halfEdges[0].opp = &halfEdges[13];
+	//		halfEdges[0].prev = &halfEdges[3];
+	//		halfEdges[0].vStart = &vertices[0];*/
+	//		for (int j = 0; j < he_List[i]->halfEdges.size(); j++)
+	//		{
+	//			outFile << "//Half-edge " << j << std::endl;
+
+	//			outFile << "halfEdges[" << j << "].id = " << he_List[i]->halfEdges[j]->id << ";" << std::endl;
+	//			outFile << "halfEdges[" << j << "].leftFace = &faces[" << he_List[i]->halfEdges[j]->leftFace->id << "];" << std::endl;
+	//			outFile << "halfEdges[" << j << "].next = &halfEdges[" << he_List[i]->halfEdges[j]->next->id << "];" << std::endl;
+	//			outFile << "halfEdges[" << j << "].opp = &halfEdges[" << he_List[i]->halfEdges[j]->opp->id << "];" << std::endl;
+	//			outFile << "halfEdges[" << j << "].prev = &halfEdges[" << he_List[i]->halfEdges[j]->prev->id << "];" << std::endl;
+	//			outFile << "halfEdges[" << j << "].vStart = &vertices[" << he_List[i]->halfEdges[j]->vStart->id << "];" << std::endl;
+	//		}
+	//		//outFile << "# " << he_List[i]->halfEdges.size() << " halfedges" << std::endl;
+
+	//		/*--------------------* END *--------------------*/
+
+	//		outFile.close();
+
+	//		std::cout << "\n\tFile [" << outName << "] has been created successfully!" << std::endl;
+	//	}
+	//}
+
+	////WRITE .OBJ FILE
+	//void WriteObjFile(const std::vector<solid *> &he_List)
+	//{
+	//	std::cout << "Enter file name (*.obj): " << std::endl;
+	//	std::string outName;
+	//	std::cin >> outName;
+	//	outName += ".obj";
+
+	//	std::ofstream outFile(outName);
+	//	if (!outFile.is_open())
+	//	{
+	//		std::cerr << "\n\t!!! FILE COULD NOT BE OPENED !!!\n" << std::endl;
+	//		system("pause");
+	//		exit(EXIT_FAILURE);
+	//	}
+
+	//	/*-------------------* HEADER *-------------------*/
+
+	//	outFile << "# ICARO 2019 OBJ File" << std::endl;
+	//	outFile << "# icaro@lia.ufc.br" << std::endl;
+
+	//	/*------------------* OBJECTS *-------------------*/
+
+	//	int vCount = 0;
+	//	for (int i = 0; i < he_List.size(); i++)
+	//	{
+	//		//group name (o)
+	//		outFile << "o " << he_List[i]->name << std::endl;
+
+	//		//geometric vertices (v)
+	//		for (int j = 0; j < he_List[i]->vertices.size(); j++)
+	//			outFile << "v " << he_List[i]->vertices[j]->point.x << " " << he_List[i]->vertices[j]->point.y << " " << he_List[i]->vertices[j]->point.z << std::endl;
+	//		outFile << "# " << he_List[i]->vertices.size() << " vertices" << std::endl;
+
+	//		//face vertices (f)
+	//		for (int j = 0; j < he_List[i]->faces.size(); j++)
+	//		{
+	//			HED::halfEdge* he = he_List[i]->faces[j]->hEdge;
+	//			outFile << "f " << he->vStart->id + 1;
+	//			for (he = he_List[i]->faces[j]->hEdge->next; he != he_List[i]->faces[j]->hEdge; he = he->next)
+	//				outFile << " " << he->vStart->id + 1;
+	//			outFile << std::endl;
+	//		}
+	//		outFile << "# " << he_List[i]->faces.size() << " faces" << std::endl;
+
+	//		/*--------------------* END *--------------------*/
+
+	//		outFile.close();
+
+	//		std::cout << "\n\tFile [" << outName << "] has been created successfully!" << std::endl;
+	//	}
+	//}
+}
