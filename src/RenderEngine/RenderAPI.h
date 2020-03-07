@@ -11,10 +11,8 @@
 #include "Shader.h"
 #include "Camera.h"
 #include "Mesh.h"
-//#include "LoadOBJ.h"
 #include "ObjFile.h"
 
-//#include "Bridges.h"
 #include "V_section.h"
 
 #include <iostream>
@@ -148,7 +146,7 @@ namespace CRAB
             ourShader.setVec3("viewPos", camera.Position);
 
             // light properties
-            glm::vec3 lightColor(0.4f, 0.4f, 0.4f);
+            glm::vec3 lightColor(0.5f, 0.5f, 0.5f);
             ourShader.setVec3("dLight.intensity", lightColor);
             /*ourShader.setFloat("pLight.constant", 1.0f);
             ourShader.setFloat("pLight.linear", 0.02f);

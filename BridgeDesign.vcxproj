@@ -162,10 +162,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="src\DataIO\LoadOBJ.h" />
     <ClInclude Include="src\DataIO\ObjFile.h" />
-    <ClInclude Include="src\DataStructures\Bezier.h" />
-    <ClInclude Include="src\DataStructures\Bridges\V_section.h" />
     <ClInclude Include="src\DataStructures\Comp_Geometry.h" />
     <ClInclude Include="src\DataStructures\EulerOp.h" />
     <ClInclude Include="src\DataStructures\HalfEdge.h" />
@@ -177,7 +174,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\DataIO\ObjFile.cpp" />
-    <ClCompile Include="src\DataStructures\Bridges\V_section.cpp" />
     <ClCompile Include="src\glad.c" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\RenderEngine\Camera.cpp" />

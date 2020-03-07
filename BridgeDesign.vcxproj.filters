@@ -15,9 +15,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\DataIO\LoadOBJ.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="src\DataStructures\EulerOp.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -42,13 +39,7 @@
     <ClInclude Include="src\DataIO\ObjFile.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\DataStructures\Bridges\V_section.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="src\DataStructures\Comp_Geometry.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\DataStructures\Bezier.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -69,9 +60,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\DataIO\ObjFile.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\DataStructures\Bridges\V_section.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

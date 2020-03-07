@@ -387,6 +387,12 @@ namespace EulerOp
 			//CRAB::Vector4Df n = cross(he->next->vStart->point - he->vStart->point, he->next->next->vStart->point - he->next->vStart->point).to_unitary();
 			CRAB::Vector4Df n = f->normal();
 			CRAB::Vector4Df d = (n * (-1.0f) + tan_dir).to_unitary();
+
+			/*std::cout << "normal = [" << n.x << "; " << n.y << "; " << n.z << "]" << std::endl;
+			std::cout << "tangent = [" << tan_dir.x << "; " << tan_dir.y << "; " << tan_dir.z << "]" << std::endl;
+			std::cout << "direction = [" << d.x << "; " << d.y << "; " << d.z << "]" << std::endl;
+			system("pause");*/
+
 			CRAB::Vector4Df newVertex = refPoint + d * depth;
 			// first edge
 			mev(he->opp, NULL, he->vStart->id, newVertex);
