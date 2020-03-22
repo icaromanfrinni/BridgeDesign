@@ -9,7 +9,7 @@ CircularArc::CircularArc(const CRAB::Station& _s1, const CRAB::Station& _s2, con
 {
 }
 //OVERLOAD CONSTRUCTOR
-CircularArc::CircularArc(const CRAB::Vector4Df& _p1, const CRAB::Vector4Df& _p2, const CRAB::Vector4Df& _p3) {
+CircularArc::CircularArc(const CRAB::Vector4Df& _p1, const CRAB::Vector4Df& _p2, const CRAB::Vector4Df& _p3) : p1(_p1), p2(_p2), p3(_p3) {
 	s1.setStation(_p1);
 	s2.setStation(_p2);
 	s3.setStation(_p3);
@@ -64,21 +64,27 @@ CRAB::Vector4Df CircularArc::getEndPoint() const {
 //RETURN POSITION COORD
 CRAB::Vector4Df CircularArc::getPosition(const float& t) const
 {
-	CRAB::Vector4Df pos = s1.getPoint() * powf(1.0f - t, 2.0f) +
+	/*CRAB::Vector4Df pos = s1.getPoint() * powf(1.0f - t, 2.0f) +
 		s2.getPoint() * 2.0f * (1.0f - t) * t +
-		s3.getPoint() * powf(t, 2.0f);
+		s3.getPoint() * powf(t, 2.0f);*/
+	CRAB::Vector4Df pos = p1 * powf(1.0f - t, 2.0f) +
+		p2 * 2.0f * (1.0f - t) * t +
+		p3 * powf(t, 2.0f);
 	return pos;
 }
 //RETURN TANGENT VECTOR
 CRAB::Vector4Df CircularArc::getTan(const float& t) const
 {
-	CRAB::Vector4Df tan = (s2.getPoint() - s1.getPoint()) * 2.0f * (1.0f - t) +
-		(s3.getPoint() - s2.getPoint()) * 2.0f * t;
+	/*CRAB::Vector4Df tan = (s2.getPoint() - s1.getPoint()) * 2.0f * (1.0f - t) +
+		(s3.getPoint() - s2.getPoint()) * 2.0f * t;*/
+	CRAB::Vector4Df tan = (p2 - p1) * 2.0f * (1.0f - t) +
+		(p3 - p2) * 2.0f * t;
 	return tan.to_unitary();
 }
 //TODO
 float CircularArc::getLength() const
 {
 	//in Plan
-	return (s3.getPoint() - s1.getPoint()).length();
+	/*return (s3.getPoint() - s1.getPoint()).length();*/
+	return (p3 - p1).length();
 }

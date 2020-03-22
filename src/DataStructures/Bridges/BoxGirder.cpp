@@ -23,50 +23,51 @@ BoxGirder::BoxGirder(const Alignment &roadway, const CRAB::Station& _start, cons
 	b = int((100.0f * (B - 2.0f * (Lb + INCLINATION_RATIO * (H - h - tv)))) / 5.0f) * 0.05f;
 	th = int((100.0f * (b - 2 * bw) / 5.0f) / 5.0f) * 0.05f;
 
-	// Alignment
-	// TODO: copiar alinhamento se a ponte estiver inserida em vários segmentos
-	for (int i = 0; i < roadway.segments.size(); i++)
-	{
-		if (_start.c_Meters() <= roadway.segments[i]->getStartStation().c_Meters() && _end.c_Meters() >= roadway.segments[i]->getEndStation().c_Meters())
-		{// verifica se o segmento corrente está dentro das estações limites da obra
-			path.push_back(roadway.segments[i]);
-		}
-		else if (_start.c_Meters() > roadway.segments[i]->getStartStation().c_Meters() && _start.c_Meters() < roadway.segments[i]->getEndStation().c_Meters())
-		{// verifica se a ponte começa dentro do segmento corrente (com fim em outro segmento)
-			std::string className = typeid(*roadway.segments[i]).name();
-			if (className == "class Line")
-			{
-				float x1 = _start.c_Meters() - roadway.segments[i]->getStartStation().c_Meters();
-				float x2 = roadway.segments[i]->getStartStation().getDistance(roadway.segments[i]->getEndStation());
-				float t = x1 / x2;
-				CRAB::Vector4Df start_point = roadway.segments[i]->getPosition(t);
-				path.push_back(new Line(CRAB::Station{ start_point }, roadway.segments[i]->getEndStation()));
-			}
-			else if (className == "class CircularArc")
-			{
-				//TODO
-				path.push_back(new CircularArc(CRAB::Station{ _start.E, _start.meters }, CRAB::Station{ roadway.segments[i]->getMidPoint() }, roadway.segments[i]->getEndStation()));
-			}
-		}
-		else if (_end.c_Meters() > roadway.segments[i]->getStartStation().c_Meters() && _end.c_Meters() < roadway.segments[i]->getEndStation().c_Meters())
-		{// verifica se a ponte termina dentro do segmento corrente (com início em outro segmento)
-			std::string className = typeid(*roadway.segments[i]).name();
-			if (className == "class Line")
-			{
-				float x1 = _end.c_Meters() - roadway.segments[i]->getStartStation().c_Meters();
-				float x2 = roadway.segments[i]->getStartStation().getDistance(roadway.segments[i]->getEndStation());
-				float t = x1 / x2;
-				CRAB::Vector4Df end_point = roadway.segments[i]->getPosition(t);
-				path.push_back(new Line(roadway.segments[i]->getStartStation(), CRAB::Station{ end_point }));
-			}
-			else if (className == "class CircularArc")
-			{
-				//TODO
-				path.push_back(new CircularArc(roadway.segments[i]->getStartStation(), CRAB::Station{ roadway.segments[i]->getMidPoint() }, CRAB::Station{ _start.E, _start.meters }));
-			}
-		}
-		//TODO: início e fim da ponte dentro do segmento corrente
-	}
+	//// Alignment
+	//// TODO: copiar alinhamento se a ponte estiver inserida em vários segmentos
+	//for (int i = 0; i < roadway.segments.size(); i++)
+	//{
+	//	if (_start.c_Meters() <= roadway.segments[i]->getStartStation().c_Meters() && _end.c_Meters() >= roadway.segments[i]->getEndStation().c_Meters())
+	//	{// verifica se o segmento corrente está dentro das estações limites da obra
+	//		path.push_back(roadway.segments[i]);
+	//	}
+	//	else if (_start.c_Meters() > roadway.segments[i]->getStartStation().c_Meters() && _start.c_Meters() < roadway.segments[i]->getEndStation().c_Meters())
+	//	{// verifica se a ponte começa dentro do segmento corrente (com fim em outro segmento)
+	//		std::string className = typeid(*roadway.segments[i]).name();
+	//		if (className == "class Line")
+	//		{
+	//			float x1 = _start.c_Meters() - roadway.segments[i]->getStartStation().c_Meters();
+	//			float x2 = roadway.segments[i]->getStartStation().getDistance(roadway.segments[i]->getEndStation());
+	//			float t = x1 / x2;
+	//			CRAB::Vector4Df start_point = roadway.segments[i]->getPosition(t);
+	//			path.push_back(new Line(CRAB::Station{ start_point }, roadway.segments[i]->getEndStation()));
+	//		}
+	//		else if (className == "class CircularArc")
+	//		{
+	//			//TODO
+	//			path.push_back(new CircularArc(CRAB::Station{ _start.E, _start.meters }, CRAB::Station{ roadway.segments[i]->getMidPoint() }, roadway.segments[i]->getEndStation()));
+	//		}
+	//	}
+	//	else if (_end.c_Meters() > roadway.segments[i]->getStartStation().c_Meters() && _end.c_Meters() < roadway.segments[i]->getEndStation().c_Meters())
+	//	{// verifica se a ponte termina dentro do segmento corrente (com início em outro segmento)
+	//		std::string className = typeid(*roadway.segments[i]).name();
+	//		if (className == "class Line")
+	//		{
+	//			float x1 = _end.c_Meters() - roadway.segments[i]->getStartStation().c_Meters();
+	//			float x2 = roadway.segments[i]->getStartStation().getDistance(roadway.segments[i]->getEndStation());
+	//			float t = x1 / x2;
+	//			CRAB::Vector4Df end_point = roadway.segments[i]->getPosition(t);
+	//			path.push_back(new Line(roadway.segments[i]->getStartStation(), CRAB::Station{ end_point }));
+	//		}
+	//		else if (className == "class CircularArc")
+	//		{
+	//			//TODO
+	//			path.push_back(new CircularArc(roadway.segments[i]->getStartStation(), CRAB::Station{ roadway.segments[i]->getMidPoint() }, CRAB::Station{ _start.E, _start.meters }));
+	//		}
+	//	}
+	//	//TODO: início e fim da ponte dentro do segmento corrente
+	//}
+	path = roadway.segments;
 
 	// Model
 	update();

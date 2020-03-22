@@ -5,7 +5,7 @@
 #include "Linear_Algebra.h"
 #include "Coord_System.h"
 
-const int DIVIDER = 10;
+const int DIVIDER = 20;
 
 class Segment
 {

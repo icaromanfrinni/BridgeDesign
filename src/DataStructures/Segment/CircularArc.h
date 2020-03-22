@@ -7,6 +7,7 @@
 class CircularArc : public Segment
 {
 	CRAB::Station s1, s2, s3;
+	CRAB::Vector4Df p1, p2, p3;
 
 public:
 	//DEFAULT CONSTRUCTOR

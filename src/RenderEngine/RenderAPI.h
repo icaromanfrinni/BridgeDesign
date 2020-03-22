@@ -129,15 +129,25 @@ namespace CRAB
         roads.push_back(new Road("Classe III", 10.80f));
         roads.push_back(new Road("Classe IV", 9.80f));
 
-        // EXEMPLO LONGO
         alignments.push_back(Alignment("Rodovia_001", roads[3]));
-        alignments.back().AddSegment(new Line(CRAB::Station{ 0, 0.0f, 8.663f }, CRAB::Station{ 2, 0.0f, 11.269f }));
+
+        // EXEMPLO LONGO
+        /*alignments.back().AddSegment(new Line(CRAB::Station{ 0, 0.0f, 8.663f }, CRAB::Station{ 2, 0.0f, 11.269f }));
         alignments.back().AddSegment(new CircularArc(CRAB::Station{ 2, 0.0f, 11.269f }, CRAB::Station{ 4, 5.0f, 14.200f }, CRAB::Station{ 6, 10.0f, 11.266f }));
-        alignments.back().AddSegment(new Line(CRAB::Station{ 6, 10.0f, 11.266f }, CRAB::Station{ 8, 0.0f, 9.310f }));
+        alignments.back().AddSegment(new Line(CRAB::Station{ 6, 10.0f, 11.266f }, CRAB::Station{ 8, 0.0f, 9.310f }));*/
+
+        // EXEMPLO CURVA HORIZONTAL
+        alignments.back().AddSegment(new Line(CRAB::Vector4Df{ 0.0f, 0.0f, 0.0f, 1.0f }, CRAB::Vector4Df{ 20.0f, 0.0f, 0.0f, 1.0f }));
+        alignments.back().AddSegment(new CircularArc(CRAB::Vector4Df{ 20.0f, 0.0f, 0.0f, 1.0f }, CRAB::Vector4Df{ 70.0f, 0.0f, 0.0f, 1.0f }, CRAB::Vector4Df{ 110.0f, 0.0f, 30.0f, 1.0f }));
+
+        // EXEMPLO CURVA 3D
+        //alignments.back().AddSegment(new CircularArc(CRAB::Vector4Df{ 0.0f, 0.0f, 0.0f, 1.0f }, CRAB::Vector4Df{ 50.0f, 10.0f, 0.0f, 1.0f }, CRAB::Vector4Df{ 100.0f, 0.0f, 50.0f, 1.0f }));
+
 
         // load models (bridges)
         // ------------------------
-        models.push_back(Model("Rio_Pacoti", new BoxGirder(alignments.back(), { 1, 10.0f }, { 7, 0.0f })));
+        //models.push_back(Model("Rio_Pacoti", new BoxGirder(alignments.back(), { 1, 10.0f }, { 7, 0.0f })));
+        models.push_back(Model("Rio_Pacoti", new BoxGirder(alignments.back(), { 1, 0.0f }, { 4, 0.0f })));
         for (int i = 0; i < models.back().getBridge()->getModel().size(); i++)
             ourMesh_List.push_back(Mesh(models.back().getBridge()->getModel()[i]));
 
@@ -259,8 +269,8 @@ namespace CRAB
                     MB_OK | MB_ICONEXCLAMATION);
             }
             else {
-                solids.clear();
-                ourMesh_List.clear();
+                //solids.clear();
+                //ourMesh_List.clear();
                 for (int i = 0; i < inputObjFile.objectList.size(); i++)
                 {
                     // from OBJ -> Mesh
