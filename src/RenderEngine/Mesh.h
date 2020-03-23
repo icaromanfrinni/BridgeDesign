@@ -28,6 +28,10 @@ public:
         glm::vec3 Position;
         // normal
         glm::vec3 Normal;
+        // texCoords
+        glm::vec2 TexCoords;
+        // tangent
+        glm::vec3 Tangent;
     };
 
     /*  Mesh Data  */
@@ -53,8 +57,12 @@ private:
     unsigned int VBO/*, EBO*/;
 
     /*  Functions    */
+    
     // initializes all the buffer objects/arrays
     void setupMesh();
+    
+    // Manual calculation of tangents
+    glm::vec3 Calc_Tangent(const Vertex& v1, const Vertex& v2, const Vertex& v3);
 };
 
 #endif

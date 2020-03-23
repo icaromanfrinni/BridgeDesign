@@ -127,7 +127,7 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="shaders\fshader.glsl" />
-    <None Include="shaders\vshader.glsl" />
+    <None Include="shaders\shader.vert" />
+    <None Include="shaders\shader.frag" />
   </ItemGroup>
 </Project>

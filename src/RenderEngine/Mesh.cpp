@@ -75,13 +75,29 @@ Mesh::Mesh(const HED::solid* solid)
         // MESH
         for (int j = 0; j < t.size(); j++)
         {
-            Mesh::Vertex vertex;
-            vertex.Normal = glm::vec3(t[j].normal().to_unitary().x, t[j].normal().to_unitary().y, t[j].normal().to_unitary().z);
-            for (int k = 0; k < 3; k++)
-            {
-                vertex.Position = glm::vec3(t[j].v[k].x, t[j].v[k].y, t[j].v[k].z);
-                vertices.push_back(vertex);
-            }
+            Mesh::Vertex vertex1, vertex2, vertex3;
+            // ------------------------------------
+            glm::vec3 v_normal = glm::vec3(t[j].normal().to_unitary().x, t[j].normal().to_unitary().y, t[j].normal().to_unitary().z);
+            vertex1.Normal = v_normal;
+            vertex1.Position = glm::vec3(t[j].v[0].x, t[j].v[0].y, t[j].v[0].z);
+            vertex1.TexCoords = { 0.0f, 0.0f };
+            // ------------------------------------
+            vertex2.Normal = v_normal;
+            vertex2.Position = glm::vec3(t[j].v[1].x, t[j].v[1].y, t[j].v[1].z);
+            vertex2.TexCoords = { 0.5f, 0.0f };
+            // ------------------------------------
+            vertex3.Normal = v_normal;
+            vertex3.Position = glm::vec3(t[j].v[2].x, t[j].v[2].y, t[j].v[2].z);
+            vertex3.TexCoords = { 0.5f, 0.5f };
+            // ------------------------------------
+            glm::vec3 tangent = Calc_Tangent(vertex1, vertex2, vertex3);
+            vertex1.Tangent = tangent;
+            vertex2.Tangent = tangent;
+            vertex3.Tangent = tangent;
+            // ------------------------------------
+            vertices.push_back(vertex1);            
+            vertices.push_back(vertex2);
+            vertices.push_back(vertex3);
         }
     }
 
@@ -154,6 +170,31 @@ void Mesh::setupMesh()
     // vertex normals
     glEnableVertexAttribArray(1);
     glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, Normal));
+    // vertex texture coords
+    glEnableVertexAttribArray(2);
+    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, TexCoords));
+    // vertex tangent
+    glEnableVertexAttribArray(3);
+    glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, Tangent));
 
     glBindVertexArray(0);
+}
+
+glm::vec3 Mesh::Calc_Tangent(const Vertex& v1, const Vertex& v2, const Vertex& v3)
+{
+    glm::vec3 t;
+
+    glm::vec3 edge1 = v2.Position - v1.Position;
+    glm::vec3 edge2 = v3.Position - v1.Position;
+    glm::vec2 deltaUV1 = v2.TexCoords - v1.TexCoords;
+    glm::vec2 deltaUV2 = v3.TexCoords - v1.TexCoords;
+
+    float f = 1.0f / (deltaUV1.x * deltaUV2.y - deltaUV2.x * deltaUV1.y);
+
+    t.x = f * (deltaUV2.y * edge1.x - deltaUV1.y * edge2.x);
+    t.y = f * (deltaUV2.y * edge1.y - deltaUV1.y * edge2.y);
+    t.z = f * (deltaUV2.y * edge1.z - deltaUV1.y * edge2.z);
+    t = glm::normalize(t);
+
+    return t;
 }

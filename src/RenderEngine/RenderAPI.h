@@ -114,7 +114,7 @@ namespace CRAB
 
         // build and compile our shader zprogram
         // -------------------------------------
-        Shader ourShader("shaders/vshader.glsl", "shaders/fshader.glsl");
+        Shader ourShader("shaders/shader.vert", "shaders/shader.frag");
 
         // load models (from OBJ file)
         // ---------------------------
