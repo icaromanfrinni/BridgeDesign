@@ -191,12 +191,6 @@ namespace CRAB
             ourShader.setFloat("pLight.linear", 0.02f);
             ourShader.setFloat("pLight.quadratic", 0.004f);*/
 
-            // material properties
-            ourShader.setVec3("material.ka", 0.8f, 0.8f, 0.8f);
-            ourShader.setVec3("material.kd", 0.6f, 0.6f, 0.6f);
-            ourShader.setVec3("material.ks", 0.9f, 0.9f, 0.9f); // specular lighting doesn't have full effect on this object's material
-            ourShader.setFloat("material.shininess", 32.0f);
-
             // view/projection transformations
             //projection = glm::perspective(glm::radians(camera.Zoom), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 500.0f);
             glm::mat4 view = camera.GetViewMatrix();

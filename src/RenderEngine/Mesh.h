@@ -11,6 +11,7 @@
 #include "Shader.h"
 #include "ObjFile.h"
 #include "HalfEdge.h"
+#include "Material.h"
 
 #include <string>
 #include <fstream>
@@ -31,6 +32,7 @@ public:
 
     /*  Mesh Data  */
     std::vector<Vertex> vertices;
+    Material material;
     unsigned int VAO;
 
     /*  Functions  */

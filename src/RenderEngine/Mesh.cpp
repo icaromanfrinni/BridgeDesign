@@ -96,6 +96,37 @@ Mesh::~Mesh()
 // render the mesh
 void Mesh::Draw(Shader shader)
 {
+    // material properties
+    shader.setFloat("material.shininess", material.shininess);
+    if (material.hasTexture)
+    {
+        shader.setBool("material.hasTexture", true);
+
+        for (int i = 0; i < material.textures.size(); i++)
+        {
+            // active proper texture unit before binding
+            glActiveTexture(GL_TEXTURE0 + i);
+
+            if (material.textures[i]->type == "diffuse")
+                shader.setInt("u_Texture_diffuse", i);
+            else if (material.textures[i]->type == "specular")
+                shader.setInt("u_Texture_specular", i);
+            else if (material.textures[i]->type == "normal")
+                shader.setInt("u_Texture_normal", i);
+
+            // bind the texture
+            glBindTexture(GL_TEXTURE_2D, material.textures[i]->Texture_ID);
+        }
+    }
+    else
+    {
+        shader.setBool("material.hasTexture", false);
+
+        shader.setVec3("material.ka", material.ka);
+        shader.setVec3("material.kd", material.kd);
+        shader.setVec3("material.ks", material.ks);
+    }
+
     // draw mesh
     glBindVertexArray(VAO);
     glDrawArrays(GL_TRIANGLES, 0, vertices.size());
