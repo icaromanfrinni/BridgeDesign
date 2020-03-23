@@ -47,8 +47,8 @@ namespace CRAB
     float lastFrame = 0.0f;
 
     // lighting
-    //glm::vec3 lightPos(10.0f, 10.0f, 10.0f);
-    glm::vec3 lightDir(-0.5f, -1.0f, -0.5f);
+    glm::vec3 lightDir(-1.0f, -1.0f, -1.0f);
+    glm::vec3 lightPos(-2.0f, 0.0f, 2.0f);
 
     // mouse event handlers
     int TheKeyState = GLFW_KEY_LEFT_CONTROL;
@@ -185,14 +185,22 @@ namespace CRAB
             ourShader.setVec3("viewPos", camera.Position);
 
             // light properties
-            glm::vec3 lightColor(0.5f, 0.5f, 0.5f);
-            ourShader.setVec3("dLight.intensity", lightColor);
-            /*ourShader.setFloat("pLight.constant", 1.0f);
-            ourShader.setFloat("pLight.linear", 0.02f);
-            ourShader.setFloat("pLight.quadratic", 0.004f);*/
+            // ----------------
+            // directional light
+            ourShader.setVec3("dLight.direction", lightDir);
+            ourShader.setVec3("dLight.ambient", 0.2f, 0.2f, 0.2f);
+            ourShader.setVec3("dLight.diffuse", 0.6f, 0.6f, 0.6f);
+            ourShader.setVec3("dLight.specular", 1.0f, 1.0f, 1.0f);
+            // point light
+            ourShader.setVec3("pLight.position", lightPos);
+            ourShader.setVec3("pLight.ambient", 0.05f, 0.05f, 0.05f);
+            ourShader.setVec3("pLight.diffuse", 0.8f, 0.8f, 0.8f);
+            ourShader.setVec3("pLight.specular", 1.0f, 1.0f, 1.0f);
+            ourShader.setFloat("pLight.constant", 1.0f);
+            ourShader.setFloat("pLight.linear", 0.09f);
+            ourShader.setFloat("pLight.quadratic", 0.02f);
 
             // view/projection transformations
-            //projection = glm::perspective(glm::radians(camera.Zoom), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 500.0f);
             glm::mat4 view = camera.GetViewMatrix();
             ourShader.setMat4("projection", projection);
             ourShader.setMat4("view", view);
