@@ -48,7 +48,6 @@ namespace CRAB
 
     // lighting
     glm::vec3 lightDir(-1.0f, -1.0f, -1.0f);
-    glm::vec3 lightPos(-2.0f, 0.0f, 2.0f);
 
     // mouse event handlers
     int TheKeyState = GLFW_KEY_LEFT_CONTROL;
@@ -188,17 +187,9 @@ namespace CRAB
             // ----------------
             // directional light
             ourShader.setVec3("dLight.direction", lightDir);
-            ourShader.setVec3("dLight.ambient", 0.2f, 0.2f, 0.2f);
-            ourShader.setVec3("dLight.diffuse", 0.6f, 0.6f, 0.6f);
+            ourShader.setVec3("dLight.ambient", 1.0f, 1.0f, 1.0f);
+            ourShader.setVec3("dLight.diffuse", 1.0f, 1.0f, 1.0f);
             ourShader.setVec3("dLight.specular", 1.0f, 1.0f, 1.0f);
-            // point light
-            ourShader.setVec3("pLight.position", lightPos);
-            ourShader.setVec3("pLight.ambient", 0.05f, 0.05f, 0.05f);
-            ourShader.setVec3("pLight.diffuse", 0.8f, 0.8f, 0.8f);
-            ourShader.setVec3("pLight.specular", 1.0f, 1.0f, 1.0f);
-            ourShader.setFloat("pLight.constant", 1.0f);
-            ourShader.setFloat("pLight.linear", 0.09f);
-            ourShader.setFloat("pLight.quadratic", 0.02f);
 
             // view/projection transformations
             glm::mat4 view = camera.GetViewMatrix();

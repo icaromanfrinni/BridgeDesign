@@ -32,6 +32,31 @@ Mesh::Mesh(const obj& object)
 // constructor (from HalfEdge struct)
 Mesh::Mesh(const HED::solid* solid)
 {
+    if (solid->name == "TOP_LAYER")
+    {
+        material.hasTexture = true;
+
+        material.textures.push_back(new Texture("textures/pavement_diffuse.jpg", "diffuse"));
+        material.textures.push_back(new Texture("textures/pavement_roughness.jpg", "specular"));
+        material.textures.push_back(new Texture("textures/pavement_normal.jpg", "normal"));
+
+        /*material.textures.push_back(new Texture("textures/brickwall_diffuse.jpg", "diffuse"));
+        material.textures.push_back(new Texture("textures/brickwall_diffuse.jpg", "specular"));
+        material.textures.push_back(new Texture("textures/brickwall_normal.jpg", "normal"));*/
+    }
+    else
+    {
+        material.hasTexture = true;
+
+        material.textures.push_back(new Texture("textures/concrete_diffuse.png", "diffuse"));
+        material.textures.push_back(new Texture("textures/concrete_specular.jpg", "specular"));
+        material.textures.push_back(new Texture("textures/concrete_normal.jpg", "normal"));
+
+        /*material.textures.push_back(new Texture("textures/white_concrete_diffuse.jpg", "diffuse"));
+        material.textures.push_back(new Texture("textures/white_concrete_specular.jpg", "specular"));
+        material.textures.push_back(new Texture("textures/white_concrete_normal.jpg", "normal"));*/
+    }
+        
     for (int i = 0; i < solid->faces.size(); i++)
     {
         //// check if current face is a triangle
@@ -78,17 +103,46 @@ Mesh::Mesh(const HED::solid* solid)
             Mesh::Vertex vertex1, vertex2, vertex3;
             // ------------------------------------
             glm::vec3 v_normal = glm::vec3(t[j].normal().to_unitary().x, t[j].normal().to_unitary().y, t[j].normal().to_unitary().z);
+            // ------------------------------------
             vertex1.Normal = v_normal;
-            vertex1.Position = glm::vec3(t[j].v[0].x, t[j].v[0].y, t[j].v[0].z);
-            vertex1.TexCoords = { 0.0f, 0.0f };
-            // ------------------------------------
             vertex2.Normal = v_normal;
-            vertex2.Position = glm::vec3(t[j].v[1].x, t[j].v[1].y, t[j].v[1].z);
-            vertex2.TexCoords = { 0.5f, 0.0f };
-            // ------------------------------------
             vertex3.Normal = v_normal;
+            // ------------------------------------
+            vertex1.Position = glm::vec3(t[j].v[0].x, t[j].v[0].y, t[j].v[0].z);
+            vertex2.Position = glm::vec3(t[j].v[1].x, t[j].v[1].y, t[j].v[1].z);            
             vertex3.Position = glm::vec3(t[j].v[2].x, t[j].v[2].y, t[j].v[2].z);
-            vertex3.TexCoords = { 0.5f, 0.5f };
+            // ------------------------------------
+            vertex1.TexCoords = { 1.0f, 0.0f };
+            /*if (j % 2 == 0)
+            {
+                vertex2.TexCoords = { 5.0f, 0.0f };
+                vertex3.TexCoords = { 5.0f, 1.0f };
+            }
+            else
+            {
+                vertex2.TexCoords = { 5.0f, 1.0f };
+                vertex3.TexCoords = { 0.0f, 1.0f };
+            }*/
+            /*if (j % 2 == 0)
+            {
+                vertex2.TexCoords = { 1.0f, 0.0f };
+                vertex3.TexCoords = { 1.0f, 1.0f };
+            }
+            else
+            {
+                vertex2.TexCoords = { 1.0f, 1.0f };
+                vertex3.TexCoords = { 0.0f, 1.0f };
+            }*/
+            if (j % 2 == 0)
+            {
+                vertex2.TexCoords = { 1.0f, 0.5f };
+                vertex3.TexCoords = { 0.0f, 0.5f };
+            }
+            else
+            {
+                vertex2.TexCoords = { 1.0f, 0.5f };
+                vertex3.TexCoords = { 0.0f, 0.0f };
+            }
             // ------------------------------------
             glm::vec3 tangent = Calc_Tangent(vertex1, vertex2, vertex3);
             vertex1.Tangent = tangent;

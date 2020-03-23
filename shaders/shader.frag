@@ -18,18 +18,6 @@ struct DirLight { // DIRECTIONAL LIGHT
     vec3 specular;
 };
 
-struct PointLight { // POINT LIGHT
-    vec3 position;
-
-    float constant;
-    float linear;
-    float quadratic;
-
-    vec3 ambient;
-    vec3 diffuse;
-    vec3 specular;
-};
-
 in vec3 FragPos;  
 in vec3 Normal;  
 in vec2 v_TexCoord;
@@ -38,7 +26,6 @@ in mat3 TBN;
 uniform vec3 viewPos;
 uniform Material material;
 uniform DirLight dLight;
-uniform PointLight pLight;
 
 uniform sampler2D u_Texture_diffuse;
 uniform sampler2D u_Texture_specular;
@@ -50,7 +37,6 @@ mat3 TBN_matrix;
 
 // functions
 vec3 CalcDirLight(DirLight light, vec3 normal, vec3 viewDir);
-vec3 CalcPointLight(PointLight light, vec3 normal, vec3 fragPos, vec3 viewDir);
 
 void main()
 {
@@ -61,7 +47,7 @@ void main()
     {
 	// LIGHTING MAPS
 	// -------------
-        ka = vec3(texture(u_Texture_diffuse, v_TexCoord));
+        ka = vec3(texture(u_Texture_diffuse, v_TexCoord)) * 0.5;
         kd = vec3(texture(u_Texture_diffuse, v_TexCoord));
         ks = vec3(texture(u_Texture_specular, v_TexCoord)) * 0.5;
         norm = texture(u_Texture_normal, v_TexCoord).rgb;
@@ -87,7 +73,6 @@ void main()
     // RESULT
     // ------
     vec3 result = CalcDirLight(dLight, norm, viewDir);
-    result += CalcPointLight(pLight, norm, FragPos, viewDir);
     FragColor = vec4(result, 1.0);
 } 
 
@@ -108,27 +93,3 @@ vec3 CalcDirLight(DirLight light, vec3 normal, vec3 viewDir)
     vec3 specular = light.specular * spec * ks;
     return (ambient + diffuse + specular);
 }  
-
-// calculates the color when using a point light
-vec3 CalcPointLight(PointLight light, vec3 normal, vec3 fragPos, vec3 viewDir)
-{
-    vec3 lightDir = TBN_matrix * normalize(light.position - fragPos);
-    // diffuse shading
-    float diff = max(dot(normal, lightDir), 0.0);
-    // specular shading
-    vec3 reflectDir = reflect(-lightDir, normal);
-    float spec = pow(max(dot(viewDir, reflectDir), 0.0), material.shininess);
-    //vec3 halfwayDir = normalize(lightDir + viewDir);
-    //float spec = pow(max(dot(viewDir, halfwayDir), 0.0), material.shininess);
-    // attenuation
-    float distance = length(light.position - fragPos);
-    float attenuation = 1.0 / (light.constant + light.linear * distance + light.quadratic * (distance * distance));    
-    // combine results
-    vec3 ambient = light.ambient * ka;
-    vec3 diffuse = light.diffuse * diff * kd;
-    vec3 specular = light.specular * spec * ks;
-    ambient *= attenuation;
-    diffuse *= attenuation;
-    specular *= attenuation;
-    return (ambient + diffuse + specular);
-}

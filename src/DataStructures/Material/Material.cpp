@@ -4,21 +4,10 @@
 Material::Material()
 {
 	name = "default";
-    ka = { 0.4f, 0.4f, 0.4f };
-    kd = { 0.6f, 0.6f, 0.6f };
-    ks = { 0.7f, 0.7f, 0.7f };
+    ka = { 0.0f, 0.0f, 0.0f };
+    kd = { 0.1f, 0.1f, 0.1f };
+    ks = { 0.2f, 0.2f, 0.2f };
     shininess = 32.0f;
-
-    hasTexture = false;
-    
-    textures.push_back(new Texture("textures/concrete_diffuse.png", "diffuse"));
-    textures.push_back(new Texture("textures/concrete_specular.jpg", "specular"));
-    textures.push_back(new Texture("textures/concrete_normal.jpg", "normal"));
-
-    // ASPHALT
-    /*textures.push_back(new Texture("textures/Asphalt_DIFFUSE.jpg", "diffuse"));
-    textures.push_back(new Texture("textures/Asphalt_SPECULAR.jpg", "specular"));
-    textures.push_back(new Texture("textures/Asphalt_NORMAL.jpg", "normal"));*/
 }
 
 
