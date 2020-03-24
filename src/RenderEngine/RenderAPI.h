@@ -11,13 +11,13 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 #define STB_IMAGE_IMPLEMENTATION
-#include "stb_image.h"
+//#include "stb_image.h"
 
 #include "Shader.h"
 #include "Camera.h"
 #include "Mesh.h"
 #include "ObjFile.h"
-//#include "Skybox.h"
+#include "Skybox.h"
 
 #include "Alignment.h"
 #include "Line.h"
@@ -33,7 +33,7 @@ namespace CRAB
     void processInput(GLFWwindow* window);
 
     // skybox
-    unsigned int loadCubemap(std::vector<std::string> faces);
+    //unsigned int loadCubemap(std::vector<std::string> faces);
 
     // settings
     const unsigned int SCR_WIDTH = 800;
@@ -92,7 +92,7 @@ namespace CRAB
 
     // glfw window creation
     // --------------------
-        GLFWwindow* window = glfwCreateWindow(SCR_WIDTH, SCR_HEIGHT, "LearnOpenGL", NULL, NULL);
+        GLFWwindow* window = glfwCreateWindow(SCR_WIDTH, SCR_HEIGHT, "CRAB::BRIDGE", NULL, NULL);
         if (window == NULL)
         {
             std::cout << "Failed to create GLFW window" << std::endl;
@@ -122,96 +122,24 @@ namespace CRAB
         // build and compile our shader zprogram
         // -------------------------------------
         Shader ourShader("shaders/shader.vert", "shaders/shader.frag");
-
-        // ================================================================================================
-        // ================================================================================================
-        // ================================================================================================
-        
         Shader skyboxShader("shaders/skybox.vert", "shaders/skybox.frag");
-
-        float skyboxVertices[] = {
-            // positions          
-            -1.0f,  1.0f, -1.0f,
-            -1.0f, -1.0f, -1.0f,
-             1.0f, -1.0f, -1.0f,
-             1.0f, -1.0f, -1.0f,
-             1.0f,  1.0f, -1.0f,
-            -1.0f,  1.0f, -1.0f,
-
-            -1.0f, -1.0f,  1.0f,
-            -1.0f, -1.0f, -1.0f,
-            -1.0f,  1.0f, -1.0f,
-            -1.0f,  1.0f, -1.0f,
-            -1.0f,  1.0f,  1.0f,
-            -1.0f, -1.0f,  1.0f,
-
-             1.0f, -1.0f, -1.0f,
-             1.0f, -1.0f,  1.0f,
-             1.0f,  1.0f,  1.0f,
-             1.0f,  1.0f,  1.0f,
-             1.0f,  1.0f, -1.0f,
-             1.0f, -1.0f, -1.0f,
-
-            -1.0f, -1.0f,  1.0f,
-            -1.0f,  1.0f,  1.0f,
-             1.0f,  1.0f,  1.0f,
-             1.0f,  1.0f,  1.0f,
-             1.0f, -1.0f,  1.0f,
-            -1.0f, -1.0f,  1.0f,
-
-            -1.0f,  1.0f, -1.0f,
-             1.0f,  1.0f, -1.0f,
-             1.0f,  1.0f,  1.0f,
-             1.0f,  1.0f,  1.0f,
-            -1.0f,  1.0f,  1.0f,
-            -1.0f,  1.0f, -1.0f,
-
-            -1.0f, -1.0f, -1.0f,
-            -1.0f, -1.0f,  1.0f,
-             1.0f, -1.0f, -1.0f,
-             1.0f, -1.0f, -1.0f,
-            -1.0f, -1.0f,  1.0f,
-             1.0f, -1.0f,  1.0f
+        
+        // load SKYBOX textures
+        // --------------------
+        std::vector<std::string> faces = {
+            "skybox/dust/dust_ft.jpg",        // right
+            "skybox/dust/dust_bk.jpg",        // left
+            "skybox/dust/dust_up.jpg",        // top
+            "skybox/dust/dust_dn.jpg",        // bottom
+            "skybox/dust/dust_rt.jpg",        // front
+            "skybox/dust/dust_lf.jpg"         // back
         };
-
-        // skybox VAO
-        unsigned int skyboxVAO, skyboxVBO;
-        glGenVertexArrays(1, &skyboxVAO);
-        glGenBuffers(1, &skyboxVBO);
-        glBindVertexArray(skyboxVAO);
-        glBindBuffer(GL_ARRAY_BUFFER, skyboxVBO);
-        glBufferData(GL_ARRAY_BUFFER, sizeof(skyboxVertices), &skyboxVertices, GL_STATIC_DRAW);
-        glEnableVertexAttribArray(0);
-        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
-
-        // load textures
-        // -------------
-        std::vector<std::string> faces
-        {
-            "skybox/right.jpg",
-            "skybox/left.jpg",
-            "skybox/top.jpg",
-            "skybox/bottom.jpg",
-            "skybox/front.jpg",
-            "skybox/back.jpg"
-
-            /*"skybox/yokohama/right.jpg",
-            "skybox/yokohama/left.jpg",
-            "skybox/yokohama/top.jpg",
-            "skybox/yokohama/bottom.jpg",
-            "skybox/yokohama/front.jpg",
-            "skybox/yokohama/back.jpg"*/
-        };
-        unsigned int cubemapTexture = loadCubemap(faces);
+        Skybox skybox(faces);
 
         // shader configuration
         // --------------------
         skyboxShader.use();
         skyboxShader.setInt("skybox", 0);
-
-        // ================================================================================================
-        // ================================================================================================
-        // ================================================================================================
 
         // load models (from OBJ file)
         // ---------------------------
@@ -312,11 +240,7 @@ namespace CRAB
             skyboxShader.setMat4("view", view);
             skyboxShader.setMat4("projection", projection);
             // skybox cube
-            glBindVertexArray(skyboxVAO);
-            glActiveTexture(GL_TEXTURE0);
-            glBindTexture(GL_TEXTURE_CUBE_MAP, cubemapTexture);
-            glDrawArrays(GL_TRIANGLES, 0, 36);
-            glBindVertexArray(0);
+            skybox.Draw(ourShader);
             glDepthFunc(GL_LESS); // set depth function back to default
 
             // glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
@@ -452,7 +376,7 @@ namespace CRAB
     // +Z (front) 
     // -Z (back)
     // -------------------------------------------------------
-    unsigned int loadCubemap(std::vector<std::string> faces)
+    /*unsigned int loadCubemap(std::vector<std::string> faces)
     {
         unsigned int textureID;
         glGenTextures(1, &textureID);
@@ -480,5 +404,5 @@ namespace CRAB
         glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
 
         return textureID;
-    }
+    }*/
 }

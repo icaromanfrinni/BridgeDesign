@@ -201,6 +201,7 @@
     <ClCompile Include="src\RenderEngine\Camera.cpp" />
     <ClCompile Include="src\RenderEngine\Mesh.cpp" />
     <ClCompile Include="src\RenderEngine\Shader.cpp" />
+    <ClCompile Include="src\RenderEngine\Skybox.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="shaders\shader.frag" />
