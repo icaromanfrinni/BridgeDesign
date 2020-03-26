@@ -5,7 +5,7 @@
 #include "Bridge.h"
 #include "HalfEdge.h"
 #include "Alignment.h"
-#include "Coord_System.h"
+//#include "Coord_System.h"
 #include "Line.h"
 #include "CircularArc.h"
 
@@ -35,7 +35,8 @@ public:
 	//DEFAULT CONSTRUCTOR
 	BoxGirder();
 	//OVERLOAD CONSTRUCTOR
-	BoxGirder(const Alignment &roadway, const CRAB::Station &_start, const CRAB::Station& _end);
+	//BoxGirder(const Alignment &roadway, const CRAB::Vector4Df& _start, const CRAB::Vector4Df& _end);
+	BoxGirder(const Alignment& roadway);
 
 	//DESTRUCTOR
 	~BoxGirder();

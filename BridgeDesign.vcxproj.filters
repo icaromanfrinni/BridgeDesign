@@ -63,9 +63,6 @@
     <ClInclude Include="src\DataStructures\Alignment.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\DataStructures\Coord_System.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="src\DataStructures\Model.h">
       <Filter>Header Files</Filter>
     </ClInclude>

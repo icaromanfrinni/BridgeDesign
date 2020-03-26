@@ -167,7 +167,6 @@
     <ClInclude Include="src\DataStructures\Bridges\BoxGirder.h" />
     <ClInclude Include="src\DataStructures\Bridges\Bridge.h" />
     <ClInclude Include="src\DataStructures\Comp_Geometry.h" />
-    <ClInclude Include="src\DataStructures\Coord_System.h" />
     <ClInclude Include="src\DataStructures\EulerOp.h" />
     <ClInclude Include="src\DataStructures\HalfEdge.h" />
     <ClInclude Include="src\DataStructures\Linear_Algebra.h" />

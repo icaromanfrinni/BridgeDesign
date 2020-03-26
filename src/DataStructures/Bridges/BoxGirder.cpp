@@ -7,7 +7,7 @@ BoxGirder::BoxGirder()
 }
 
 // OVERLOAD CONSTRUCTOR
-BoxGirder::BoxGirder(const Alignment &roadway, const CRAB::Station& _start, const CRAB::Station& _end)
+BoxGirder::BoxGirder(const Alignment &roadway)
 {
 	span = 35.0f;
 

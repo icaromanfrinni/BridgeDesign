@@ -176,9 +176,8 @@ namespace CRAB
 
 
         // load models (bridges)
-        // ------------------------
-        //models.push_back(Model("Rio_Pacoti", new BoxGirder(alignments.back(), { 1, 10.0f }, { 7, 0.0f })));
-        models.push_back(Model("Rio_Pacoti", new BoxGirder(alignments.back(), { 1, 0.0f }, { 4, 0.0f })));
+        // ---------------------
+        models.push_back(Model("Rio_Pacoti", new BoxGirder(alignments.back())));
         for (int i = 0; i < models.back().getBridge()->getModel().size(); i++)
             ourMesh_List.push_back(Mesh(models.back().getBridge()->getModel()[i]));
 

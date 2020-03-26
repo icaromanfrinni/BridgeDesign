@@ -5,14 +5,12 @@ CircularArc::CircularArc()
 {
 }
 //OVERLOAD CONSTRUCTOR (from Station)
-CircularArc::CircularArc(const CRAB::Station& _s1, const CRAB::Station& _s2, const CRAB::Station& _s3) : s1(_s1), s2(_s2), s3(_s3)
-{
-}
+//CircularArc::CircularArc(const CRAB::Station& _s1, const CRAB::Station& _s2, const CRAB::Station& _s3) : s1(_s1), s2(_s2), s3(_s3)
+//{
+//}
 //OVERLOAD CONSTRUCTOR
-CircularArc::CircularArc(const CRAB::Vector4Df& _p1, const CRAB::Vector4Df& _p2, const CRAB::Vector4Df& _p3) : p1(_p1), p2(_p2), p3(_p3) {
-	s1.setStation(_p1);
-	s2.setStation(_p2);
-	s3.setStation(_p3);
+CircularArc::CircularArc(const CRAB::Vector4Df& _p1, const CRAB::Vector4Df& _p2, const CRAB::Vector4Df& _p3) : p1(_p1), p2(_p2), p3(_p3)
+{
 }
 
 // DESTRUCTOR
@@ -21,45 +19,45 @@ CircularArc::~CircularArc()
 }
 
 //ALLOCATION (from Station)
-void CircularArc::setStartStation(const CRAB::Station& s) {
-	s1 = s;
-}
-void CircularArc::setMidStation(const CRAB::Station& s) {
-	s2 = s;
-}
-void CircularArc::setEndStation(const CRAB::Station& s) {
-	s3 = s;
-}
+//void CircularArc::setStartStation(const CRAB::Station& s) {
+//	s1 = s;
+//}
+//void CircularArc::setMidStation(const CRAB::Station& s) {
+//	s2 = s;
+//}
+//void CircularArc::setEndStation(const CRAB::Station& s) {
+//	s3 = s;
+//}
 //ALLOCATION (from CRAB::Vector4Df)
 void CircularArc::setStartStation(const CRAB::Vector4Df& p) {
-	s1.setStation(p);
+	p1 = p;
 }
 void CircularArc::setMidStation(const CRAB::Vector4Df& p) {
-	s2.setStation(p);
+	p2 = p;
 }
 void CircularArc::setEndStation(const CRAB::Vector4Df& p) {
-	s3.setStation(p);
+	p3 = p;
 }
 
 //RETURN START STATION
-CRAB::Station CircularArc::getStartStation() const {
-	return s1;
-}
+//CRAB::Station CircularArc::getStartStation() const {
+//	return s1;
+//}
 //RETURN END STATION
-CRAB::Station CircularArc::getEndStation() const {
-	return s3;
-}
+//CRAB::Station CircularArc::getEndStation() const {
+//	return s3;
+//}
 //RETURN THE START POINT
 CRAB::Vector4Df CircularArc::getStartPoint() const {
-	return s1.getPoint();
+	return p1;
 }
 //RETURN THE MIDDLE POINT
 CRAB::Vector4Df CircularArc::getMidPoint() const {
-	return s2.getPoint();
+	return p2;
 }
 //RETURN THE END POINT
 CRAB::Vector4Df CircularArc::getEndPoint() const {
-	return s3.getPoint();
+	return p3;
 }
 //RETURN POSITION COORD
 CRAB::Vector4Df CircularArc::getPosition(const float& t) const
