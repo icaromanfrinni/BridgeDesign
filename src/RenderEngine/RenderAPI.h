@@ -32,9 +32,6 @@ namespace CRAB
     void scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
     void processInput(GLFWwindow* window);
 
-    // skybox
-    //unsigned int loadCubemap(std::vector<std::string> faces);
-
     // settings
     const unsigned int SCR_WIDTH = 800;
     const unsigned int SCR_HEIGHT = 600;
@@ -74,8 +71,6 @@ namespace CRAB
 
     // List of Meshes
     std::vector<Mesh> ourMesh_List;
-    // Skybox
-    //Skybox skybox;
 
     int main()
     {
@@ -126,13 +121,21 @@ namespace CRAB
         
         // load SKYBOX textures
         // --------------------
+        //std::vector<std::string> faces = {
+        //    "skybox/right.jpg",        // right
+        //    "skybox/left.jpg",        // left
+        //    "skybox/top.jpg",        // top
+        //    "skybox/bottom.jpg",        // bottom
+        //    "skybox/front.jpg",        // front
+        //    "skybox/back.jpg"         // back
+        //};
         std::vector<std::string> faces = {
-            "skybox/dust/dust_ft.jpg",        // right
-            "skybox/dust/dust_bk.jpg",        // left
-            "skybox/dust/dust_up.jpg",        // top
-            "skybox/dust/dust_dn.jpg",        // bottom
-            "skybox/dust/dust_rt.jpg",        // front
-            "skybox/dust/dust_lf.jpg"         // back
+           "skybox/color/side.jpg",        // right
+           "skybox/color/side.jpg",        // left
+           "skybox/color/top.jpg",        // top
+           "skybox/color/bottom.jpg",        // bottom
+           "skybox/color/side.jpg",        // front
+           "skybox/color/side.jpg"         // back
         };
         Skybox skybox(faces);
 
@@ -156,14 +159,17 @@ namespace CRAB
 
         alignments.push_back(Alignment("Rodovia_001", roads[3]));
 
+        // EXEMPLO RETO (200 metros)
+        alignments.back().AddSegment(new Line(CRAB::Vector4Df{ 0.0f, 0.0f, 0.0f, 1.0f }, CRAB::Vector4Df{ 200.0f, 0.0f, 0.0f, 1.0f }));
+        
         // EXEMPLO LONGO
         /*alignments.back().AddSegment(new Line(CRAB::Station{ 0, 0.0f, 8.663f }, CRAB::Station{ 2, 0.0f, 11.269f }));
         alignments.back().AddSegment(new CircularArc(CRAB::Station{ 2, 0.0f, 11.269f }, CRAB::Station{ 4, 5.0f, 14.200f }, CRAB::Station{ 6, 10.0f, 11.266f }));
         alignments.back().AddSegment(new Line(CRAB::Station{ 6, 10.0f, 11.266f }, CRAB::Station{ 8, 0.0f, 9.310f }));*/
 
         // EXEMPLO CURVA HORIZONTAL
-        alignments.back().AddSegment(new Line(CRAB::Vector4Df{ 0.0f, 0.0f, 0.0f, 1.0f }, CRAB::Vector4Df{ 20.0f, 0.0f, 0.0f, 1.0f }));
-        alignments.back().AddSegment(new CircularArc(CRAB::Vector4Df{ 20.0f, 0.0f, 0.0f, 1.0f }, CRAB::Vector4Df{ 70.0f, 0.0f, 0.0f, 1.0f }, CRAB::Vector4Df{ 110.0f, 0.0f, 30.0f, 1.0f }));
+        /*alignments.back().AddSegment(new Line(CRAB::Vector4Df{ 0.0f, 0.0f, 0.0f, 1.0f }, CRAB::Vector4Df{ 20.0f, 0.0f, 0.0f, 1.0f }));
+        alignments.back().AddSegment(new CircularArc(CRAB::Vector4Df{ 20.0f, 0.0f, 0.0f, 1.0f }, CRAB::Vector4Df{ 70.0f, 0.0f, 0.0f, 1.0f }, CRAB::Vector4Df{ 110.0f, 0.0f, 30.0f, 1.0f }));*/
 
         // EXEMPLO CURVA 3D
         //alignments.back().AddSegment(new CircularArc(CRAB::Vector4Df{ 0.0f, 0.0f, 0.0f, 1.0f }, CRAB::Vector4Df{ 50.0f, 10.0f, 0.0f, 1.0f }, CRAB::Vector4Df{ 100.0f, 0.0f, 50.0f, 1.0f }));
@@ -366,43 +372,4 @@ namespace CRAB
     {
         camera.ProcessMouseScroll(yoffset);
     }
-
-    // loads a cubemap texture from 6 individual texture faces
-    // order:
-    // +X (right)
-    // -X (left)
-    // +Y (top)
-    // -Y (bottom)
-    // +Z (front) 
-    // -Z (back)
-    // -------------------------------------------------------
-    /*unsigned int loadCubemap(std::vector<std::string> faces)
-    {
-        unsigned int textureID;
-        glGenTextures(1, &textureID);
-        glBindTexture(GL_TEXTURE_CUBE_MAP, textureID);
-
-        int width, height, nrChannels;
-        for (unsigned int i = 0; i < faces.size(); i++)
-        {
-            unsigned char* data = stbi_load(faces[i].c_str(), &width, &height, &nrChannels, 0);
-            if (data)
-            {
-                glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
-                stbi_image_free(data);
-            }
-            else
-            {
-                std::cout << "Cubemap texture failed to load at path: " << faces[i] << std::endl;
-                stbi_image_free(data);
-            }
-        }
-        glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-        glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-        glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-        glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-        glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
-
-        return textureID;
-    }*/
 }

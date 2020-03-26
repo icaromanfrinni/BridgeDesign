@@ -1,9 +1,10 @@
 #include "Camera.h"
 
 // default Constructor
-Camera::Camera() : View(glm::vec3(0.0f, 0.0f, 0.0f)), MovementSpeed(SPEED), MouseSensitivity(SENSITIVITY), FieldOfView(FOV)
+Camera::Camera() : MovementSpeed(SPEED), MouseSensitivity(SENSITIVITY), FieldOfView(FOV)
 {
     Position = glm::vec3(0.0f, 0.0f, 25.0f);
+    View = glm::vec3(0.0f, 0.0f, 0.0f);
     LookAt = glm::normalize(View - Position);
     WorldUp = glm::vec3(0.0f, 1.0f, 0.0f);
     Yaw = YAW;

@@ -32,9 +32,9 @@ Mesh::Mesh(const obj& object)
 // constructor (from HalfEdge struct)
 Mesh::Mesh(const HED::solid* solid)
 {
-    material.hasTexture = true;
+    //material.hasTexture = true;
 
-    if (solid->name == "TOP_LAYER")
+    /*if (solid->name == "TOP_LAYER")
     {
         material.textures.push_back(new Texture("textures/pavement_diffuse.jpg", "diffuse"));
         material.textures.push_back(new Texture("textures/pavement_roughness.jpg", "specular"));
@@ -45,35 +45,10 @@ Mesh::Mesh(const HED::solid* solid)
         material.textures.push_back(new Texture("textures/concrete_diffuse.png", "diffuse"));
         material.textures.push_back(new Texture("textures/concrete_specular.jpg", "specular"));
         material.textures.push_back(new Texture("textures/concrete_normal.jpg", "normal"));
-    }
+    }*/
         
     for (int i = 0; i < solid->faces.size(); i++)
     {
-        //// check if current face is a triangle
-        //if (solid->faces[i]->hEdge->next->next != solid->faces[i]->hEdge->prev) continue;
-
-        //Mesh::Vertex vertex;
-        //HED::halfEdge* he = solid->faces[i]->hEdge;
-
-        //// Position
-        //vertex.Position = glm::vec3(he->vStart->point.x, he->vStart->point.y, he->vStart->point.z);
-        //// Normal
-        //CRAB::Vector4Df P1P2 = he->next->vStart->point - he->vStart->point;
-        //CRAB::Vector4Df P1P3 = he->next->next->vStart->point - he->vStart->point;
-        //CRAB::Vector4Df vertex_normal = CRAB::cross(P1P2, P1P3).to_unitary();
-        //vertex.Normal = glm::vec3(vertex_normal.x, vertex_normal.y, vertex_normal.z);
-
-        //vertices.push_back(vertex);
-
-        //for (he = solid->faces[i]->hEdge->next; he != solid->faces[i]->hEdge; he = he->next)
-        //{
-        //    if (he->next == he->opp) break;
-        //    // Position
-        //    vertex.Position = glm::vec3(he->vStart->point.x, he->vStart->point.y, he->vStart->point.z);
-
-        //    vertices.push_back(vertex);
-        //}
-
         // Initialize Polygon
         CRAB::Polygon p;
         HED::halfEdge* he = solid->faces[i]->hEdge;
