@@ -3,7 +3,6 @@
 #define BOXGIRDER_H
 
 #include "Bridge.h"
-#include "HalfEdge.h"
 #include "Alignment.h"
 //#include "Coord_System.h"
 #include "Line.h"
