@@ -131,6 +131,14 @@ void Shader::setMat4(const std::string& name, const glm::mat4& mat) const
 	glUniformMatrix4fv(glGetUniformLocation(ID, name.c_str()), 1, GL_FALSE, &mat[0][0]);
 }
 
+// ------------------------------------------------------------------------
+void Shader::setDirLight(const DirectionalLight& dLight) const
+{
+	GLint uniformIntensity = glGetUniformLocation(ID, "dLight.intensity");
+	GLint uniformDirection = glGetUniformLocation(ID, "dLight.direction");
+	dLight.UseLight(uniformIntensity, uniformDirection);
+}
+
 // utility function for checking shader compilation/linking errors.
 // ------------------------------------------------------------------------
 void Shader::checkCompileErrors(GLuint shader, std::string type)

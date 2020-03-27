@@ -15,6 +15,7 @@
 
 #include "Shader.h"
 #include "Camera.h"
+#include "DirectionalLight.h"
 #include "Mesh.h"
 #include "ObjFile.h"
 #include "Skybox.h"
@@ -50,7 +51,7 @@ namespace CRAB
     float lastFrame = 0.0f;
 
     // lighting
-    glm::vec3 lightDir(-1.0f, -1.0f, -1.0f);
+    DirectionalLight mainLight({ 1.0f, 1.0f, 1.0f }, { -1.0f, -1.0f, -1.0f });
 
     // mouse event handlers
     int TheKeyState = GLFW_KEY_LEFT_CONTROL;
@@ -210,17 +211,12 @@ namespace CRAB
 
             // be sure to activate shader when setting uniforms/drawing objects
             ourShader.use();
-            //ourShader.setVec3("pLight.position", lightPos);
-            ourShader.setVec3("dLight.direction", lightDir);
             ourShader.setVec3("viewPos", camera.Position);
 
             // light properties
             // ----------------
             // directional light
-            ourShader.setVec3("dLight.direction", lightDir);
-            ourShader.setVec3("dLight.ambient", 1.0f, 1.0f, 1.0f);
-            ourShader.setVec3("dLight.diffuse", 1.0f, 1.0f, 1.0f);
-            ourShader.setVec3("dLight.specular", 1.0f, 1.0f, 1.0f);
+            ourShader.setDirLight(mainLight);
 
             // view/projection transformations
             glm::mat4 view = camera.GetViewMatrix();
