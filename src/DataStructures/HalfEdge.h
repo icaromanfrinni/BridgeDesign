@@ -202,7 +202,7 @@ namespace HED
 
 	//	/*-------------------* HEADER *-------------------*/
 
-	//	outFile << "# ICARO 2019 Half-Edge Structure File" << std::endl;
+	//	outFile << "# ICARO 2020 Half-Edge Structure File" << std::endl;
 	//	outFile << "# icaro@lia.ufc.br" << std::endl;
 
 	//	/*------------------* OBJECTS *-------------------*/
@@ -256,56 +256,59 @@ namespace HED
 	//	}
 	//}
 
-	////WRITE .OBJ FILE
-	//void WriteObjFile(const std::vector<solid *> &he_List)
-	//{
-	//	std::cout << "Enter file name (*.obj): " << std::endl;
-	//	std::string outName;
-	//	std::cin >> outName;
-	//	outName += ".obj";
+	//WRITE .OBJ FILE
+	inline void WriteObjFile(const std::vector<solid *> he_List)
+	{
+		std::cout << "Enter file name (*.obj): " << std::endl;
+		std::string outName;
+		std::cin >> outName;
+		outName += ".obj";
 
-	//	std::ofstream outFile(outName);
-	//	if (!outFile.is_open())
-	//	{
-	//		std::cerr << "\n\t!!! FILE COULD NOT BE OPENED !!!\n" << std::endl;
-	//		system("pause");
-	//		exit(EXIT_FAILURE);
-	//	}
+		std::ofstream outFile(outName);
+		if (!outFile.is_open())
+		{
+			std::cerr << "\n\t!!! FILE COULD NOT BE OPENED !!!\n" << std::endl;
+			system("pause");
+			exit(EXIT_FAILURE);
+		}
 
-	//	/*-------------------* HEADER *-------------------*/
+		/*-------------------* HEADER *-------------------*/
 
-	//	outFile << "# ICARO 2019 OBJ File" << std::endl;
-	//	outFile << "# icaro@lia.ufc.br" << std::endl;
+		outFile << "# ICARO 2020 OBJ File" << std::endl;
+		outFile << "# icaro@lia.ufc.br" << std::endl;
 
-	//	/*------------------* OBJECTS *-------------------*/
+		/*------------------* OBJECTS *-------------------*/
 
-	//	int vCount = 0;
-	//	for (int i = 0; i < he_List.size(); i++)
-	//	{
-	//		//group name (o)
-	//		outFile << "o " << he_List[i]->name << std::endl;
+		int vCount = 0;
+		for (int i = 0; i < he_List.size(); i++)
+		{
+			std::cout << "\n\tWriting Object ...: " << he_List[i]->name << std::endl;
 
-	//		//geometric vertices (v)
-	//		for (int j = 0; j < he_List[i]->vertices.size(); j++)
-	//			outFile << "v " << he_List[i]->vertices[j]->point.x << " " << he_List[i]->vertices[j]->point.y << " " << he_List[i]->vertices[j]->point.z << std::endl;
-	//		outFile << "# " << he_List[i]->vertices.size() << " vertices" << std::endl;
+			//group name (o)
+			outFile << "o " << he_List[i]->name << std::endl;
 
-	//		//face vertices (f)
-	//		for (int j = 0; j < he_List[i]->faces.size(); j++)
-	//		{
-	//			HED::halfEdge* he = he_List[i]->faces[j]->hEdge;
-	//			outFile << "f " << he->vStart->id + 1;
-	//			for (he = he_List[i]->faces[j]->hEdge->next; he != he_List[i]->faces[j]->hEdge; he = he->next)
-	//				outFile << " " << he->vStart->id + 1;
-	//			outFile << std::endl;
-	//		}
-	//		outFile << "# " << he_List[i]->faces.size() << " faces" << std::endl;
+			//geometric vertices (v)
+			for (int j = 0; j < he_List[i]->vertices.size(); j++)
+				outFile << "v " << he_List[i]->vertices[j]->point.x << " " << he_List[i]->vertices[j]->point.y << " " << he_List[i]->vertices[j]->point.z << std::endl;
+			outFile << "# " << he_List[i]->vertices.size() << " vertices" << std::endl;
 
-	//		/*--------------------* END *--------------------*/
+			//face vertices (f)
+			for (int j = 0; j < he_List[i]->faces.size(); j++)
+			{
+				HED::halfEdge* he = he_List[i]->faces[j]->hEdge;
+				outFile << "f " << he->vStart->id + 1 + vCount;
+				for (he = he_List[i]->faces[j]->hEdge->next; he != he_List[i]->faces[j]->hEdge; he = he->next)
+					outFile << " " << he->vStart->id + 1 + vCount;
+				outFile << std::endl;
+			}
+			outFile << "# " << he_List[i]->faces.size() << " faces" << std::endl;
 
-	//		outFile.close();
+			vCount += he_List[i]->vertices.size();
+		}
 
-	//		std::cout << "\n\tFile [" << outName << "] has been created successfully!" << std::endl;
-	//	}
-	//}
+		/*--------------------* END *--------------------*/
+
+		outFile.close();
+		std::cout << "\n\tFile [" << outName << "] has been created successfully!" << std::endl;
+	}
 }

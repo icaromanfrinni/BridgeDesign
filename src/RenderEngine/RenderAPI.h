@@ -276,8 +276,8 @@ namespace CRAB
 
         if (glfwGetKey(window, GLFW_KEY_E) == GLFW_PRESS)
         {
-            /*for (int i = 0; i < solids.size(); i++)
-                solids[i]->WriteHalfEdgeFile();*/
+            for (int i = 0; i < models.size(); i++)
+                HED::WriteObjFile(models[i].getBridge()->getModel());
         }
         if (glfwGetKey(window, GLFW_KEY_N) == GLFW_PRESS)
         {

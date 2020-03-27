@@ -145,51 +145,51 @@ bool ObjFile::ReadObjFile(const std::string& inName)
 }
 
 //WRITE .OBJ FILE
-void ObjFile::WriteObjFile()
-{
-	//string outName = fName + "Out.obj";
-	//ofstream outFile(outName);
-	//if (!outFile.is_open())
-	//{
-	//	cerr << "\n\t!!! FILE COULD NOT BE OPENED !!!\n" << endl;
-	//	system("pause");
-	//	exit(EXIT_FAILURE);
-	//}
-
-	///*-------------------* HEADER *-------------------*/
-
-	//outFile << "# ICARO 2019 OBJ File" << endl;
-	//outFile << "# icaro@lia.ufc.br" << endl;
-
-	///*------------------* OBJECTS *-------------------*/
-
-	//int vCount = 0;
-	//for (int i = 0; i < vObj.size(); i++)
-	//{
-	//	//group name (o)
-	//	outFile << "o " << vObj[i].Name << endl;
-
-	//	//geometric vertices (v)
-	//	for (int j = 0; j < vObj[i].Vertices.size(); j++)
-	//		outFile << "v " << vObj[i].Vertices[j].x << " " << vObj[i].Vertices[j].y << " " << "0.00" << endl;
-	//	outFile << "# " << vObj[i].Vertices.size() << " vertices" << endl;
-
-	//	//geometric lines (l)
-	//	for (int j = 0; j < vObj[i].Lines.size(); j++)
-	//		outFile << "l " << vObj[i].Lines[j].vFrom << " " << vObj[i].Lines[j].vTo << endl;
-	//	outFile << "# " << vObj[i].Lines.size() << " lines" << endl;
-
-	//	//face vertices (f)
-	//	outFile << "f";
-	//	for (int j = 0; j < vObj[i].Face.size(); j++)
-	//		outFile << " " << vObj[i].Face[j];
-	//	outFile << endl;
-	//}
-
-	///*--------------------* END *--------------------*/
-
-	//outFile.close();
-
-	//cout << "\n\tFile [" << outName << "] has been created successfully!" << endl;
-}
+//void ObjFile::WriteObjFile(const std::string& name)
+//{
+//	std::string outName = name + "Out.obj";
+//	std::ofstream outFile(outName);
+//	if (!outFile.is_open())
+//	{
+//		std::cerr << "\n\t!!! FILE COULD NOT BE OPENED !!!\n" << std::endl;
+//		system("pause");
+//		exit(EXIT_FAILURE);
+//	}
+//
+//	/*-------------------* HEADER *-------------------*/
+//
+//	outFile << "# ICARO 2020 OBJ File" << std::endl;
+//	outFile << "# icaro@lia.ufc.br" << std::endl;
+//
+//	/*------------------* OBJECTS *-------------------*/
+//
+//	int vCount = 0;
+//	for (int i = 0; i < objectList.size(); i++)
+//	{
+//		//group name (o)
+//		outFile << "o " << objectList[i].Name << std::endl;
+//
+//		//geometric vertices (v)
+//		for (int j = 0; j < objectList[i].Vertices.size(); j++)
+//			outFile << "v " << objectList[i].Vertices[j].x << " " << objectList[i].Vertices[j].y << " " << "0.00" << std::endl;
+//		outFile << "# " << objectList[i].Vertices.size() << " vertices" << std::endl;
+//
+//		//geometric lines (l)
+//		for (int j = 0; j < objectList[i].Lines.size(); j++)
+//			outFile << "l " << objectList[i].Lines[j].vStart << " " << objectList[i].Lines[j].vEnd << std::endl;
+//		outFile << "# " << objectList[i].Lines.size() << " lines" << std::endl;
+//
+//		//face vertices (f)
+//		outFile << "f";
+//		for (int j = 0; j < objectList[i].Faces.size(); j++)
+//			outFile << " " << objectList[i].Faces[j];
+//		outFile << std::endl;
+//	}
+//
+//	/*--------------------* END *--------------------*/
+//
+//	outFile.close();
+//
+//	cout << "\n\tFile [" << outName << "] has been created successfully!" << endl;
+//}
 

@@ -50,7 +50,7 @@ public:
 	//READ .OBJ FILE
 	bool ReadObjFile(const std::string& inName);
 	//WRITE .OBJ FILE
-	void WriteObjFile();
+	//void WriteObjFile(const std::string& name);
 };
 
 #endif // OBJFILE_H
