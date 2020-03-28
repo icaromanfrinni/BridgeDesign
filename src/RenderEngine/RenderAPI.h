@@ -20,10 +20,8 @@
 #include "ObjFile.h"
 #include "Skybox.h"
 
-#include "Alignment.h"
 #include "Line.h"
 #include "CircularArc.h"
-#include "Model.h"
 #include "BoxGirder.h"
 
 namespace CRAB
@@ -61,12 +59,10 @@ namespace CRAB
 
     /* ================== BRIDGE DESIGN ================== */
 
-    //List of Bridge Models
-    std::vector<Model> models;
-    //List of Alignments
-    std::vector<Alignment> alignments;
-    //List of Roads
-    std::vector<Road*> roads;
+    //List of Bridge models
+    std::vector<Bridge*> bridges;
+    //List of Roadways
+    std::vector<Road*> roadways;
 
     /* ====================== END ====================== */
 
@@ -150,39 +146,15 @@ namespace CRAB
         //std::vector<Mesh> ourMesh_List;
         //ourMesh_List = CRAB::LoadOBJ("objects/cubes.obj");
 
-        //fill the road list
-        roads.push_back(new Road("ROAD", 12.80f, 80.0f));
-        /*roads.push_back(new Road("Classe 0", 11.90f));
-        roads.push_back(new Road("Classe I-A", 11.60f));
-        roads.push_back(new Road("Classe I-B", 12.80f));
-        roads.push_back(new Road("Classe II", 12.80f));
-        roads.push_back(new Road("Classe III", 10.80f));
-        roads.push_back(new Road("Classe IV", 9.80f));*/
-
-        alignments.push_back(Alignment("Rodovia_001", roads.back()));
-
-        // EXEMPLO RETO (200 metros)
-        alignments.back().AddSegment(new Line(CRAB::Vector4Df{ 0.0f, 0.0f, 0.0f, 1.0f }, CRAB::Vector4Df{ 200.0f, 0.0f, 0.0f, 1.0f }));
-        
-        // EXEMPLO LONGO
-        /*alignments.back().AddSegment(new Line(CRAB::Station{ 0, 0.0f, 8.663f }, CRAB::Station{ 2, 0.0f, 11.269f }));
-        alignments.back().AddSegment(new CircularArc(CRAB::Station{ 2, 0.0f, 11.269f }, CRAB::Station{ 4, 5.0f, 14.200f }, CRAB::Station{ 6, 10.0f, 11.266f }));
-        alignments.back().AddSegment(new Line(CRAB::Station{ 6, 10.0f, 11.266f }, CRAB::Station{ 8, 0.0f, 9.310f }));*/
-
-        // EXEMPLO CURVA HORIZONTAL
-        /*alignments.back().AddSegment(new Line(CRAB::Vector4Df{ 0.0f, 0.0f, 0.0f, 1.0f }, CRAB::Vector4Df{ 20.0f, 0.0f, 0.0f, 1.0f }));
-        alignments.back().AddSegment(new CircularArc(CRAB::Vector4Df{ 20.0f, 0.0f, 0.0f, 1.0f }, CRAB::Vector4Df{ 70.0f, 0.0f, 0.0f, 1.0f }, CRAB::Vector4Df{ 110.0f, 0.0f, 30.0f, 1.0f }));*/
-
-        // EXEMPLO CURVA 3D
-        //alignments.back().AddSegment(new CircularArc(CRAB::Vector4Df{ 0.0f, 0.0f, 0.0f, 1.0f }, CRAB::Vector4Df{ 50.0f, 10.0f, 0.0f, 1.0f }, CRAB::Vector4Df{ 100.0f, 0.0f, 50.0f, 1.0f }));
-
-
         // load models (bridges)
         // ---------------------
-        models.push_back(Model("Rio_Pacoti", new BoxGirder(alignments.back(), 0.5f, 6.0f, 100.0f)));
+        roadways.push_back(new Road("Rodovia_001", 12.80f, 80.0f));
+        roadways.back()->AddSegment(new Line(CRAB::Vector4Df{ 0.0f, 0.0f, 0.0f, 1.0f }, CRAB::Vector4Df{ 200.0f, 0.0f, 0.0f, 1.0f }));
+        bridges.push_back(new BoxGirder("Rio_Pacoti", roadways.back(), 0.5f, 6.0f, 100.0f));
 
-        for (int i = 0; i < models.back().getBridge()->getModel().size(); i++)
-            ourMesh_List.push_back(Mesh(models.back().getBridge()->getModel()[i]));
+        for (int i = 0; i < bridges.size(); i++)
+            for (int j = 0; j < bridges[i]->model.size(); j++)
+                ourMesh_List.push_back(Mesh(bridges[i]->model[j]));
 
         // draw in wireframe
         //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
@@ -278,8 +250,8 @@ namespace CRAB
 
         if (glfwGetKey(window, GLFW_KEY_E) == GLFW_PRESS)
         {
-            for (int i = 0; i < models.size(); i++)
-                HED::WriteObjFile(models[i].getBridge()->getModel());
+            for (int i = 0; i < bridges.size(); i++)
+                HED::WriteObjFile(bridges[i]->model);
         }
         if (glfwGetKey(window, GLFW_KEY_N) == GLFW_PRESS)
         {

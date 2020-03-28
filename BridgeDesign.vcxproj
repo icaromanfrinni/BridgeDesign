@@ -163,7 +163,6 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="src\DataIO\ObjFile.h" />
-    <ClInclude Include="src\DataStructures\Alignment.h" />
     <ClInclude Include="src\DataStructures\Bridges\BoxGirder.h" />
     <ClInclude Include="src\DataStructures\Bridges\Bridge.h" />
     <ClInclude Include="src\DataStructures\Comp_Geometry.h" />
@@ -187,7 +186,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\DataIO\ObjFile.cpp" />
-    <ClCompile Include="src\DataStructures\Alignment.cpp" />
     <ClCompile Include="src\DataStructures\Bridges\BoxGirder.cpp" />
     <ClCompile Include="src\DataStructures\Bridges\Bridge.cpp" />
     <ClCompile Include="src\DataStructures\Light\DirectionalLight.cpp" />
