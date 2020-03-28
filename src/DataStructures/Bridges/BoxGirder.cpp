@@ -8,17 +8,9 @@ BoxGirder::BoxGirder()
 
 // OVERLOAD CONSTRUCTOR
 BoxGirder::BoxGirder(const std::string& _name, Road* _road, const float& _cross_station, const float& _vertical_clearance, const float& _horizontal_clearance)
+	: Bridge(_name, _road, _cross_station, _vertical_clearance, _horizontal_clearance)
 {
-	this->name = _name;
-	this->road = _road;
-	this->cross_station = _cross_station;
-	this->vertical_clearance = _vertical_clearance;
-	this->horizontal_clearance = _horizontal_clearance;
-
-	// Bridge Attributes
-	span = 35.0f;
-	B = this->road->width;
-	H = int((100.0f * span / 16.0f) / 5.0f) * 0.05f;
+	// Box-Girder Bridge Attributes
 	Lb = int((100.0f * B / 4.3f) / 5.0f) * 0.05f;
 	h = int((100.0f * Lb / 10.0f) / 5.0f) * 0.05f;
 	bw = int((100.0f * H / 5.0f) / 5.0f) * 0.05f;
@@ -73,30 +65,6 @@ BoxGirder::BoxGirder(const std::string& _name, Road* _road, const float& _cross_
 	//	//TODO: início e fim da ponte dentro do segmento corrente
 	//}
 
-	// Ponte construída em toda a extensão da rodovia
-	//alignment = roadway.segments;
-
-	// Cálculo da Concordância Vertical
-	// --------------------------------
-	
-	float A;			// Algebraic difference in grades
-
-	if (this->road->S < this->horizontal_clearance)
-	{
-		A = this->horizontal_clearance * 100 * (powf(sqrtf(2 * h1) + sqrtf(2 * h2), 2.0f)) / powf(this->road->S, 2.0f);
-	}
-	else
-	{
-		A = (200 * powf(sqrtf(h1) + sqrtf(h2), 2.0f)) / (2.0f * this->road->S - this->horizontal_clearance);
-	}
-
-	CRAB::Vector4Df PCV, PIV, PTV;
-	PCV = { 0.0f, this->vertical_clearance, 0.0f, 1.0f };
-	PIV = { this->horizontal_clearance / 2.0f, this->vertical_clearance + (this->horizontal_clearance / 2.0f) * (A / 200), 0.0f, 1.0f };
-	PTV = { this->horizontal_clearance, this->vertical_clearance, 0.0f, 1.0f };
-	
-	this->alignment.push_back(new CircularArc(PCV, PIV, PTV));
-
 	// Model
 	update();
 }
@@ -109,7 +77,7 @@ BoxGirder::~BoxGirder()
 // ALLOCATION
 void BoxGirder::setSpan(const float& _span)
 {
-	span = _span;
+	mainSpan = _span;
 }
 void BoxGirder::setWidth(const float& _B)
 {
@@ -139,7 +107,7 @@ float BoxGirder::getWidth() const
 }
 float BoxGirder::getSpan() const
 {
-	return span;
+	return mainSpan;
 }
 float BoxGirder::getHeight() const
 {
@@ -173,7 +141,7 @@ float BoxGirder::getTV() const
 // UPDATE AUTO SECTION DATA
 void BoxGirder::updateAutoSection()
 {
-	H = int((100.0f * span / 16.0f) / 5.0f) * 0.05f;
+	H = int((100.0f * mainSpan / 16.0f) / 5.0f) * 0.05f;
 	Lb = int((100.0f * B / 4.3f) / 5.0f) * 0.05f;
 	h = int((100.0f * Lb / 10.0f) / 5.0f) * 0.05f;
 	bw = int((100.0f * H / 5.0f) / 5.0f) * 0.05f;

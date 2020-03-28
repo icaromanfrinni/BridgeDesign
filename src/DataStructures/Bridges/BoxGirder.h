@@ -10,16 +10,13 @@
 class BoxGirder : public Bridge
 {
 public:
-	// Bridge Attributes
-	float B;    // Width
-	float H;    // Height
+	// Box-Girder Bridge Attributes
 	float Lb;   // slab cantilever
 	float h;    // slab thickness
 	float bw;   // webs slab thickness
 	float b;    // bottom slab width
 	float th;   // horizontal haunch
 	float tv;   // vertical haunch
-	float span; // main span
 
 	//DEFAULT CONSTRUCTOR
 	BoxGirder();

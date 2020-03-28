@@ -6,7 +6,8 @@
 #include <string>
 
 #include "HalfEdge.h"
-#include "Segment.h"
+#include "Line.h"
+#include "CircularArc.h"
 #include "Road.h"
 
 // Default Vertical curves values
@@ -28,8 +29,15 @@ public:
 	std::vector<HED::solid*> model;
 	float cross_station, vertical_clearance, horizontal_clearance;
 
+	// Bridge attributes
+	float B;		// Width
+	float H;		// Height
+	float mainSpan; // Main span
+
 	// DEFAULT CONSTRUCTOR
 	Bridge();
+	// OVERLOAD CONSTRUCTOR
+	Bridge(const std::string& _name, Road* _road, const float& _cross_station, const float& _vertical_clearance, const float& _horizontal_clearance);
 	// DESTRUCTOR
 	virtual ~Bridge() = 0;
 
@@ -37,11 +45,6 @@ public:
 	// -----------------
 	virtual void update() = 0;
 	virtual void updateAutoSection() = 0;
-
-	// VERTICAL ALIGNMENT
-	// ------------------
-	std::vector<Segment*> CrestVerticalCurve();
-	std::vector<Segment*> SagVerticalCurve();
 
 	// ALLOCATION
 	// ----------

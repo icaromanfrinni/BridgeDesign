@@ -32,9 +32,9 @@ Mesh::Mesh(const obj& object)
 // constructor (from HalfEdge struct)
 Mesh::Mesh(const HED::solid* solid)
 {
-    //material.hasTexture = true;
+    material.hasTexture = true;
 
-    /*if (solid->name == "TOP_LAYER")
+    if (solid->name == "TOP_LAYER")
     {
         material.textures.push_back(new Texture("textures/pavement_diffuse.jpg", "diffuse"));
         material.textures.push_back(new Texture("textures/pavement_roughness.jpg", "specular"));
@@ -45,7 +45,7 @@ Mesh::Mesh(const HED::solid* solid)
         material.textures.push_back(new Texture("textures/concrete_diffuse.png", "diffuse"));
         material.textures.push_back(new Texture("textures/concrete_specular.jpg", "specular"));
         material.textures.push_back(new Texture("textures/concrete_normal.jpg", "normal"));
-    }*/
+    }
         
     for (int i = 0; i < solid->faces.size(); i++)
     {
