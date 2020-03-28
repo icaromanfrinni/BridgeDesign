@@ -20,6 +20,11 @@ class BoxGirder : public Bridge
 	std::vector<HED::solid*> model;
 
 public:
+	// Intersection
+	float CS;	// cross-station
+	float VC;	// vertical clearance
+	float HC;	// horizontal clearance
+
 	// Bridge Attributes
 	float B;    // Width
 	float H;    // Height
@@ -35,7 +40,7 @@ public:
 	BoxGirder();
 	//OVERLOAD CONSTRUCTOR
 	//BoxGirder(const Alignment &roadway, const CRAB::Vector4Df& _start, const CRAB::Vector4Df& _end);
-	BoxGirder(const Alignment& roadway);
+	BoxGirder(const Alignment& roadway, const float& _CS, const float& _VC, const float& _HC);
 
 	//DESTRUCTOR
 	~BoxGirder();

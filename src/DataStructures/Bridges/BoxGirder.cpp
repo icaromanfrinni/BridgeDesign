@@ -7,12 +7,11 @@ BoxGirder::BoxGirder()
 }
 
 // OVERLOAD CONSTRUCTOR
-BoxGirder::BoxGirder(const Alignment &roadway)
+BoxGirder::BoxGirder(const Alignment &roadway, const float& _CS, const float& _VC, const float& _HC) : CS(_CS), VC(_VC), HC(_HC)
 {
-	span = 35.0f;
-
 	// Bridge Attributes
-	B = roadway.getRoad()->B;
+	span = 35.0f;
+	B = roadway.getRoad()->W;
 	H = int((100.0f * span / 16.0f) / 5.0f) * 0.05f;
 	Lb = int((100.0f * B / 4.3f) / 5.0f) * 0.05f;
 	h = int((100.0f * Lb / 10.0f) / 5.0f) * 0.05f;
@@ -67,7 +66,32 @@ BoxGirder::BoxGirder(const Alignment &roadway)
 	//	}
 	//	//TODO: início e fim da ponte dentro do segmento corrente
 	//}
-	path = roadway.segments;
+
+	// Ponte construída em toda a extensão da rodovia
+	//path = roadway.segments;
+
+	// Cálculo da Concordância Vertical
+	// --------------------------------
+	
+	float h1 = 1.08;	// height of eye above roadway surface
+	float h2 = 0.60;	// height of object above roadway surface
+	float A;			// Algebraic difference in grades
+
+	if (roadway.getRoad()->S < this->HC)
+	{
+		A = this->HC * 100 * (powf(sqrtf(2 * h1) + sqrtf(2 * h2), 2.0f)) / powf(roadway.getRoad()->S, 2.0f);
+	}
+	else
+	{
+		A = (200 * powf(sqrtf(h1) + sqrtf(h2), 2.0f)) / (2.0f * roadway.getRoad()->S - this->HC);
+	}
+
+	CRAB::Vector4Df PCV, PIV, PTV;
+	PCV = { 0.0f, this->VC, 0.0f, 1.0f };
+	PIV = { this->HC / 2.0f, this->VC + (this->HC / 2.0f) * (A / 200), 0.0f, 1.0f };
+	PTV = { this->HC, this->VC, 0.0f, 1.0f };
+	
+	path.push_back(new CircularArc(PCV, PIV, PTV));
 
 	// Model
 	update();

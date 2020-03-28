@@ -151,14 +151,15 @@ namespace CRAB
         //ourMesh_List = CRAB::LoadOBJ("objects/cubes.obj");
 
         //fill the road list
-        roads.push_back(new Road("Classe 0", 11.90f));
+        roads.push_back(new Road("ROAD", 12.80f, 80.0f));
+        /*roads.push_back(new Road("Classe 0", 11.90f));
         roads.push_back(new Road("Classe I-A", 11.60f));
         roads.push_back(new Road("Classe I-B", 12.80f));
         roads.push_back(new Road("Classe II", 12.80f));
         roads.push_back(new Road("Classe III", 10.80f));
-        roads.push_back(new Road("Classe IV", 9.80f));
+        roads.push_back(new Road("Classe IV", 9.80f));*/
 
-        alignments.push_back(Alignment("Rodovia_001", roads[3]));
+        alignments.push_back(Alignment("Rodovia_001", roads.back()));
 
         // EXEMPLO RETO (200 metros)
         alignments.back().AddSegment(new Line(CRAB::Vector4Df{ 0.0f, 0.0f, 0.0f, 1.0f }, CRAB::Vector4Df{ 200.0f, 0.0f, 0.0f, 1.0f }));
@@ -178,7 +179,8 @@ namespace CRAB
 
         // load models (bridges)
         // ---------------------
-        models.push_back(Model("Rio_Pacoti", new BoxGirder(alignments.back())));
+        models.push_back(Model("Rio_Pacoti", new BoxGirder(alignments.back(), 0.5f, 6.0f, 100.0f)));
+
         for (int i = 0; i < models.back().getBridge()->getModel().size(); i++)
             ourMesh_List.push_back(Mesh(models.back().getBridge()->getModel()[i]));
 

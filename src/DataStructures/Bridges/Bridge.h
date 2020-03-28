@@ -10,22 +10,25 @@
 class Bridge
 {
 public:
-	//DEFAULT CONSTRUCTOR
+	// DEFAULT CONSTRUCTOR
 	Bridge();
-	//DESTRUCTOR
+	// DESTRUCTOR
 	virtual ~Bridge() = 0;
 
-	//MODEL CONSTRUCTOR
+	// MODEL CONSTRUCTOR
+	// -----------------
 	virtual void update() = 0;
 	virtual void updateAutoSection() = 0;
 
-	//ALLOCATION
+	// ALLOCATION
+	// ----------
 	virtual void setSpan(const float& _span) = 0;
 	virtual void setWidth(const float& _B) = 0;
 	virtual void setBw(const float& _bw) = 0;
 	virtual void setH(const float& _H) = 0;
 	
-	//return values
+	// RETURN
+	// ------
 	virtual std::vector<HED::solid*> getModel() const = 0;
 	virtual std::vector<Segment*> getPath() const = 0;
 	virtual float getWidth() const = 0;
