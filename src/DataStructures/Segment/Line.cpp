@@ -58,7 +58,7 @@ CRAB::Vector4Df Line::getMidPoint() const {
 	return (p1 + p2) / (p1.length() + p2.length());
 }
 //RETURN POSITION COORD
-CRAB::Vector4Df Line::getPosition(const float &t) const {
+CRAB::Vector4Df Line::getPoint(const float &t) const {
 	return p1 + (p2 - p1) * t;
 }
 //RETURN TANGENT VECTOR

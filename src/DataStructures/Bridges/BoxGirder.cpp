@@ -36,7 +36,7 @@ BoxGirder::BoxGirder(const std::string& _name, Road* _road, const float& _cross_
 	//			float x1 = _start.c_Meters() - roadway.segments[i]->getStartStation().c_Meters();
 	//			float x2 = roadway.segments[i]->getStartStation().getDistance(roadway.segments[i]->getEndStation());
 	//			float t = x1 / x2;
-	//			CRAB::Vector4Df start_point = roadway.segments[i]->getPosition(t);
+	//			CRAB::Vector4Df start_point = roadway.segments[i]->getPoint(t);
 	//			alignment.push_back(new Line(CRAB::Station{ start_point }, roadway.segments[i]->getEndStation()));
 	//		}
 	//		else if (className == "class CircularArc")
@@ -53,7 +53,7 @@ BoxGirder::BoxGirder(const std::string& _name, Road* _road, const float& _cross_
 	//			float x1 = _end.c_Meters() - roadway.segments[i]->getStartStation().c_Meters();
 	//			float x2 = roadway.segments[i]->getStartStation().getDistance(roadway.segments[i]->getEndStation());
 	//			float t = x1 / x2;
-	//			CRAB::Vector4Df end_point = roadway.segments[i]->getPosition(t);
+	//			CRAB::Vector4Df end_point = roadway.segments[i]->getPoint(t);
 	//			alignment.push_back(new Line(roadway.segments[i]->getStartStation(), CRAB::Station{ end_point }));
 	//		}
 	//		else if (className == "class CircularArc")
@@ -64,6 +64,28 @@ BoxGirder::BoxGirder(const std::string& _name, Road* _road, const float& _cross_
 	//	}
 	//	//TODO: início e fim da ponte dentro do segmento corrente
 	//}
+
+	// PIERS
+	// -----
+
+	float b_Pier = b;
+	float h_Pier = 0.4f * b_Pier;
+	float total_length = (this->alignment.back()->getEndPoint() - this->alignment.front()->getStartPoint()).length();
+	int nPiers = total_length / this->mainSpan;
+	float g = (this->vertical_clearance + this->H) / (total_length / 2.0f);
+	CRAB::Vector4Df CS = this->road->alignment.back()->getPoint(this->cross_station / this->road->alignment.back()->getLength());
+
+	CRAB::Vector4Df base = this->alignment.front()->getStartPoint() + road->alignment.back()->getTan(0) * mainSpan;
+	for (int i = 1; i < nPiers; i++)
+	{
+		Pier P;
+		P.b = b_Pier;
+		P.h = h_Pier;
+		P.base = base;
+		base += road->alignment.back()->getTan(0) * mainSpan;
+		P.L = (this->vertical_clearance + this->H) - (P.base - CS).length() * g;
+		piers.push_back(P);
+	}
 
 	// Model
 	update();
@@ -193,7 +215,7 @@ void BoxGirder::update()
 
 			// First Sweep
 			t = 1.0f / DIVIDER;
-			next_position = alignment[i]->getPosition(t);
+			next_position = alignment[i]->getPoint(t);
 			segment_L = (next_position - alignment[i]->getStartPoint()).length();
 			EulerOp::SWEEP(model.back()->faces.back(), alignment[i]->getTan(t), segment_L);
 			start_point = next_position;
@@ -201,7 +223,7 @@ void BoxGirder::update()
 			for (int j = 1; j < DIVIDER; j++)
 			{
 				t += 1.0f / DIVIDER;
-				next_position = alignment[i]->getPosition(t);
+				next_position = alignment[i]->getPoint(t);
 				segment_L = (next_position - start_point).length();
 				EulerOp::SWEEP(model.back()->faces[0], alignment[i]->getTan(t), segment_L);
 				start_point = next_position;
@@ -213,7 +235,7 @@ void BoxGirder::update()
 			for (int j = 0; j < DIVIDER; j++)
 			{
 				t += 1.0f / DIVIDER;
-				next_position = alignment[i]->getPosition(t);
+				next_position = alignment[i]->getPoint(t);
 				segment_L = (next_position - start_point).length();
 				EulerOp::SWEEP(model.back()->faces[0], alignment[i]->getTan(t), segment_L);
 				start_point = next_position;
@@ -320,7 +342,7 @@ void BoxGirder::update()
 				vRight = cross(alignment[i]->getTan(t), { 0.0f, 1.0f, 0.0f, 0.0f }).to_unitary();
 				vUp = cross(vRight, alignment[i]->getTan(t)).to_unitary();
 			}
-			next_position = alignment[i]->getPosition(t) - (vUp * offset);
+			next_position = alignment[i]->getPoint(t) - (vUp * offset);
 			segment_L = (next_position - start_point).length();
 			EulerOp::SWEEP(model.back()->faces.back(), alignment[i]->getTan(t), segment_L);
 			start_point = next_position;
@@ -332,7 +354,7 @@ void BoxGirder::update()
 					vRight = cross(alignment[i]->getTan(t), { 0.0f, 1.0f, 0.0f, 0.0f }).to_unitary();
 					vUp = cross(vRight, alignment[i]->getTan(t)).to_unitary();
 				}
-				next_position = alignment[i]->getPosition(t) - (vUp * offset);
+				next_position = alignment[i]->getPoint(t) - (vUp * offset);
 				segment_L = (next_position - start_point).length();
 				EulerOp::SWEEP(model.back()->faces[0], alignment[i]->getTan(t), segment_L);
 				start_point = next_position;
@@ -348,7 +370,7 @@ void BoxGirder::update()
 					vRight = cross(alignment[i]->getTan(t), { 0.0f, 1.0f, 0.0f, 0.0f }).to_unitary();
 					vUp = cross(vRight, alignment[i]->getTan(t)).to_unitary();
 				}
-				next_position = alignment[i]->getPosition(t) - (vUp * offset);
+				next_position = alignment[i]->getPoint(t) - (vUp * offset);
 				segment_L = (next_position - start_point).length();
 				EulerOp::SWEEP(model.back()->faces[0], alignment[i]->getTan(t), segment_L);
 				start_point = next_position;
@@ -414,7 +436,7 @@ void BoxGirder::update()
 				vRight = cross(alignment[i]->getTan(t), { 0.0f, 1.0f, 0.0f, 0.0f }).to_unitary();
 				vUp = cross(vRight, alignment[i]->getTan(t)).to_unitary();
 			}
-			next_position = alignment[i]->getPosition(t) - (vUp * offset);
+			next_position = alignment[i]->getPoint(t) - (vUp * offset);
 			segment_L = (next_position - start_point).length();
 			EulerOp::SWEEP(model.back()->faces.back(), alignment[i]->getTan(t), segment_L);
 			start_point = next_position;
@@ -426,7 +448,7 @@ void BoxGirder::update()
 					vRight = cross(alignment[i]->getTan(t), { 0.0f, 1.0f, 0.0f, 0.0f }).to_unitary();
 					vUp = cross(vRight, alignment[i]->getTan(t)).to_unitary();
 				}
-				next_position = alignment[i]->getPosition(t) - (vUp * offset);
+				next_position = alignment[i]->getPoint(t) - (vUp * offset);
 				segment_L = (next_position - start_point).length();
 				EulerOp::SWEEP(model.back()->faces[0], alignment[i]->getTan(t), segment_L);
 				start_point = next_position;
@@ -442,7 +464,7 @@ void BoxGirder::update()
 					vRight = cross(alignment[i]->getTan(t), { 0.0f, 1.0f, 0.0f, 0.0f }).to_unitary();
 					vUp = cross(vRight, alignment[i]->getTan(t)).to_unitary();
 				}
-				next_position = alignment[i]->getPosition(t) - (vUp * offset);
+				next_position = alignment[i]->getPoint(t) - (vUp * offset);
 				segment_L = (next_position - start_point).length();
 				EulerOp::SWEEP(model.back()->faces[0], alignment[i]->getTan(t), segment_L);
 				start_point = next_position;
@@ -450,6 +472,32 @@ void BoxGirder::update()
 		}
 	}
 
-#pragma endregion U_SECTION
+#pragma endregion 
+
+#pragma region PIERS
+	vRight = cross(alignment.front()->getTan(t), { 0.0f, 1.0f, 0.0f, 0.0f }).to_unitary();
+	vUp = cross(vRight, alignment.front()->getTan(t)).to_unitary();
+	for (int i = 0; i < piers.size(); i++)
+	{
+		// v0
+		start_point = piers[i].base + (vRight * (piers[i].b / 2.0f)) - (road->alignment.back()->getTan(t) * (piers[i].h / 2.0f));
+		EulerOp::mvfs(model, start_point);
+		model.back()->name = "P";
+		model.back()->material = { 0.8f, 0.8f, 0.8f, 1.0f };
+		// v1
+		newVertex = model.back()->vertices.back()->point - (vRight * piers[i].b);
+		EulerOp::mev(model.back()->faces[0]->hEdge, NULL, 0, newVertex);
+		// v2
+		newVertex = model.back()->vertices.back()->point + (road->alignment.back()->getTan(t) * piers[i].h);
+		EulerOp::mev(model.back()->halfEdges[0], NULL, 1, newVertex);
+		// v3
+		newVertex = model.back()->vertices.back()->point + (vRight * piers[i].b);
+		EulerOp::mev(model.back()->halfEdges[2], NULL, 2, newVertex);
+		// f1
+		EulerOp::mef(model.back()->halfEdges[0], model.back()->halfEdges[5], 0);
+		// SWEEP
+		EulerOp::SWEEP(model.back()->faces.back(), { 0.0f, 1.0f, 0.0f, 0.0f }, piers[i].L);
+	}
+#pragma endregion 
 }
 

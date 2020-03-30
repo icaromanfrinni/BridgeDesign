@@ -20,6 +20,19 @@ const float SLOPE = 0.02f;
 const float GUARD_RAIL = 0.40f;
 const float INCLINATION_RATIO = 0.25f;
 
+//struct VerticalCurve
+//{
+//	CRAB::Vector4Df VPC, VPI, VPT;
+//	float g1, g2;	// grade
+//	float L;		// horizontal length
+//};
+
+struct Pier
+{
+	float b, h, L;
+	CRAB::Vector4Df base;
+};
+
 class Bridge
 {
 public:
@@ -28,6 +41,7 @@ public:
 	std::vector<Segment*> alignment;
 	std::vector<HED::solid*> model;
 	float cross_station, vertical_clearance, horizontal_clearance;
+	std::vector<Pier> piers;
 
 	// Bridge attributes
 	float B;		// Width

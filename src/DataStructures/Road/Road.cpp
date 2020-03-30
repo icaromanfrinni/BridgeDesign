@@ -12,7 +12,7 @@ Road::Road(const std::string& _name, const float& _width, const float& _speed) :
 	// ---------------------------
 	float d1 = 0.278 * speed * t;				// brake reaction distance
 	float d2 = 0.039 * powf(speed, 2.0f) / a;	// braking distance on level
-	S = round((d1 + d2) / 10) * 10;
+	S = round((d1 + d2) / 5) * 5;
 }
 
 //DESTRUCTOR
