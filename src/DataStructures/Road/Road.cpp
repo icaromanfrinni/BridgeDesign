@@ -23,5 +23,5 @@ Road::~Road()
 //ADD NEW SEGMENT
 void Road::AddSegment(Segment* _segment)
 {
-	alignment.push_back(_segment);
+	alignment.segments.push_back(_segment);
 }

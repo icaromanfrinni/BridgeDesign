@@ -6,19 +6,19 @@ Bridge::Bridge()
 }
 
 //OVERLOAD CONSTRUCTOR
-Bridge::Bridge(const std::string& _name, Road* _road, const float& _cross_station, const float& _vertical_clearance, const float& _horizontal_clearance)
-	: name(_name), road(_road), cross_station(_cross_station), vertical_clearance(_vertical_clearance), horizontal_clearance(_horizontal_clearance)
+Bridge::Bridge(const std::string& _name, Road* _road, const float& cross_station, const float& vertical_clearance, const float& horizontal_clearance)
+	: name(_name), road(_road), CS(cross_station), VC(vertical_clearance), HC(horizontal_clearance)
 {
 	// Bridge attributes
 	this->mainSpan = 35.0f;
-	this->B = this->road->width;
+	this->B = this->road->width + 2 * GUARD_RAIL;
 	this->H = int((100.0f * this->mainSpan / 16.0f) / 5.0f) * 0.05f;
 
 	// CREST VERTICAL CURVE
 	// --------------------
 
 	// Length of vertical curve
-	float L2 = this->horizontal_clearance;
+	float L2 = this->HC;
 
 	// Algebraic difference in grades
 	float A;
@@ -29,17 +29,17 @@ Bridge::Bridge(const std::string& _name, Road* _road, const float& _cross_statio
 
 	float t;
 	// VPC
-	t = (this->cross_station - L2 / 2) / this->road->alignment.back()->getLength();
-	CRAB::Vector4Df VPC2 = this->road->alignment.back()->getPoint(t);
-	VPC2.y += this->vertical_clearance + this->H;
+	t = (this->CS - L2 / 2) / this->road->alignment.segments.back()->getLength();
+	CRAB::Vector4Df VPC2 = this->road->alignment.segments.back()->getPoint(t);
+	VPC2.y += this->VC + this->H;
 	// VPI
-	t = this->cross_station / this->road->alignment.back()->getLength();
-	CRAB::Vector4Df VPI2 = this->road->alignment.back()->getPoint(t);
-	VPI2.y += this->vertical_clearance + this->H + (A / 200) * L2 / 2;
+	t = this->CS / this->road->alignment.segments.back()->getLength();
+	CRAB::Vector4Df VPI2 = this->road->alignment.segments.back()->getPoint(t);
+	VPI2.y += this->VC + this->H + (A / 200) * L2 / 2;
 	// VPT
-	t = (this->cross_station + L2 / 2) / this->road->alignment.back()->getLength();
-	CRAB::Vector4Df VPT2 = this->road->alignment.back()->getPoint(t);
-	VPT2.y += this->vertical_clearance + this->H;
+	t = (this->CS + L2 / 2) / this->road->alignment.segments.back()->getLength();
+	CRAB::Vector4Df VPT2 = this->road->alignment.segments.back()->getPoint(t);
+	VPT2.y += this->VC + this->H;
 
 	//CircularArc* Crest = new CircularArc(VPC, VPI, VPT);
 
@@ -58,10 +58,10 @@ Bridge::Bridge(const std::string& _name, Road* _road, const float& _cross_statio
 	// ----
 	
 	// VPI
-	t = (this->cross_station - (L2 / 2 + (this->vertical_clearance + this->H) / (A / 200))) / this->road->alignment.back()->getLength();
-	CRAB::Vector4Df VPI1 = this->road->alignment.back()->getPoint(t);
+	t = (this->CS - (L2 / 2 + (this->VC + this->H) / (A / 200))) / this->road->alignment.segments.back()->getLength();
+	CRAB::Vector4Df VPI1 = this->road->alignment.segments.back()->getPoint(t);
 	// VPC
-	CRAB::Vector4Df VPC1 = VPI1 + (VPI1 - this->road->alignment.back()->getPoint(this->cross_station / this->road->alignment.back()->getLength())).to_unitary() * d;
+	CRAB::Vector4Df VPC1 = VPI1 + (VPI1 - this->road->alignment.segments.back()->getPoint(this->CS / this->road->alignment.segments.back()->getLength())).to_unitary() * d;
 	// VPT
 	CRAB::Vector4Df VPT1 = VPI1 + (VPI2 - VPI1).to_unitary() * d;
 
@@ -69,21 +69,21 @@ Bridge::Bridge(const std::string& _name, Road* _road, const float& _cross_statio
 	// -----
 
 	// VPI
-	t = (this->cross_station + (L2 / 2 + (this->vertical_clearance + this->H) / (A / 200))) / this->road->alignment.back()->getLength();
-	CRAB::Vector4Df VPI3 = this->road->alignment.back()->getPoint(t);
+	t = (this->CS + (L2 / 2 + (this->VC + this->H) / (A / 200))) / this->road->alignment.segments.back()->getLength();
+	CRAB::Vector4Df VPI3 = this->road->alignment.segments.back()->getPoint(t);
 	// VPC
 	CRAB::Vector4Df VPC3 = VPI3 + (VPI2 - VPI3).to_unitary() * d;
 	// VPT
-	CRAB::Vector4Df VPT3 = VPI3 + (VPI3 - this->road->alignment.back()->getPoint(this->cross_station / this->road->alignment.back()->getLength())).to_unitary() * d;
+	CRAB::Vector4Df VPT3 = VPI3 + (VPI3 - this->road->alignment.segments.back()->getPoint(this->CS / this->road->alignment.segments.back()->getLength())).to_unitary() * d;
 
 	// ALIGNMENT
 	// ---------
 
-	this->alignment.push_back(new CircularArc(VPC1, VPI1, VPT1));
-	this->alignment.push_back(new Line(VPT1, VPC2));
-	this->alignment.push_back(new CircularArc(VPC2, VPI2, VPT2));
-	this->alignment.push_back(new Line(VPT2, VPC3));
-	this->alignment.push_back(new CircularArc(VPC3, VPI3, VPT3));	
+	this->alignment.segments.push_back(new CircularArc(VPC1, VPI1, VPT1));
+	this->alignment.segments.push_back(new Line(VPT1, VPC2));
+	this->alignment.segments.push_back(new CircularArc(VPC2, VPI2, VPT2));
+	this->alignment.segments.push_back(new Line(VPT2, VPC3));
+	this->alignment.segments.push_back(new CircularArc(VPC3, VPI3, VPT3));
 }
 
 //DESTRUCTOR

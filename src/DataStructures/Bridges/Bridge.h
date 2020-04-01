@@ -27,21 +27,23 @@ const float INCLINATION_RATIO = 0.25f;
 //	float L;		// horizontal length
 //};
 
-struct Pier
-{
-	float b, h, L;
-	CRAB::Vector4Df base;
-};
+//struct Pier
+//{
+//	float b, h, L;
+//	CRAB::Vector4Df base;
+//};
 
 class Bridge
 {
 public:
 	std::string name;
 	Road* road;
-	std::vector<Segment*> alignment;
+	Alignment alignment;
 	std::vector<HED::solid*> model;
-	float cross_station, vertical_clearance, horizontal_clearance;
-	std::vector<Pier> piers;
+	float CS; // cross station
+	float VC; // vertical clearance
+	float HC; // horizontal clearance
+	//std::vector<Pier> piers;
 
 	// Bridge attributes
 	float B;		// Width
@@ -51,7 +53,7 @@ public:
 	// DEFAULT CONSTRUCTOR
 	Bridge();
 	// OVERLOAD CONSTRUCTOR
-	Bridge(const std::string& _name, Road* _road, const float& _cross_station, const float& _vertical_clearance, const float& _horizontal_clearance);
+	Bridge(const std::string& _name, Road* _road, const float& cross_station, const float& vertical_clearance, const float& horizontal_clearance);
 	// DESTRUCTOR
 	virtual ~Bridge() = 0;
 

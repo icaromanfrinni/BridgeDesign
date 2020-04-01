@@ -118,15 +118,15 @@ namespace CRAB
         
         // load SKYBOX textures
         // --------------------
-        //std::vector<std::string> faces = {
-        //    "skybox/right.jpg",        // right
-        //    "skybox/left.jpg",        // left
-        //    "skybox/top.jpg",        // top
-        //    "skybox/bottom.jpg",        // bottom
-        //    "skybox/front.jpg",        // front
-        //    "skybox/back.jpg"         // back
-        //};
-        std::vector<std::string> faces = {
+        std::vector<std::string> faces1 = {
+            "skybox/right.jpg",        // right
+            "skybox/left.jpg",        // left
+            "skybox/top.jpg",        // top
+            "skybox/bottom.jpg",        // bottom
+            "skybox/front.jpg",        // front
+            "skybox/back.jpg"         // back
+        };
+        std::vector<std::string> faces2 = {
            "skybox/color/side.jpg",        // right
            "skybox/color/side.jpg",        // left
            "skybox/color/top.jpg",        // top
@@ -134,7 +134,7 @@ namespace CRAB
            "skybox/color/side.jpg",        // front
            "skybox/color/side.jpg"         // back
         };
-        Skybox skybox(faces);
+        Skybox skybox(faces2);
 
         // shader configuration
         // --------------------
@@ -148,7 +148,7 @@ namespace CRAB
 
         // load models (bridges)
         // ---------------------
-        roadways.push_back(new Road("Rodovia_001", 12.80f, 60.0f));
+        roadways.push_back(new Road("Rodovia_001", 12.00f, 60.0f));
         roadways.back()->AddSegment(new Line(CRAB::Vector4Df{ -100.0f, 0.0f, 0.0f, 1.0f }, CRAB::Vector4Df{ 100.0f, 0.0f, 0.0f, 1.0f }));
         bridges.push_back(new BoxGirder("Rio_Pacoti", roadways.back(), 100.0f, 6.0f, 90.0f));
 

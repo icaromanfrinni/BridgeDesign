@@ -21,7 +21,7 @@ public:
 	//DEFAULT CONSTRUCTOR
 	BoxGirder();
 	//OVERLOAD CONSTRUCTOR
-	BoxGirder(const std::string& _name, Road* _road, const float& _cross_station, const float& _vertical_clearance, const float& _horizontal_clearance);
+	BoxGirder(const std::string& _name, Road* _road, const float& cross_station, const float& vertical_clearance, const float& horizontal_clearance);
 
 	//DESTRUCTOR
 	~BoxGirder();
