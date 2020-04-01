@@ -28,24 +28,6 @@ public:
 
 	//MODEL CONSTRUCTOR
 	void update();
-	void updateAutoSection();
-
-	//ALLOCATION
-	void setSpan(const float& _span);
-	void setWidth(const float& _B);
-	void setH(const float& _H);
-	void setBw(const float& _bw);
-
-	// return values
-	float getWidth() const;
-	float getSpan() const;
-	float getHeight() const;
-	float getLb() const;
-	float getDeckH() const;
-	float getBw() const;
-	float getSlabWidth() const;
-	float getTH() const;
-	float getTV() const; 
 };
 
 #endif // BOXGIRDER_H

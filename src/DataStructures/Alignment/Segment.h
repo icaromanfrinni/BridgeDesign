@@ -2,6 +2,8 @@
 #ifndef SEGMENT_H
 #define SEGMENT_H
 
+#include <iostream>
+
 #include "Linear_Algebra.h"
 //#include "Coord_System.h"
 

@@ -17,7 +17,7 @@ Bridge::Bridge(const std::string& _name, Road* _road, const float& cross_station
 	// CREST VERTICAL CURVE
 	// --------------------
 
-	// Length of vertical curve
+	// Length of crest vertical curve
 	float L2 = this->HC;
 
 	// Algebraic difference in grades

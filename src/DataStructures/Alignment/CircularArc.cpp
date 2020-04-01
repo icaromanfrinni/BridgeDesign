@@ -82,7 +82,17 @@ CRAB::Vector4Df CircularArc::getTan(const float& t) const
 //TODO
 float CircularArc::getLength() const
 {
-	//in Plan
-	/*return (s3.getPoint() - s1.getPoint()).length();*/
-	return (p3 - p1).length();
+	float arcLength = 0.0f;
+	float t = 0.0f;
+
+	CRAB::Vector4Df A = p1;
+	for (int i = 0; i < DIVIDER; i++)
+	{
+		t += 1.0f / DIVIDER;
+		CRAB::Vector4Df B = getPoint(t);
+		arcLength += (B - A).length();
+		A = B;
+	}
+
+	return arcLength;
 }
