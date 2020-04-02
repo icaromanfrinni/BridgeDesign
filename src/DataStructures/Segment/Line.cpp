@@ -69,3 +69,26 @@ CRAB::Vector4Df Line::getTan(const float& t) const {
 float Line::getLength() const {
 	return (p2 - p1).length();
 }
+
+//Return the closest collision distance of a ray and the segment
+CRAB::Vector4Df Line::Collision(const Ray& ray) const
+{
+	// normal vector
+	CRAB::Vector4Df Up = { 0.0f, 1.0f, 0.0f, 0.0f };
+	CRAB::Vector4Df Right = CRAB::cross(this->getTan(0), Up);
+	CRAB::Vector4Df normal = CRAB::cross(Right, this->getTan(0));
+
+	// "t" distance
+	float t = CRAB::dot(this->getStartPoint() - ray.origin, normal) / CRAB::dot(ray.direction, normal);
+
+	// Closest collision Point
+	return ray.origin + ray.direction * t;
+}
+//Return true if the point P intersect the segment
+bool Line::Contains(const CRAB::Vector4Df& p) const
+{
+	if ((p - this->getStartPoint()).length() <= this->getLength() &&
+		(p - this->getEndPoint()).length() <= this->getLength())
+		return true;
+	else return false;
+}

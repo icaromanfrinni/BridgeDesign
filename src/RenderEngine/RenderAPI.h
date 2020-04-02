@@ -150,7 +150,7 @@ namespace CRAB
         // ---------------------
         roadways.push_back(new Road("Rodovia_001", 12.00f, 60.0f));
         roadways.back()->AddSegment(new Line(CRAB::Vector4Df{ -100.0f, 0.0f, 0.0f, 1.0f }, CRAB::Vector4Df{ 100.0f, 0.0f, 0.0f, 1.0f }));
-        bridges.push_back(new BoxGirder("Rio_Pacoti", roadways.back(), 100.0f, 6.0f, 90.0f));
+        bridges.push_back(new BoxGirder("Rio_Pacoti", roadways.back(), 200.0f, 6.0f, 90.0f));
 
         for (int i = 0; i < bridges.size(); i++)
             for (int j = 0; j < bridges[i]->model.size(); j++)

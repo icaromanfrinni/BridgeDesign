@@ -96,3 +96,50 @@ float CircularArc::getLength() const
 
 	return arcLength;
 }
+
+//RETURN the closest collision distance of a ray and the segment
+CRAB::Vector4Df CircularArc::Collision(const Ray& ray) const
+{
+	CRAB::Vector4Df Up = { 0.0f, 1.0f, 0.0f, 0.0f };
+
+	// FIRST TANGENT
+	// -------------
+
+	// normal vector
+	CRAB::Vector4Df Right = CRAB::cross(this->getTan(0.0f), Up);
+	CRAB::Vector4Df normal = CRAB::cross(Right, this->getTan(0.0f));
+
+	// "t" distance
+	float t1 = CRAB::dot(this->getStartPoint() - ray.origin, normal) / CRAB::dot(ray.direction, normal);
+
+	// SECOND TANGENT
+	// --------------
+
+	// normal vector
+	Right = CRAB::cross(this->getTan(1.0f), Up);
+	normal = CRAB::cross(Right, this->getTan(1.0f));
+
+	// "t" distance
+	float t2 = CRAB::dot(this->getEndPoint() - ray.origin, normal) / CRAB::dot(ray.direction, normal);
+
+	// Closest collision Point
+	// -----------------------
+
+	if (t1 < t2)
+		return ray.origin + ray.direction * t1;
+	else return ray.origin + ray.direction * t2;
+}
+//RETURN true if the point P intersect the segment
+bool CircularArc::Contains(const CRAB::Vector4Df& p) const
+{
+	CRAB::Vector4Df e1 = this->getMidPoint() - this->getStartPoint();
+	CRAB::Vector4Df e2 = this->getEndPoint() - this->getMidPoint();
+
+	if ((p - this->getStartPoint()).length() <= e1.length() &&
+		(p - this->getMidPoint()).length() <= e1.length())
+		return true;
+	else if ((p - this->getMidPoint()).length() <= e2.length() &&
+		(p - this->getEndPoint()).length() <= e2.length())
+		return true;
+	else return false;
+}

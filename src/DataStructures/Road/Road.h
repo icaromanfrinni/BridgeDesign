@@ -11,7 +11,31 @@
 
 struct Alignment
 {
+	// List of segments
 	std::vector<Segment*> segments;
+
+	// Return Point from Station
+	CRAB::Vector4Df getPointFromStation(float dist)
+	{
+		float t = 0.0f;
+		CRAB::Matrix4 PlaneXZ = CRAB::Matrix4{
+			1, 0, 0, 0,
+			0, 0, 0, 0,
+			0, 0, 1, 0,
+			0, 0, 0, 1 };
+
+		for (int i = 0; i < segments.size(); i++)
+		{
+			CRAB::Vector4Df vPxz = segments[i]->getEndPoint() - segments[i]->getStartPoint();
+			vPxz = PlaneXZ * vPxz;
+			t = dist / vPxz.length();
+			if (t <= 1.0f)
+				return segments[i]->getPoint(t);
+			else dist -= vPxz.length();
+		}
+
+		return segments.back()->getPoint(t);
+	}
 };
 
 // Default Vertical curves values

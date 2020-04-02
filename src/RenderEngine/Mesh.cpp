@@ -46,6 +46,15 @@ Mesh::Mesh(const HED::solid* solid)
         material.textures.push_back(new Texture("textures/concrete_specular.jpg", "specular"));
         material.textures.push_back(new Texture("textures/concrete_normal.jpg", "normal"));
     }*/
+
+    // DEBUG
+    if (solid->name == "ROAD")
+    {
+        material.hasTexture = false;
+        material.ka = { 0.1f, 0.1f, 0.1f };
+        material.kd = { 0.1f, 0.1f, 0.1f };
+        material.ks = { 0.5f, 0.5f, 0.5f };
+    }
         
     for (int i = 0; i < solid->faces.size(); i++)
     {

@@ -9,6 +9,11 @@
 
 const int DIVIDER = 20;
 
+struct Ray
+{
+	CRAB::Vector4Df origin, direction;
+};
+
 class Segment
 {
 public:
@@ -36,6 +41,11 @@ public:
 	virtual CRAB::Vector4Df getPoint(const float &t) const = 0;
 	virtual CRAB::Vector4Df getTan(const float& t) const = 0;
 	virtual float getLength() const = 0;
+	
+	//Return the closest collision distance of a ray and the segment
+	virtual CRAB::Vector4Df Collision(const Ray& ray) const = 0;
+	//Return true if the point P intersect the segment
+	virtual bool Contains(const CRAB::Vector4Df& p) const = 0;
 };
 
 #endif // SEGMENT_H
