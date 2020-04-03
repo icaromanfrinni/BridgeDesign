@@ -9,7 +9,6 @@ Bridge::Bridge()
 Bridge::Bridge(const std::string& _name, Road* _road, const float& cross_station, const float& vertical_clearance, const float& horizontal_clearance)
 	: name(_name), road(_road), CS(cross_station), VC(vertical_clearance), HC(horizontal_clearance)
 {
-	// -----------------
 	// Bridge attributes
 	// -----------------
 
@@ -17,9 +16,20 @@ Bridge::Bridge(const std::string& _name, Road* _road, const float& cross_station
 	this->B = this->road->width + 2 * GUARD_RAIL;
 	this->H = int((100.0f * this->mainSpan / 16.0f) / 5.0f) * 0.05f;
 
-	// --------------------
-	// CREST VERTICAL CURVE
-	// --------------------
+	// Vertical Alignment
+	// ------------------
+	Vertical_Alignment();
+}
+
+//DESTRUCTOR
+Bridge::~Bridge()
+{
+}
+
+// VERTICAL ALIGNMENT
+void Bridge::Vertical_Alignment()
+{
+	// ********************************** CREST VERTICAL CURVE **********************************
 
 	// Length of crest vertical curve
 	float Lc = this->HC;
@@ -31,7 +41,8 @@ Bridge::Bridge(const std::string& _name, Road* _road, const float& cross_station
 	else
 		A = (200 * powf(sqrtf(h1) + sqrtf(h2), 2.0f)) / (2.0f * this->road->S - Lc);
 
-	A = 100.0f;
+	// DEBUG
+	//A = 100.0f;
 
 	// VPC
 	CRAB::Vector4Df VPC2 = this->road->alignment.getPointFromStation(this->CS - Lc / 2);
@@ -43,13 +54,15 @@ Bridge::Bridge(const std::string& _name, Road* _road, const float& cross_station
 	CRAB::Vector4Df VPT2 = this->road->alignment.getPointFromStation(this->CS + Lc / 2);
 	VPT2.y += this->VC + this->H;
 
-	// ------------------
-	// SAG VERTICAL CURVE
-	// ------------------
+	// ********************************** SAG VERTICAL CURVE **********************************
 
 	// Length of sag vertical curve (S > L)
 	float Ls = 2 * this->road->S - ((120 + 3.5 * this->road->S) / (A / 2));
 	Ls = int(round(Ls / 5)) * 5;
+	// Minimun length of vertical curve (0.6 Vp)
+	float Lmin = 0.60f * this->road->speed;
+	// CHECK
+	if (Ls < Lmin) Ls = Lmin;
 
 	// Grades
 	Ray g1, g2;
@@ -58,8 +71,11 @@ Bridge::Bridge(const std::string& _name, Road* _road, const float& cross_station
 	g2.origin = VPT2;
 	g2.direction = (VPT2 - VPI2).to_unitary();
 
-	// Tangents
-	CRAB::Vector4Df tan_L, tan_R;
+	// Tangent of the collided segment
+	CRAB::Vector4Df tan_Segment;
+
+	// Length of tangent segment
+	float d;
 
 	// Horizontal Matrix
 	CRAB::Matrix4 PlaneXZ = CRAB::Matrix4{
@@ -67,13 +83,15 @@ Bridge::Bridge(const std::string& _name, Road* _road, const float& cross_station
 			0, 0, 0, 0,
 			0, 0, 1, 0,
 			0, 0, 0, 1 };
+	// Horizontal Vector
+	CRAB::Vector4Df vPxz;
 
-	// Length of projection
-	float x1, x2;
+	// Angle of the tangent
+	float cosTeta1, cosTeta2;
 
-	// --------
-	//   Left
-	// --------
+	// --------------
+	//      LEFT
+	// --------------
 
 	// VPI
 	CRAB::Vector4Df VPI1;
@@ -85,26 +103,30 @@ Bridge::Bridge(const std::string& _name, Road* _road, const float& cross_station
 		if (this->road->alignment.segments[i]->Contains(P))
 		{
 			VPI1 = P;
-			tan_L = this->road->alignment.segments[i]->getTan(0.0f);
+			tan_Segment = this->road->alignment.segments[i]->getTan(0.0f).to_unitary();
 			break;
 		}
 		// if its before all segments
 		if (i == 0)
 		{
 			VPI1 = P;
-			tan_L = this->road->alignment.segments[i]->getTan(0.0f);
+			tan_Segment = this->road->alignment.segments[i]->getTan(0.0f).to_unitary();
 		}
 	}
-	// Projections
+	// Projections (hor & vert)
+	vPxz = (PlaneXZ * tan_Segment).to_unitary();
+	cosTeta1 = fabsf(CRAB::dot(tan_Segment, vPxz));
+	cosTeta2 = fabsf(CRAB::dot(g1.direction, vPxz));
+	d = Ls / (cosTeta1 + cosTeta2);
 
 	// VPC
-	CRAB::Vector4Df VPC1;
+	CRAB::Vector4Df VPC1 = VPI1 + (tan_Segment * -1.0f) * d;
 	// VPT
-	CRAB::Vector4Df VPT1;
+	CRAB::Vector4Df VPT1 = VPI1 + (g1.direction * -1.0f) * d;
 
-	// ---------
-	//   Right
-	// ---------
+	// ---------------
+	//      RIGHT
+	// ---------------
 
 	// VPI
 	CRAB::Vector4Df VPI3;
@@ -116,34 +138,31 @@ Bridge::Bridge(const std::string& _name, Road* _road, const float& cross_station
 		if (this->road->alignment.segments[i]->Contains(P))
 		{
 			VPI3 = P;
-			tan_R = this->road->alignment.segments[i]->getTan(1.0f);
+			tan_Segment = this->road->alignment.segments[i]->getTan(1.0f);
 			break;
 		}
 		// if its after all segments
 		VPI3 = P;
-		tan_R = this->road->alignment.segments[i]->getTan(1.0f);
+		tan_Segment = this->road->alignment.segments[i]->getTan(1.0f);
 	}
-	// Projections
-
+	// Projections (hor & vert)
+	vPxz = (PlaneXZ * tan_Segment).to_unitary();
+	cosTeta1 = fabsf(CRAB::dot(g2.direction, vPxz));
+	cosTeta2 = fabsf(CRAB::dot(tan_Segment, vPxz));
+	d = Ls / (cosTeta1 + cosTeta2);
 	// VPC
-	CRAB::Vector4Df VPC3;
+	CRAB::Vector4Df VPC3 = VPI3 + (g2.direction * -1.0f) * d;
 	// VPT
-	CRAB::Vector4Df VPT3;
+	CRAB::Vector4Df VPT3 = VPI3 + tan_Segment * d;
 
-	// ---------
-	// ALIGNMENT
-	// ---------
+	// ********************************** RETURN **********************************
 
-	//this->alignment.segments.push_back(new CircularArc(VPC1, VPI1, VPT1));
-	//this->alignment.segments.push_back(new Line(VPT1, VPC2));
-	this->alignment.segments.push_back(new Line(VPI1, VPC2));
+	this->alignment.segments.push_back(new CircularArc(VPC1, VPI1, VPT1));
+	this->alignment.segments.push_back(new Line(VPT1, VPC2));
 	this->alignment.segments.push_back(new CircularArc(VPC2, VPI2, VPT2));
-	this->alignment.segments.push_back(new Line(VPT2, VPI3));
-	//this->alignment.segments.push_back(new Line(VPT2, VPC3));
-	//this->alignment.segments.push_back(new CircularArc(VPC3, VPI3, VPT3));
-}
+	this->alignment.segments.push_back(new Line(VPT2, VPC3));
+	this->alignment.segments.push_back(new CircularArc(VPC3, VPI3, VPT3));
 
-//DESTRUCTOR
-Bridge::~Bridge()
-{
+	// DEBUG
+	std::cout << "A/2 = " << A / 2 << std::endl;
 }

@@ -9,7 +9,7 @@
 
 #include "Segment.h"
 
-struct Alignment
+struct VerticalAlignment
 {
 	// List of segments
 	std::vector<Segment*> segments;
@@ -36,6 +36,14 @@ struct Alignment
 
 		return segments.back()->getPoint(t);
 	}
+
+	// Return Station from Point
+	float getStationFromPoint(CRAB::Vector4Df p)
+	{
+		CRAB::Vector4Df v = p - this->segments.front()->getStartPoint();
+		v.y = 0.0f;
+		return v.length();
+	}
 };
 
 // Default Vertical curves values
@@ -46,7 +54,7 @@ class Road
 {
 public:
 	std::string name;
-	Alignment alignment;
+	VerticalAlignment alignment;
 	float width;	// Roadway width
 	float speed;	// Speed design
 	int S;			// Stopping Sight Distance
