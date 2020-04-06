@@ -113,9 +113,9 @@ namespace CRAB
 
         // build and compile our shader zprogram
         // -------------------------------------
-        Shader ourShader("shaders/shader.vert", "shaders/shader.frag");
-        Shader skyboxShader("shaders/skybox.vert", "shaders/skybox.frag");
-        
+        Shader ourShader("shaders/shader.vs", "shaders/shader.fs");
+        Shader skyboxShader("shaders/skybox.vs", "shaders/skybox.fs");
+
         // load SKYBOX textures
         // --------------------
         std::vector<std::string> faces1 = {

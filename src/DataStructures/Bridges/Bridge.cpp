@@ -40,9 +40,9 @@ void Bridge::Vertical_Alignment()
 		A = Lc * 100 * (powf(sqrtf(2 * h1) + sqrtf(2 * h2), 2.0f)) / powf(this->road->S, 2.0f);
 	else
 		A = (200 * powf(sqrtf(h1) + sqrtf(h2), 2.0f)) / (2.0f * this->road->S - Lc);
-
-	// DEBUG
-	//A = 100.0f;
+	
+	// Round up
+	A = ceilf(A);
 
 	// VPC
 	CRAB::Vector4Df VPC2 = this->road->alignment.getPointFromStation(this->CS - Lc / 2);
@@ -162,7 +162,4 @@ void Bridge::Vertical_Alignment()
 	this->alignment.segments.push_back(new CircularArc(VPC2, VPI2, VPT2));
 	this->alignment.segments.push_back(new Line(VPT2, VPC3));
 	this->alignment.segments.push_back(new CircularArc(VPC3, VPI3, VPT3));
-
-	// DEBUG
-	std::cout << "A/2 = " << A / 2 << std::endl;
 }
