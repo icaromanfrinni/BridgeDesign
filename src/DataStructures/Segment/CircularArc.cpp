@@ -60,7 +60,7 @@ CRAB::Vector4Df CircularArc::getEndPoint() const {
 	return p3;
 }
 //RETURN POSITION COORD
-CRAB::Vector4Df CircularArc::getPoint(const float& t) const
+CRAB::Vector4Df CircularArc::getPosition(const float& t) const
 {
 	/*CRAB::Vector4Df pos = s1.getPoint() * powf(1.0f - t, 2.0f) +
 		s2.getPoint() * 2.0f * (1.0f - t) * t +

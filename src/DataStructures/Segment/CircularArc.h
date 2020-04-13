@@ -36,7 +36,7 @@ public:
 	CRAB::Vector4Df getStartPoint() const;
 	CRAB::Vector4Df getEndPoint() const;
 	CRAB::Vector4Df getMidPoint() const;
-	CRAB::Vector4Df getPoint(const float& t) const;
+	CRAB::Vector4Df getPosition(const float& t) const;
 	CRAB::Vector4Df getTan(const float& t) const;
 	CRAB::Vector4Df getNormal(const float& t) const;
 	CRAB::Vector4Df getBinormal(const float& t) const;

@@ -446,5 +446,71 @@ namespace EulerOp
 		}
 	}
 
-	
+	// SWEEP
+	// f = face q sofre a varredura
+	// path = curva parametrizada
+	void SWEEP(HED::face* f, const Segment* path)
+	{
+		std::cout << "\t! START SWEEP !" << std::endl;
+
+		// Get Solid
+		HED::solid* currentSolid = f->HedSolid;
+
+		float t = 0.0f;
+		for (int i = 0; i < DIVIDER; i++)
+		{
+			// Transformation Matrix
+			CRAB::Matrix4 LookAt = toLocal(path->getPosition(t), path->getTan(t), path->getNormal(t));
+			t += 1.0f / DIVIDER;
+			CRAB::Matrix4 ModelSpace = toWorld(path->getPosition(t), path->getTan(t), path->getNormal(t));
+
+			if (currentSolid->faces.size() == 2)
+			{	// use the back face
+				HED::face* backFace = currentSolid->faces.back();
+				HED::halfEdge* he = backFace->hEdge;
+				std::cout << "\tCASE 1. currentSolid->faces.size() = 2" << std::endl;
+				// new vertex
+				CRAB::Vector4Df newVertex = ModelSpace * (LookAt * he->vStart->point);
+				// first edge
+				mev(he->opp, NULL, he->vStart->id, newVertex);
+				// edges and faces
+				for (he = backFace->hEdge->prev; he != backFace->hEdge; he = he->prev)
+				{
+					// new vertex
+					newVertex = ModelSpace * (LookAt * he->vStart->point);
+					// new edge
+					mev(currentSolid->halfEdges.back()->prev, NULL, currentSolid->vertices.back()->id, newVertex);
+					// new face
+					mef(currentSolid->halfEdges.back(), he->prev->opp, he->prev->opp->leftFace->id);
+				}
+				// last face
+				mef(currentSolid->halfEdges.back(), currentSolid->halfEdges.back()->next->next->next, 0);
+			}
+			else if (currentSolid->faces.size() > 2)
+			{	// use the current face
+				// Get HalfEdge
+				HED::halfEdge* he = f->hEdge;
+				std::cout << "\tCASE 1. currentSolid->faces.size() > 2" << std::endl;
+				// new vertex
+				CRAB::Vector4Df newVertex = ModelSpace * (LookAt * he->vStart->point);
+				// first edge
+				mev(he->prev->opp, he->opp->next, he->vStart->id, newVertex);
+				// the other edges
+				for (he = f->hEdge->next; he != f->hEdge; he = he->next)
+				{
+					// new vertex
+					newVertex = ModelSpace * (LookAt * he->vStart->point);
+					// new edge
+					mev(he->prev->opp, he->opp->next, he->vStart->id, newVertex);
+				}
+				// close the first new_loop (new face)
+				mef(he->opp->prev, he->opp->next->next, he->opp->leftFace->id);
+				// the other loops
+				for (he = f->hEdge->next; he != f->hEdge; he = he->next)
+					mef(he->opp->prev, he->opp->next->next, he->opp->leftFace->id);
+			}
+		}
+
+		std::cout << "\t! END SWEEP !" << std::endl;
+	}
 }

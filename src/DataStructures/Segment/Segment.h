@@ -38,7 +38,7 @@ public:
 	virtual CRAB::Vector4Df getStartPoint() const = 0;
 	virtual CRAB::Vector4Df getMidPoint() const = 0;
 	virtual CRAB::Vector4Df getEndPoint() const = 0;
-	virtual CRAB::Vector4Df getPoint(const float &t) const = 0;
+	virtual CRAB::Vector4Df getPosition(const float &t) const = 0;
 	virtual CRAB::Vector4Df getTan(const float& t) const = 0;
 	virtual CRAB::Vector4Df getNormal(const float& t) const = 0;
 	virtual CRAB::Vector4Df getBinormal(const float& t) const = 0;
