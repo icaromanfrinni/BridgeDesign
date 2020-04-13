@@ -104,7 +104,7 @@ void BoxGirder::update()
 	CRAB::Vector4Df newVertex, next_position, start_point;
 	float offset; // displacement
 	float segment_L; // the length of the line segment
-	float t = 0.0f; // [0; 1]
+	float t = 0.0f; // [0, 1]
 
 	// POLYGON FACE (GL_TRIANGLE_FAN)
 	// ------------------------------
@@ -397,77 +397,77 @@ void BoxGirder::update()
 #pragma endregion 
 
 #pragma region ROAD
-	vRight = cross(road->alignment.segments.front()->getTan(0.0f), { 0.0f, 1.0f, 0.0f, 0.0f }).to_unitary();
-	vUp = cross(vRight, road->alignment.segments.front()->getTan(0.0f)).to_unitary();
-	//for (int i = 0; i < piers.size(); i++)
-	//{
-		// v0
-		start_point = road->alignment.segments.front()->getStartPoint();
-		EulerOp::mvfs(model, start_point);
-		model.back()->name = "ROAD";
-		model.back()->material = { 0.8f, 0.8f, 0.8f, 1.0f };
-		// v1
-		newVertex = model.back()->vertices.back()->point - (vRight * (road->width / 2.0f));
-		EulerOp::mev(model.back()->faces[0]->hEdge, NULL, 0, newVertex);
-		// v2
-		newVertex = model.back()->vertices.back()->point - (vUp * 1.0f);
-		EulerOp::mev(model.back()->halfEdges[0], NULL, 1, newVertex);
-		// v3
-		newVertex = model.back()->vertices.back()->point + (vRight * road->width);
-		EulerOp::mev(model.back()->halfEdges[2], NULL, 2, newVertex);
-		// v4
-		newVertex = model.back()->vertices.back()->point + (vUp * 1.0f);
-		EulerOp::mev(model.back()->halfEdges[4], NULL, 3, newVertex);
-		// f1
-		EulerOp::mef(model.back()->halfEdges[0], model.back()->halfEdges[7], 0);
+	//vRight = cross(road->alignment.segments.front()->getTan(0.0f), { 0.0f, 1.0f, 0.0f, 0.0f }).to_unitary();
+	//vUp = cross(vRight, road->alignment.segments.front()->getTan(0.0f)).to_unitary();
+	////for (int i = 0; i < piers.size(); i++)
+	////{
+	//	// v0
+	//	start_point = road->alignment.segments.front()->getStartPoint();
+	//	EulerOp::mvfs(model, start_point);
+	//	model.back()->name = "ROAD";
+	//	model.back()->material = { 0.8f, 0.8f, 0.8f, 1.0f };
+	//	// v1
+	//	newVertex = model.back()->vertices.back()->point - (vRight * (road->width / 2.0f));
+	//	EulerOp::mev(model.back()->faces[0]->hEdge, NULL, 0, newVertex);
+	//	// v2
+	//	newVertex = model.back()->vertices.back()->point - (vUp * 1.0f);
+	//	EulerOp::mev(model.back()->halfEdges[0], NULL, 1, newVertex);
+	//	// v3
+	//	newVertex = model.back()->vertices.back()->point + (vRight * road->width);
+	//	EulerOp::mev(model.back()->halfEdges[2], NULL, 2, newVertex);
+	//	// v4
+	//	newVertex = model.back()->vertices.back()->point + (vUp * 1.0f);
+	//	EulerOp::mev(model.back()->halfEdges[4], NULL, 3, newVertex);
+	//	// f1
+	//	EulerOp::mef(model.back()->halfEdges[0], model.back()->halfEdges[7], 0);
 
-		// SWEEP
-		for (int i = 0; i < road->alignment.segments.size(); i++)
-		{
-			if (i == 0) // First segment
-			{
-				// First Sweep
-				t = 1.0f / DIVIDER;
-				{	// UPDATE Local axis
-					vRight = cross(road->alignment.segments[i]->getTan(t), { 0.0f, 1.0f, 0.0f, 0.0f }).to_unitary();
-					vUp = cross(vRight, road->alignment.segments[i]->getTan(t)).to_unitary();
-				}
-				next_position = road->alignment.segments[i]->getPoint(t) - (vUp * offset);
-				segment_L = (next_position - start_point).length();
-				EulerOp::SWEEP(model.back()->faces.back(), road->alignment.segments[i]->getTan(t), segment_L);
-				start_point = next_position;
+	//	// SWEEP
+	//	for (int i = 0; i < road->alignment.segments.size(); i++)
+	//	{
+	//		if (i == 0) // First segment
+	//		{
+	//			// First Sweep
+	//			t = 1.0f / DIVIDER;
+	//			{	// UPDATE Local axis
+	//				vRight = cross(road->alignment.segments[i]->getTan(t), { 0.0f, 1.0f, 0.0f, 0.0f }).to_unitary();
+	//				vUp = cross(vRight, road->alignment.segments[i]->getTan(t)).to_unitary();
+	//			}
+	//			next_position = road->alignment.segments[i]->getPoint(t) - (vUp * offset);
+	//			segment_L = (next_position - start_point).length();
+	//			EulerOp::SWEEP(model.back()->faces.back(), road->alignment.segments[i]->getTan(t), segment_L);
+	//			start_point = next_position;
 
-				for (int j = 1; j < DIVIDER; j++)
-				{
-					t += 1.0f / DIVIDER;
-					{	// UPDATE Local axis
-						vRight = cross(road->alignment.segments[i]->getTan(t), { 0.0f, 1.0f, 0.0f, 0.0f }).to_unitary();
-						vUp = cross(vRight, road->alignment.segments[i]->getTan(t)).to_unitary();
-					}
-					next_position = road->alignment.segments[i]->getPoint(t) - (vUp * offset);
-					segment_L = (next_position - start_point).length();
-					EulerOp::SWEEP(model.back()->faces[0], road->alignment.segments[i]->getTan(t), segment_L);
-					start_point = next_position;
-				}
-			}
-			else // Others segments
-			{
-				t = 0.0f;
-				for (int j = 0; j < DIVIDER; j++)
-				{
-					t += 1.0f / DIVIDER;
-					{	// UPDATE Local axis
-						vRight = cross(road->alignment.segments[i]->getTan(t), { 0.0f, 1.0f, 0.0f, 0.0f }).to_unitary();
-						vUp = cross(vRight, road->alignment.segments[i]->getTan(t)).to_unitary();
-					}
-					next_position = road->alignment.segments[i]->getPoint(t) - (vUp * offset);
-					segment_L = (next_position - start_point).length();
-					EulerOp::SWEEP(model.back()->faces[0], road->alignment.segments[i]->getTan(t), segment_L);
-					start_point = next_position;
-				}
-			}
-		}
-	//}
+	//			for (int j = 1; j < DIVIDER; j++)
+	//			{
+	//				t += 1.0f / DIVIDER;
+	//				{	// UPDATE Local axis
+	//					vRight = cross(road->alignment.segments[i]->getTan(t), { 0.0f, 1.0f, 0.0f, 0.0f }).to_unitary();
+	//					vUp = cross(vRight, road->alignment.segments[i]->getTan(t)).to_unitary();
+	//				}
+	//				next_position = road->alignment.segments[i]->getPoint(t) - (vUp * offset);
+	//				segment_L = (next_position - start_point).length();
+	//				EulerOp::SWEEP(model.back()->faces[0], road->alignment.segments[i]->getTan(t), segment_L);
+	//				start_point = next_position;
+	//			}
+	//		}
+	//		else // Others segments
+	//		{
+	//			t = 0.0f;
+	//			for (int j = 0; j < DIVIDER; j++)
+	//			{
+	//				t += 1.0f / DIVIDER;
+	//				{	// UPDATE Local axis
+	//					vRight = cross(road->alignment.segments[i]->getTan(t), { 0.0f, 1.0f, 0.0f, 0.0f }).to_unitary();
+	//					vUp = cross(vRight, road->alignment.segments[i]->getTan(t)).to_unitary();
+	//				}
+	//				next_position = road->alignment.segments[i]->getPoint(t) - (vUp * offset);
+	//				segment_L = (next_position - start_point).length();
+	//				EulerOp::SWEEP(model.back()->faces[0], road->alignment.segments[i]->getTan(t), segment_L);
+	//				start_point = next_position;
+	//			}
+	//		}
+	//	}
+	////}
 #pragma endregion 
 }
 

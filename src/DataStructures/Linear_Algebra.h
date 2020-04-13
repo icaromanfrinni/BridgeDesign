@@ -306,5 +306,32 @@ namespace CRAB {
 			0,	             0,	                 0,	            1 };
 	}
 
+	// define a model view transformation
+// ----------------------------------
+	inline Matrix4 toWorld(const Vector4Df& Position, const Vector4Df& Direction, const Vector4Df& Up)
+	{
+		Vector4Df Right = cross(Direction, Up).to_unitary();
+
+		Matrix4 m;
+		m.row[0] = { Right.x, Up.x, Direction.x, Position.x };
+		m.row[1] = { Right.y, Up.y, Direction.y, Position.y };
+		m.row[2] = { Right.z, Up.z, Direction.z, Position.z };
+		m.row[3] = { 0.0f, 0.0f, 0.0f, 1.0f };
+		return m;
+	}
+
+	// define a viewing transformation
+	// -------------------------------
+	inline Matrix4 toLocal(const Vector4Df& Position, const Vector4Df& Direction, const Vector4Df& Up)
+	{
+		Vector4Df Right = cross(Direction, Up).to_unitary();
+
+		Matrix4 m;
+		m.row[0] = { Right.x, Right.y, Right.z, -dot(Right, Position) };
+		m.row[1] = { Up.x, Up.y, Up.z, -dot(Up, Position) };
+		m.row[2] = { Direction.x, Direction.y, Direction.z, -dot(Direction, Position) };
+		m.row[3] = { 0.0f, 0.0f, 0.0f, 1.0f };
+		return m;
+	}
 }
 #endif

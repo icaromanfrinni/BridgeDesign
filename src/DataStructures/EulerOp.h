@@ -445,4 +445,6 @@ namespace EulerOp
 				mef(he->opp->prev, he->opp->next->next, he->opp->leftFace->id);
 		}
 	}
+
+	
 }

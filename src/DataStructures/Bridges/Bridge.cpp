@@ -18,7 +18,8 @@ Bridge::Bridge(const std::string& _name, Road* _road, const float& cross_station
 
 	// Vertical Alignment
 	// ------------------
-	Vertical_Alignment();
+	//Vertical_Alignment();
+	this->alignment = this->road->alignment;
 }
 
 //DESTRUCTOR
