@@ -65,6 +65,16 @@ CRAB::Vector4Df Line::getPoint(const float &t) const {
 CRAB::Vector4Df Line::getTan(const float& t) const {
 	return (p2 - p1).to_unitary();
 }
+//RETURN NORMAL VECTOR
+CRAB::Vector4Df Line::getNormal(const float& t) const {
+	CRAB::Vector4Df WorldUp = { 0.0f, 1.0f, 0.0f, 0.0f };
+	CRAB::Vector4Df Right = cross(getTan(t), WorldUp).to_unitary();
+	return cross(Right, getTan(t)).to_unitary();
+}
+//RETURN BINORMAL VECTOR
+CRAB::Vector4Df Line::getBinormal(const float& t) const {
+	return cross(getTan(t), getNormal(t)).to_unitary();
+}
 //RETURN THE LENGTH OF LINE SEGMENT
 float Line::getLength() const {
 	return (p2 - p1).length();

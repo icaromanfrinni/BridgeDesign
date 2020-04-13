@@ -39,6 +39,8 @@ public:
 	CRAB::Vector4Df getMidPoint() const;
 	CRAB::Vector4Df getPoint(const float &t) const;
 	CRAB::Vector4Df getTan(const float& t) const;
+	CRAB::Vector4Df getNormal(const float& t) const;
+	CRAB::Vector4Df getBinormal(const float& t) const;
 	float getLength() const;
 
 	CRAB::Vector4Df Collision(const Ray& ray) const;

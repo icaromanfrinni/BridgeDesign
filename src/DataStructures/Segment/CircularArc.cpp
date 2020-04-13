@@ -79,7 +79,18 @@ CRAB::Vector4Df CircularArc::getTan(const float& t) const
 		(p3 - p2) * 2.0f * t;
 	return tan.to_unitary();
 }
-//TODO
+//RETURN NORMAL VECTOR
+CRAB::Vector4Df CircularArc::getNormal(const float& t) const
+{
+	return cross(getBinormal(t), getTan(t)).to_unitary();
+}
+//RETURN BINORMAL VECTOR
+CRAB::Vector4Df CircularArc::getBinormal(const float& t) const {
+	//CRAB::Vector4Df d2 = (s3.getPoint() - (s2.getPoint() * 2.0f) + s1.getPoint()) * 2.0f;
+	CRAB::Vector4Df d2 = (p3 - (p2 * 2.0f) + p1) * 2.0f;
+	return cross(getTan(t), d2).to_unitary();
+}
+//TODO better
 float CircularArc::getLength() const
 {
 	float arcLength = 0.0f;
