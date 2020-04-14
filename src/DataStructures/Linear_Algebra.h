@@ -310,13 +310,13 @@ namespace CRAB {
 // ----------------------------------
 	inline Matrix4 toWorld(const Vector4Df& Position, const Vector4Df& Direction, const Vector4Df& vup)
 	{
-		Vector4Df Right = cross(Direction, vup).to_unitary();
-		Vector4Df Up = cross(Right, Direction).to_unitary();
+		Vector4Df i = cross(vup, Direction).to_unitary();
+		Vector4Df j = cross(Direction, i).to_unitary();
 
 		Matrix4 m;
-		m.row[0] = { Right.x, Up.x, Direction.x, Position.x };
-		m.row[1] = { Right.y, Up.y, Direction.y, Position.y };
-		m.row[2] = { Right.z, Up.z, Direction.z, Position.z };
+		m.row[0] = { i.x, j.x, Direction.x, Position.x };
+		m.row[1] = { i.y, j.y, Direction.y, Position.y };
+		m.row[2] = { i.z, j.z, Direction.z, Position.z };
 		m.row[3] = { 0.0f, 0.0f, 0.0f, 1.0f };
 		return m;
 	}
@@ -325,12 +325,12 @@ namespace CRAB {
 	// -------------------------------
 	inline Matrix4 toLocal(const Vector4Df& Position, const Vector4Df& Direction, const Vector4Df& vup)
 	{
-		Vector4Df Right = cross(Direction, vup).to_unitary();
-		Vector4Df Up = cross(Right, Direction).to_unitary();
+		Vector4Df i = cross(vup, Direction).to_unitary();
+		Vector4Df j = cross(Direction, i).to_unitary();
 
 		Matrix4 m;
-		m.row[0] = { Right.x, Right.y, Right.z, -dot(Right, Position) };
-		m.row[1] = { Up.x, Up.y, Up.z, -dot(Up, Position) };
+		m.row[0] = { i.x, i.y, i.z, -dot(i, Position) };
+		m.row[1] = { j.x, j.y, j.z, -dot(j, Position) };
 		m.row[2] = { Direction.x, Direction.y, Direction.z, -dot(Direction, Position) };
 		m.row[3] = { 0.0f, 0.0f, 0.0f, 1.0f };
 		return m;
