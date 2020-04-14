@@ -30,11 +30,11 @@ struct VerticalAlignment
 			vPxz = PlaneXZ * vPxz;
 			t = dist / vPxz.length();
 			if (t <= 1.0f)
-				return segments[i]->getPoint(t);
+				return segments[i]->getPosition(t);
 			else dist -= vPxz.length();
 		}
 
-		return segments.back()->getPoint(t);
+		return segments.back()->getPosition(t);
 	}
 
 	// Return Station from Point

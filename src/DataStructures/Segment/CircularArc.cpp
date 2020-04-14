@@ -100,7 +100,7 @@ float CircularArc::getLength() const
 	for (int i = 0; i < DIVIDER; i++)
 	{
 		t += 1.0f / DIVIDER;
-		CRAB::Vector4Df B = getPoint(t);
+		CRAB::Vector4Df B = getPosition(t);
 		arcLength += (B - A).length();
 		A = B;
 	}

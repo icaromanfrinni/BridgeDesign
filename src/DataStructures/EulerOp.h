@@ -451,8 +451,6 @@ namespace EulerOp
 	// path = curva parametrizada
 	void SWEEP(HED::face* f, const Segment* path)
 	{
-		std::cout << "\t! START SWEEP !" << std::endl;
-
 		// Get Solid
 		HED::solid* currentSolid = f->HedSolid;
 
@@ -460,15 +458,17 @@ namespace EulerOp
 		for (int i = 0; i < DIVIDER; i++)
 		{
 			// Transformation Matrix
-			CRAB::Matrix4 LookAt = toLocal(path->getPosition(t), path->getTan(t), path->getNormal(t));
+			//CRAB::Matrix4 LookAt = toLocal(path->getPosition(t), path->getTan(t), path->getNormal(t));
+			CRAB::Matrix4 LookAt = toLocal(path->getPosition(t), path->getTan(t), CRAB::Vector4Df{ 0.0f, 1.0f, 0.0f, 0.0f });
 			t += 1.0f / DIVIDER;
-			CRAB::Matrix4 ModelSpace = toWorld(path->getPosition(t), path->getTan(t), path->getNormal(t));
+			//CRAB::Matrix4 ModelSpace = toWorld(path->getPosition(t), path->getTan(t), path->getNormal(t));
+			CRAB::Matrix4 ModelSpace = toWorld(path->getPosition(t), path->getTan(t), CRAB::Vector4Df{ 0.0f, 1.0f, 0.0f, 0.0f });
 
 			if (currentSolid->faces.size() == 2)
 			{	// use the back face
 				HED::face* backFace = currentSolid->faces.back();
 				HED::halfEdge* he = backFace->hEdge;
-				std::cout << "\tCASE 1. currentSolid->faces.size() = 2" << std::endl;
+
 				// new vertex
 				CRAB::Vector4Df newVertex = ModelSpace * (LookAt * he->vStart->point);
 				// first edge
@@ -490,7 +490,7 @@ namespace EulerOp
 			{	// use the current face
 				// Get HalfEdge
 				HED::halfEdge* he = f->hEdge;
-				std::cout << "\tCASE 1. currentSolid->faces.size() > 2" << std::endl;
+
 				// new vertex
 				CRAB::Vector4Df newVertex = ModelSpace * (LookAt * he->vStart->point);
 				// first edge
@@ -510,7 +510,5 @@ namespace EulerOp
 					mef(he->opp->prev, he->opp->next->next, he->opp->leftFace->id);
 			}
 		}
-
-		std::cout << "\t! END SWEEP !" << std::endl;
 	}
 }

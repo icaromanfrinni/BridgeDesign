@@ -149,7 +149,7 @@ namespace CRAB
         // load models (bridges)
         // ---------------------
         roadways.push_back(new Road("Rodovia_001", 12.00f, 60.0f));
-        roadways.back()->AddSegment(new CircularArc(CRAB::Vector4Df{ -100.0f, 0.0f, 0.0f, 1.0f }, CRAB::Vector4Df{ 100.0f, 100.0f, 0.0f, 1.0f }, CRAB::Vector4Df{ 100.0f, 0.0f, 200.0f, 1.0f }));
+        roadways.back()->AddSegment(new CircularArc(CRAB::Vector4Df{ -100.0f, 0.0f, 0.0f, 1.0f }, CRAB::Vector4Df{ 0.0f, 50.0f, 0.0f, 1.0f }, CRAB::Vector4Df{ 100.0f, 0.0f, 200.0f, 1.0f }));
         bridges.push_back(new BoxGirder("Rio_Pacoti", roadways.back(), 500.0f, 6.0f, 90.0f));
 
         for (int i = 0; i < bridges.size(); i++)
@@ -161,7 +161,8 @@ namespace CRAB
 
         // pass projection matrix to shader (as projection matrix rarely changes there's no need to do this per frame)
         // -----------------------------------------------------------------------------------------------------------
-        projection = glm::perspective(glm::radians(camera.FieldOfView), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 1000.0f);
+        projection = glm::perspective(glm::radians(camera.FieldOfView), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.10f, 1000.0f);
+        //projection = glm::ortho(0.0f, (float)SCR_WIDTH, 0.0f, (float)SCR_HEIGHT, 0.1f, 1000.0f);
 
         // render loop
         // -----------
@@ -296,6 +297,7 @@ namespace CRAB
 
         // update
         projection = glm::perspective(glm::radians(camera.FieldOfView), (float)width / (float)height, 0.1f, 1000.0f);
+        //projection = glm::ortho(0.0f, (float)width, 0.0f, (float)height, 0.1f, 1000.0f);
     }
 
     // glfw: whenever the mouse moves, this callback is called

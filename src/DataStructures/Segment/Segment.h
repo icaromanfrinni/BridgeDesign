@@ -7,7 +7,7 @@
 #include "Linear_Algebra.h"
 //#include "Coord_System.h"
 
-const int DIVIDER = 20;
+const int DIVIDER = 50;
 
 struct Ray
 {
