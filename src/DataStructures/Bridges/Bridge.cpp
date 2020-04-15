@@ -16,10 +16,19 @@ Bridge::Bridge(const std::string& _name, Road* _road, const float& cross_station
 	this->B = this->road->width + 2 * GUARD_RAIL;
 	this->H = int((100.0f * this->mainSpan / 16.0f) / 5.0f) * 0.05f;
 
+	// Horizontal Alignment
+	// --------------------
+	this->path2Dh = this->road->path2Dh;
+	
 	// Vertical Alignment
 	// ------------------
 	//Vertical_Alignment();
-	this->alignment = this->road->alignment;
+	this->path2Dv = this->road->path2Dv;
+
+	// 3D Alignment
+	// ------------
+	//this->path3D = this->road->path3D;
+	this->path3D = this->road->path2Dh;
 }
 
 //DESTRUCTOR
@@ -46,13 +55,13 @@ void Bridge::Vertical_Alignment()
 	A = ceilf(A);
 
 	// VPC
-	CRAB::Vector4Df VPC2 = this->road->alignment.getPointFromStation(this->CS - Lc / 2);
+	CRAB::Vector4Df VPC2 = this->road->path2Dv.getPointFromStation(this->CS - Lc / 2);
 	VPC2.y += this->VC + this->H;
 	// VPI
-	CRAB::Vector4Df VPI2 = this->road->alignment.getPointFromStation(this->CS);
+	CRAB::Vector4Df VPI2 = this->road->path2Dv.getPointFromStation(this->CS);
 	VPI2.y += this->VC + this->H + (A / 200) * Lc / 2;
 	// VPT
-	CRAB::Vector4Df VPT2 = this->road->alignment.getPointFromStation(this->CS + Lc / 2);
+	CRAB::Vector4Df VPT2 = this->road->path2Dv.getPointFromStation(this->CS + Lc / 2);
 	VPT2.y += this->VC + this->H;
 
 	// ********************************** SAG VERTICAL CURVE **********************************
@@ -96,22 +105,22 @@ void Bridge::Vertical_Alignment()
 
 	// VPI
 	CRAB::Vector4Df VPI1;
-	for (int i = 0; i < this->road->alignment.segments.size(); i++)
+	for (int i = 0; i < this->road->path2Dv.segments.size(); i++)
 	{
 		// get the intersect point
-		CRAB::Vector4Df P = this->road->alignment.segments[i]->Collision(g1);
+		CRAB::Vector4Df P = this->road->path2Dv.segments[i]->Collision(g1);
 		// check if its between the extreme points
-		if (this->road->alignment.segments[i]->Contains(P))
+		if (this->road->path2Dv.segments[i]->Contains(P))
 		{
 			VPI1 = P;
-			tan_Segment = this->road->alignment.segments[i]->getTan(0.0f).to_unitary();
+			tan_Segment = this->road->path2Dv.segments[i]->getTan(0.0f).to_unitary();
 			break;
 		}
 		// if its before all segments
 		if (i == 0)
 		{
 			VPI1 = P;
-			tan_Segment = this->road->alignment.segments[i]->getTan(0.0f).to_unitary();
+			tan_Segment = this->road->path2Dv.segments[i]->getTan(0.0f).to_unitary();
 		}
 	}
 	// Projections (hor & vert)
@@ -131,20 +140,20 @@ void Bridge::Vertical_Alignment()
 
 	// VPI
 	CRAB::Vector4Df VPI3;
-	for (int i = 0; i < this->road->alignment.segments.size(); i++)
+	for (int i = 0; i < this->road->path2Dv.segments.size(); i++)
 	{
 		// get the intersect point
-		CRAB::Vector4Df P = this->road->alignment.segments[i]->Collision(g2);
+		CRAB::Vector4Df P = this->road->path2Dv.segments[i]->Collision(g2);
 		// check if its between the extreme points
-		if (this->road->alignment.segments[i]->Contains(P))
+		if (this->road->path2Dv.segments[i]->Contains(P))
 		{
 			VPI3 = P;
-			tan_Segment = this->road->alignment.segments[i]->getTan(1.0f);
+			tan_Segment = this->road->path2Dv.segments[i]->getTan(1.0f);
 			break;
 		}
 		// if its after all segments
 		VPI3 = P;
-		tan_Segment = this->road->alignment.segments[i]->getTan(1.0f);
+		tan_Segment = this->road->path2Dv.segments[i]->getTan(1.0f);
 	}
 	// Projections (hor & vert)
 	vPxz = (PlaneXZ * tan_Segment).to_unitary();
@@ -158,9 +167,9 @@ void Bridge::Vertical_Alignment()
 
 	// ********************************** RETURN **********************************
 
-	this->alignment.segments.push_back(new CircularArc(VPC1, VPI1, VPT1));
-	this->alignment.segments.push_back(new Line(VPT1, VPC2));
-	this->alignment.segments.push_back(new CircularArc(VPC2, VPI2, VPT2));
-	this->alignment.segments.push_back(new Line(VPT2, VPC3));
-	this->alignment.segments.push_back(new CircularArc(VPC3, VPI3, VPT3));
+	this->path2Dv.segments.push_back(new CircularArc(VPC1, VPI1, VPT1));
+	this->path2Dv.segments.push_back(new Line(VPT1, VPC2));
+	this->path2Dv.segments.push_back(new CircularArc(VPC2, VPI2, VPT2));
+	this->path2Dv.segments.push_back(new Line(VPT2, VPC3));
+	this->path2Dv.segments.push_back(new CircularArc(VPC3, VPI3, VPT3));
 }

@@ -307,7 +307,7 @@ namespace CRAB {
 	}
 
 	// define a model view transformation
-// ----------------------------------
+	// ----------------------------------
 	inline Matrix4 toWorld(const Vector4Df& Position, const Vector4Df& Direction, const Vector4Df& vup)
 	{
 		Vector4Df i = cross(vup, Direction).to_unitary();

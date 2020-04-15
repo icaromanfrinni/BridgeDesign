@@ -20,51 +20,6 @@ BoxGirder::BoxGirder(const std::string& _name, Road* _road, const float& cross_s
 	b = int((100.0f * (B - 2.0f * (Lb + INCLINATION_RATIO * (H - h - tv)))) / 5.0f) * 0.05f;
 	th = int((100.0f * (b - 2 * bw) / 5.0f) / 5.0f) * 0.05f;
 
-	//// Alignment
-	//// TODO: copiar alinhamento se a ponte estiver inserida em vários segmentos
-	//for (int i = 0; i < roadway.segments.size(); i++)
-	//{
-	//	if (_start.c_Meters() <= roadway.segments[i]->getStartStation().c_Meters() && _end.c_Meters() >= roadway.segments[i]->getEndStation().c_Meters())
-	//	{// verifica se o segmento corrente está dentro das estações limites da obra
-	//		alignment.push_back(roadway.segments[i]);
-	//	}
-	//	else if (_start.c_Meters() > roadway.segments[i]->getStartStation().c_Meters() && _start.c_Meters() < roadway.segments[i]->getEndStation().c_Meters())
-	//	{// verifica se a ponte começa dentro do segmento corrente (com fim em outro segmento)
-	//		std::string className = typeid(*roadway.segments[i]).name();
-	//		if (className == "class Line")
-	//		{
-	//			float x1 = _start.c_Meters() - roadway.segments[i]->getStartStation().c_Meters();
-	//			float x2 = roadway.segments[i]->getStartStation().getDistance(roadway.segments[i]->getEndStation());
-	//			float t = x1 / x2;
-	//			CRAB::Vector4Df start_point = roadway.segments[i]->getPosition(t);
-	//			alignment.push_back(new Line(CRAB::Station{ start_point }, roadway.segments[i]->getEndStation()));
-	//		}
-	//		else if (className == "class CircularArc")
-	//		{
-	//			//TODO
-	//			alignment.push_back(new CircularArc(CRAB::Station{ _start.E, _start.meters }, CRAB::Station{ roadway.segments[i]->getMidPoint() }, roadway.segments[i]->getEndStation()));
-	//		}
-	//	}
-	//	else if (_end.c_Meters() > roadway.segments[i]->getStartStation().c_Meters() && _end.c_Meters() < roadway.segments[i]->getEndStation().c_Meters())
-	//	{// verifica se a ponte termina dentro do segmento corrente (com início em outro segmento)
-	//		std::string className = typeid(*roadway.segments[i]).name();
-	//		if (className == "class Line")
-	//		{
-	//			float x1 = _end.c_Meters() - roadway.segments[i]->getStartStation().c_Meters();
-	//			float x2 = roadway.segments[i]->getStartStation().getDistance(roadway.segments[i]->getEndStation());
-	//			float t = x1 / x2;
-	//			CRAB::Vector4Df end_point = roadway.segments[i]->getPosition(t);
-	//			alignment.push_back(new Line(roadway.segments[i]->getStartStation(), CRAB::Station{ end_point }));
-	//		}
-	//		else if (className == "class CircularArc")
-	//		{
-	//			//TODO
-	//			alignment.push_back(new CircularArc(roadway.segments[i]->getStartStation(), CRAB::Station{ roadway.segments[i]->getMidPoint() }, CRAB::Station{ _start.E, _start.meters }));
-	//		}
-	//	}
-	//	//TODO: início e fim da ponte dentro do segmento corrente
-	//}
-
 	// PIERS
 	// -----
 
@@ -110,72 +65,36 @@ void BoxGirder::update()
 	// ------------------------------
 
 	// Local axis
-	CRAB::Vector4Df vRight = cross(alignment.segments.front()->getTan(t), { 0.0f, 1.0f, 0.0f, 0.0f }).to_unitary();
-	CRAB::Vector4Df vUp = cross(vRight, alignment.segments.front()->getTan(t)).to_unitary();
+	CRAB::Vector4Df vRight = cross(path3D.segments.front()->getTan(t), { 0.0f, 1.0f, 0.0f, 0.0f }).to_unitary();
+	CRAB::Vector4Df vUp = cross(vRight, path3D.segments.front()->getTan(t)).to_unitary();
 
 #pragma region TOP_LAYER
-	//// v0
-	//start_point = alignment.segments.front()->getStartPoint();// -(vUp * TOP_LAYER);
-	//EulerOp::mvfs(model, start_point);
-	//model.back()->name = "TOP_LAYER";
-	//model.back()->material = { 0.1f, 0.1f, 0.1f, 1.0f };
-	//// v1
-	//newVertex = model.back()->vertices.back()->point - (vRight * (B / 2.0f - GUARD_RAIL)) - (vUp * (B / 2.0f - GUARD_RAIL) * SLOPE);
-	//EulerOp::mev(model.back()->faces[0]->hEdge, NULL, 0, newVertex);
-	//// v2
-	//newVertex = model.back()->vertices.back()->point + (vRight * (B - 2.0f * GUARD_RAIL));
-	//EulerOp::mev(model.back()->halfEdges[0], NULL, 1, newVertex);
-	//// f1
-	//EulerOp::mef(model.back()->halfEdges[0], model.back()->halfEdges[3], 0);
+	// v0
+	start_point = path3D.segments.front()->getStartPoint();// -(vUp * TOP_LAYER);
+	EulerOp::mvfs(model, start_point);
+	model.back()->name = "TOP_LAYER";
+	model.back()->material = { 0.1f, 0.1f, 0.1f, 1.0f };
+	// v1
+	newVertex = model.back()->vertices.back()->point - (vRight * (B / 2.0f - GUARD_RAIL)) - (vUp * (B / 2.0f - GUARD_RAIL) * SLOPE);
+	EulerOp::mev(model.back()->faces[0]->hEdge, NULL, 0, newVertex);
+	// v2
+	newVertex = model.back()->vertices.back()->point + (vRight * (B - 2.0f * GUARD_RAIL));
+	EulerOp::mev(model.back()->halfEdges[0], NULL, 1, newVertex);
+	// f1
+	EulerOp::mef(model.back()->halfEdges[0], model.back()->halfEdges[3], 0);
 
-	//// SWEEP
-	//for (int i = 0; i < alignment.segments.size(); i++)
-	//{
-	//	if (i == 0) // First segment
-	//	{
-	//		//std::cout << "alignment.segments[i]->getTan(0) = [" << alignment.segments[i]->getTan(0).x << "; " << alignment.segments[i]->getTan(0).y << "; " << alignment.segments[i]->getTan(0).z << "]" << std::endl;
-	//
-	//		// First Sweep
-	//		t = 1.0f / DIVIDER;
-	//		next_position = alignment.segments[i]->getPosition(t);
-	//		segment_L = (next_position - alignment.segments[i]->getStartPoint()).length();
-	//		EulerOp::SWEEP(model.back()->faces.back(), alignment.segments[i]->getTan(t), segment_L);
-	//		start_point = next_position;
-	//
-	//		for (int j = 1; j < DIVIDER; j++)
-	//		{
-	//			t += 1.0f / DIVIDER;
-	//			next_position = alignment.segments[i]->getPosition(t);
-	//			segment_L = (next_position - start_point).length();
-	//			EulerOp::SWEEP(model.back()->faces[0], alignment.segments[i]->getTan(t), segment_L);
-	//			start_point = next_position;
-	//		}
-	//	}
-	//	else // Others segments
-	//	{
-	//		t = 0.0f;
-	//		for (int j = 0; j < DIVIDER; j++)
-	//		{
-	//			t += 1.0f / DIVIDER;
-	//			next_position = alignment.segments[i]->getPosition(t);
-	//			segment_L = (next_position - start_point).length();
-	//			EulerOp::SWEEP(model.back()->faces[0], alignment.segments[i]->getTan(t), segment_L);
-	//			start_point = next_position;
-	//		}
-	//	}
-	//}
-
-	/*for (int i = 0; i < alignment.segments.size(); i++)
+	// SWEEP
+	for (int i = 0; i < path3D.segments.size(); i++)
 	{
-		EulerOp::SWEEP(model.back()->faces.front(), alignment.segments[i]);
-	}*/
+		EulerOp::SWEEP(model.back()->faces.front(), path3D.segments[i]);
+	}
 #pragma endregion TOP_LAYER
 
 #pragma region DECK
 	// OFFSET
 	offset = (B / 2.0f - GUARD_RAIL) * SLOPE;
 	// v0
-	start_point = alignment.segments.front()->getStartPoint() - (vUp * offset);
+	start_point = path3D.segments.front()->getStartPoint() - (vUp * offset);
 	EulerOp::mvfs(model, start_point);
 	model.back()->name = "DECK";
 	model.back()->material = { 0.8f, 0.8f, 0.8f, 1.0f };
@@ -258,68 +177,22 @@ void BoxGirder::update()
 	// f1
 	EulerOp::mef(model.back()->halfEdges[0], model.back()->halfEdges[43], 0);
 
-//	// SWEEP
-//	for (int i = 0; i < alignment.segments.size(); i++)
-//	{
-//		if (i == 0) // First segment
-//		{
-//			// First Sweep
-//			t = 1.0f / DIVIDER;
-//			{	// UPDATE Local axis
-//				vRight = cross(alignment.segments[i]->getTan(t), { 0.0f, 1.0f, 0.0f, 0.0f }).to_unitary();
-//				vUp = cross(vRight, alignment.segments[i]->getTan(t)).to_unitary();
-//			}
-//			next_position = alignment.segments[i]->getPosition(t) - (vUp * offset);
-//			segment_L = (next_position - start_point).length();
-//			EulerOp::SWEEP(model.back()->faces.back(), alignment.segments[i]->getTan(t), segment_L);
-//			start_point = next_position;
-//
-//			for (int j = 1; j < DIVIDER; j++)
-//			{
-//				t += 1.0f / DIVIDER;
-//				{	// UPDATE Local axis
-//					vRight = cross(alignment.segments[i]->getTan(t), { 0.0f, 1.0f, 0.0f, 0.0f }).to_unitary();
-//					vUp = cross(vRight, alignment.segments[i]->getTan(t)).to_unitary();
-//				}
-//				next_position = alignment.segments[i]->getPosition(t) - (vUp * offset);
-//				segment_L = (next_position - start_point).length();
-//				EulerOp::SWEEP(model.back()->faces[0], alignment.segments[i]->getTan(t), segment_L);
-//				start_point = next_position;
-//			}
-//		}
-//		else // Others segments
-//		{
-//			t = 0.0f;
-//			for (int j = 0; j < DIVIDER; j++)
-//			{
-//				t += 1.0f / DIVIDER;
-//				{	// UPDATE Local axis
-//					vRight = cross(alignment.segments[i]->getTan(t), { 0.0f, 1.0f, 0.0f, 0.0f }).to_unitary();
-//					vUp = cross(vRight, alignment.segments[i]->getTan(t)).to_unitary();
-//				}
-//				next_position = alignment.segments[i]->getPosition(t) - (vUp * offset);
-//				segment_L = (next_position - start_point).length();
-//				EulerOp::SWEEP(model.back()->faces[0], alignment.segments[i]->getTan(t), segment_L);
-//				start_point = next_position;
-//			}
-//		}
-//	}
-
-	for (int i = 0; i < alignment.segments.size(); i++)
+	// SWEEP
+	for (int i = 0; i < path3D.segments.size(); i++)
 	{
-		EulerOp::SWEEP(model.back()->faces.front(), alignment.segments[i]);
+		EulerOp::SWEEP(model.back()->faces.front(), path3D.segments[i]);
 	}
 #pragma endregion DECK
 
 #pragma region U_SECTION
 	// UPDATE Local axis
 	t = 0.0f;
-	vRight = cross(alignment.segments.front()->getTan(t), { 0.0f, 1.0f, 0.0f, 0.0f }).to_unitary();
-	vUp = cross(vRight, alignment.segments.front()->getTan(t)).to_unitary();
+	vRight = cross(path3D.segments.front()->getTan(t), { 0.0f, 1.0f, 0.0f, 0.0f }).to_unitary();
+	vUp = cross(vRight, path3D.segments.front()->getTan(t)).to_unitary();
 	// OFFSET
 	offset = (B / 2.0f - GUARD_RAIL) * SLOPE + H;
 	// v0
-	start_point = alignment.segments.front()->getStartPoint() - (vUp * offset);
+	start_point = path3D.segments.front()->getStartPoint() - (vUp * offset);
 	EulerOp::mvfs(model, start_point);
 	model.back()->name = "U_SECTION";
 	model.back()->material = { 0.8f, 0.8f, 0.8f, 1.0f };
@@ -357,58 +230,12 @@ void BoxGirder::update()
 	// f1
 	EulerOp::mef(model.back()->halfEdges[0], model.back()->halfEdges[19], 0);
 
-//	// SWEEP
-//	for (int i = 0; i < alignment.segments.size(); i++)
-//	{
-//		if (i == 0) // First segment
-//		{
-//			// First Sweep
-//			t = 1.0f / DIVIDER;
-//			{	// UPDATE Local axis
-//				vRight = cross(alignment.segments[i]->getTan(t), { 0.0f, 1.0f, 0.0f, 0.0f }).to_unitary();
-//				vUp = cross(vRight, alignment.segments[i]->getTan(t)).to_unitary();
-//			}
-//			next_position = alignment.segments[i]->getPosition(t) - (vUp * offset);
-//			segment_L = (next_position - start_point).length();
-//			EulerOp::SWEEP(model.back()->faces.back(), alignment.segments[i]->getTan(t), segment_L);
-//			start_point = next_position;
-//
-//			for (int j = 1; j < DIVIDER; j++)
-//			{
-//				t += 1.0f / DIVIDER;
-//				{	// UPDATE Local axis
-//					vRight = cross(alignment.segments[i]->getTan(t), { 0.0f, 1.0f, 0.0f, 0.0f }).to_unitary();
-//					vUp = cross(vRight, alignment.segments[i]->getTan(t)).to_unitary();
-//				}
-//				next_position = alignment.segments[i]->getPosition(t) - (vUp * offset);
-//				segment_L = (next_position - start_point).length();
-//				EulerOp::SWEEP(model.back()->faces[0], alignment.segments[i]->getTan(t), segment_L);
-//				start_point = next_position;
-//			}
-//		}
-//		else // Others segments
-//		{
-//			t = 0.0f;
-//			for (int j = 0; j < DIVIDER; j++)
-//			{
-//				t += 1.0f / DIVIDER;
-//				{	// UPDATE Local axis
-//					vRight = cross(alignment.segments[i]->getTan(t), { 0.0f, 1.0f, 0.0f, 0.0f }).to_unitary();
-//					vUp = cross(vRight, alignment.segments[i]->getTan(t)).to_unitary();
-//				}
-//				next_position = alignment.segments[i]->getPosition(t) - (vUp * offset);
-//				segment_L = (next_position - start_point).length();
-//				EulerOp::SWEEP(model.back()->faces[0], alignment.segments[i]->getTan(t), segment_L);
-//				start_point = next_position;
-//			}
-//		}
-//	}
-
-	for (int i = 0; i < alignment.segments.size(); i++)
+	// SWEEP
+	for (int i = 0; i < path3D.segments.size(); i++)
 	{
-		EulerOp::SWEEP(model.back()->faces.front(), alignment.segments[i]);
+		EulerOp::SWEEP(model.back()->faces.front(), path3D.segments[i]);
 	}
-#pragma endregion 
+#pragma endregion U_SECTION
 
 #pragma region ROADS
 	//vRight = cross(road->alignment.segments.front()->getTan(0.0f), { 0.0f, 1.0f, 0.0f, 0.0f }).to_unitary();

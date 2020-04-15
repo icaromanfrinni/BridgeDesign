@@ -78,6 +78,18 @@
     <ClInclude Include="src\DataStructures\Segment\Segment.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\DataStructures\Alignment\Alignment.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\DataStructures\Alignment\Alignment2DVertical.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\DataStructures\Alignment\Alignment2DHorizontal.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\DataStructures\Alignment\Alignment3D.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\RenderEngine\Camera.cpp">
@@ -132,6 +144,18 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\DataStructures\Segment\Segment.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\DataStructures\Alignment\Alignment.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\DataStructures\Alignment\Alignment2DVertical.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\DataStructures\Alignment\Alignment2DHorizontal.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\DataStructures\Alignment\Alignment3D.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

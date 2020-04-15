@@ -28,14 +28,16 @@ const float INCLINATION_RATIO = 0.25f;
 
 class Bridge
 {
-	// VERTICAL ALIGNMENT
-	// ------------------
+	// ALIGNMENTS
 	void Vertical_Alignment();
 
 public:
 	std::string name;
 	Road* road;
-	VerticalAlignment alignment;
+	Alignment2DHorizontal path2Dh;
+	Alignment2DVertical path2Dv;
+	//Alignment3D path3D;
+	Alignment2DHorizontal path3D;
 	std::vector<HED::solid*> model;
 	float CS; // cross station
 	float VC; // vertical clearance

@@ -21,7 +21,11 @@ Road::~Road()
 }
 
 //ADD NEW SEGMENT
-void Road::AddSegment(Segment* _segment)
+void Road::AddVerSegment(Segment* _segment)
 {
-	alignment.segments.push_back(_segment);
+	path2Dv.segments.push_back(_segment);
+}
+void Road::AddHorSegment(Segment* _segment)
+{
+	path2Dh.segments.push_back(_segment);
 }
