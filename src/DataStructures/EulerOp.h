@@ -449,20 +449,20 @@ namespace EulerOp
 	// SWEEP
 	// f = face q sofre a varredura
 	// path = curva parametrizada
-	void SWEEP(HED::face* f, const Segment* path)
+	void SWEEP(HED::face* f, const Alignment& path)
 	{
 		// Get Solid
 		HED::solid* currentSolid = f->HedSolid;
 
 		float t = 0.0f;
-		for (int i = 0; i < DIVIDER; i++)
+		for (int i = 0; i < STEP; i++)
 		{
 			// Transformation Matrix
 			//CRAB::Matrix4 LookAt = toLocal(path->getPosition(t), path->getTan(t), path->getNormal(t));
-			CRAB::Matrix4 LookAt = toLocal(path->getPosition(t), path->getTan(t), CRAB::Vector4Df{ 0.0f, 1.0f, 0.0f, 0.0f });
-			t += 1.0f / DIVIDER;
+			CRAB::Matrix4 LookAt = toLocal(path.getPosition(t), path.getTan(t), CRAB::Vector4Df{ 0.0f, 1.0f, 0.0f, 0.0f });
+			t += 1.0f / STEP;
 			//CRAB::Matrix4 ModelSpace = toWorld(path->getPosition(t), path->getTan(t), path->getNormal(t));
-			CRAB::Matrix4 ModelSpace = toWorld(path->getPosition(t), path->getTan(t), CRAB::Vector4Df{ 0.0f, 1.0f, 0.0f, 0.0f });
+			CRAB::Matrix4 ModelSpace = toWorld(path.getPosition(t), path.getTan(t), CRAB::Vector4Df{ 0.0f, 1.0f, 0.0f, 0.0f });
 
 			if (currentSolid->faces.size() == 2)
 			{	// use the back face

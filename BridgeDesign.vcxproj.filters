@@ -69,15 +69,6 @@
     <ClInclude Include="src\DataStructures\Light\Light.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\DataStructures\Segment\CircularArc.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\DataStructures\Segment\Line.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\DataStructures\Segment\Segment.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="src\DataStructures\Alignment\Alignment.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -135,15 +126,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\DataStructures\Light\Light.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\DataStructures\Segment\CircularArc.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\DataStructures\Segment\Line.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\DataStructures\Segment\Segment.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\DataStructures\Alignment\Alignment.cpp">

@@ -26,17 +26,16 @@ public:
 	float speed;	// Speed design
 	int S;			// Stopping Sight Distance
 
-	//DEFAULT CONSTRUCTOR
+	// DEFAULT CONSTRUCTOR
 	Road();
-	//OVERLOAD CONSTRUCTOR
+	// OVERLOAD CONSTRUCTOR
 	Road(const std::string& _name, const float& _width, const float& _speed);
-
-	//ADD NEW SEGMENT
-	void AddVerSegment(Segment* _segment);
-	void AddHorSegment(Segment* _segment);
-
-	//DESTRUCTOR
+	// DESTRUCTOR
 	~Road();
+
+	// ADD NEW CONTROL POINT
+	void AddVerPoint(const CRAB::Vector4Df& p);
+	void AddHorPoint(const CRAB::Vector4Df& p);
 };
 
 #endif // ROAD_H

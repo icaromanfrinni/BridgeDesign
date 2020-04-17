@@ -4,8 +4,6 @@
 
 #include "Bridge.h"
 //#include "Coord_System.h"
-#include "Line.h"
-#include "CircularArc.h"
 
 class BoxGirder : public Bridge
 {

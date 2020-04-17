@@ -65,12 +65,12 @@ void BoxGirder::update()
 	// ------------------------------
 
 	// Local axis
-	CRAB::Vector4Df vRight = cross(path3D.segments.front()->getTan(t), { 0.0f, 1.0f, 0.0f, 0.0f }).to_unitary();
-	CRAB::Vector4Df vUp = cross(vRight, path3D.segments.front()->getTan(t)).to_unitary();
+	CRAB::Vector4Df vRight = cross(path3D.getTan(t), { 0.0f, 1.0f, 0.0f, 0.0f }).to_unitary();
+	CRAB::Vector4Df vUp = cross(vRight, path3D.getTan(t)).to_unitary();
 
 #pragma region TOP_LAYER
 	// v0
-	start_point = path3D.segments.front()->getStartPoint();// -(vUp * TOP_LAYER);
+	start_point = path3D.getPosition(0.0f);// -(vUp * TOP_LAYER);
 	EulerOp::mvfs(model, start_point);
 	model.back()->name = "TOP_LAYER";
 	model.back()->material = { 0.1f, 0.1f, 0.1f, 1.0f };
@@ -84,17 +84,14 @@ void BoxGirder::update()
 	EulerOp::mef(model.back()->halfEdges[0], model.back()->halfEdges[3], 0);
 
 	// SWEEP
-	for (int i = 0; i < path3D.segments.size(); i++)
-	{
-		EulerOp::SWEEP(model.back()->faces.front(), path3D.segments[i]);
-	}
+	EulerOp::SWEEP(model.back()->faces.front(), path3D);
 #pragma endregion TOP_LAYER
 
 #pragma region DECK
 	// OFFSET
 	offset = (B / 2.0f - GUARD_RAIL) * SLOPE;
 	// v0
-	start_point = path3D.segments.front()->getStartPoint() - (vUp * offset);
+	start_point = path3D.getPosition(0.0f) - (vUp * offset);
 	EulerOp::mvfs(model, start_point);
 	model.back()->name = "DECK";
 	model.back()->material = { 0.8f, 0.8f, 0.8f, 1.0f };
@@ -178,21 +175,19 @@ void BoxGirder::update()
 	EulerOp::mef(model.back()->halfEdges[0], model.back()->halfEdges[43], 0);
 
 	// SWEEP
-	for (int i = 0; i < path3D.segments.size(); i++)
-	{
-		EulerOp::SWEEP(model.back()->faces.front(), path3D.segments[i]);
-	}
+	EulerOp::SWEEP(model.back()->faces.front(), path3D);
+
 #pragma endregion DECK
 
 #pragma region U_SECTION
 	// UPDATE Local axis
 	t = 0.0f;
-	vRight = cross(path3D.segments.front()->getTan(t), { 0.0f, 1.0f, 0.0f, 0.0f }).to_unitary();
-	vUp = cross(vRight, path3D.segments.front()->getTan(t)).to_unitary();
+	vRight = cross(path3D.getTan(t), { 0.0f, 1.0f, 0.0f, 0.0f }).to_unitary();
+	vUp = cross(vRight, path3D.getTan(t)).to_unitary();
 	// OFFSET
 	offset = (B / 2.0f - GUARD_RAIL) * SLOPE + H;
 	// v0
-	start_point = path3D.segments.front()->getStartPoint() - (vUp * offset);
+	start_point = path3D.getPosition(0.0f) - (vUp * offset);
 	EulerOp::mvfs(model, start_point);
 	model.back()->name = "U_SECTION";
 	model.back()->material = { 0.8f, 0.8f, 0.8f, 1.0f };
@@ -231,10 +226,8 @@ void BoxGirder::update()
 	EulerOp::mef(model.back()->halfEdges[0], model.back()->halfEdges[19], 0);
 
 	// SWEEP
-	for (int i = 0; i < path3D.segments.size(); i++)
-	{
-		EulerOp::SWEEP(model.back()->faces.front(), path3D.segments[i]);
-	}
+	EulerOp::SWEEP(model.back()->faces.front(), path3D);
+
 #pragma endregion U_SECTION
 
 #pragma region ROADS

@@ -1,17 +1,50 @@
 #pragma once
+#ifndef ALIGNMENT_H
+#define ALIGNMENT_H
+
 #include <iostream>
 #include <vector>
 
 #include "Linear_Algebra.h"
-#include "Segment.h"
 
+const int STEP = 100;
+
+struct Ray
+{
+	CRAB::Vector4Df origin, direction;
+};
+
+// Bézier Curve
 class Alignment
 {
+	int binomialCoefficient(const int& n, const int& i) const;
+	float BernsteinPolynomial(const int& n, const int& i, const float& t) const;
 public:
-	std::vector<Segment*> segments;
+	std::vector<CRAB::Vector4Df> points; // control points
 
 	//DEFAULT CONSTRUCTOR
 	Alignment();
 	//DESTRUCTOR
-	~Alignment();
+	virtual ~Alignment() = 0;
+
+	// RETURNS A POINT ON THE CURVE
+	CRAB::Vector4Df getPosition(const float& t) const;
+	// RETURNS THE CURVE TANGENT
+	CRAB::Vector4Df getTan(const float& t) const;
+	// RETURNS THE CURVE NORMAL
+	CRAB::Vector4Df getNormal(const float& t) const;
+	// RETURNS THE CURVE LENGTH
+	float getLength() const;
+
+	// ************************************************************************* //
+
+	// Return the closest collision distance of a ray and the segment
+	CRAB::Vector4Df Collision(const Ray& ray) const;
+	// Return true if the point P intersect the segment
+	bool Contains(const CRAB::Vector4Df& p) const;
+
+	CRAB::Vector4Df getPointFromStation(float dist);
+	float getStationFromPoint(CRAB::Vector4Df p);
 };
+
+#endif // ALIGNMENT_H

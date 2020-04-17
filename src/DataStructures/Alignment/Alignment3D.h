@@ -1,4 +1,7 @@
 #pragma once
+#ifndef ALIGNMENT3D_H
+#define ALIGNMENT3D_H
+
 #include "Alignment.h"
 
 class Alignment3D : 
@@ -10,3 +13,5 @@ public:
 	//DESTRUCTOR
 	~Alignment3D();
 };
+
+#endif // ALIGNMENT3D_H

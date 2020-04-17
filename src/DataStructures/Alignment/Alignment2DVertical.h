@@ -1,15 +1,17 @@
 #pragma once
+#ifndef ALIGNMENT2DVERTICAL_H
+#define ALIGNMENT2DVERTICAL_H
+
 #include "Alignment.h"
 
 class Alignment2DVertical :
 	public Alignment
 {
 public:
-	//DEFAULT CONSTRUCTOR
+	// DEFAULT CONSTRUCTOR
 	Alignment2DVertical();
-	//DESTRUCTOR
+	// DESTRUCTOR
 	~Alignment2DVertical();
-
-	CRAB::Vector4Df getPointFromStation(float dist);
-	float getStationFromPoint(CRAB::Vector4Df p);
 };
+
+#endif // ALIGNMENT2DVERTICAL_H

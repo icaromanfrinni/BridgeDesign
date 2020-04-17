@@ -1,11 +1,13 @@
 #include "Road.h"
 
-//DEFAULT CONSTRUCTOR
+// DEFAULT CONSTRUCTOR
+// -------------------
 Road::Road()
 {
 }
 
-//OVERLOAD CONSTRUCTOR
+// OVERLOAD CONSTRUCTOR
+// --------------------
 Road::Road(const std::string& _name, const float& _width, const float& _speed) : name(_name), width(_width), speed(_speed)
 {
 	// Stopping Sight Distance (S)
@@ -15,17 +17,19 @@ Road::Road(const std::string& _name, const float& _width, const float& _speed) :
 	S = round((d1 + d2) / 5) * 5;
 }
 
-//DESTRUCTOR
+// DESTRUCTOR
+// ----------
 Road::~Road()
 {
 }
 
-//ADD NEW SEGMENT
-void Road::AddVerSegment(Segment* _segment)
+// ADD NEW CONTROL POINT
+// ---------------------
+void Road::AddVerPoint(const CRAB::Vector4Df& p)
 {
-	path2Dv.segments.push_back(_segment);
+	path2Dv.points.push_back(p);
 }
-void Road::AddHorSegment(Segment* _segment)
+void Road::AddHorPoint(const CRAB::Vector4Df& p)
 {
-	path2Dh.segments.push_back(_segment);
+	path2Dh.points.push_back(p);
 }

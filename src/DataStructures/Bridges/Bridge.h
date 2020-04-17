@@ -6,8 +6,6 @@
 #include <string>
 
 #include "HalfEdge.h"
-#include "Line.h"
-#include "CircularArc.h"
 #include "Road.h"
 
 // Default Vertical curves values
@@ -36,8 +34,8 @@ public:
 	Road* road;
 	Alignment2DHorizontal path2Dh;
 	Alignment2DVertical path2Dv;
-	//Alignment3D path3D;
-	Alignment2DHorizontal path3D;
+	Alignment3D path3D;
+	//Alignment2DHorizontal path3D;
 	std::vector<HED::solid*> model;
 	float CS; // cross station
 	float VC; // vertical clearance
