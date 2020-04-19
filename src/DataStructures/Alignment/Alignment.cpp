@@ -74,6 +74,15 @@ CRAB::Vector4Df Alignment::getNormal(const float& t) const
 	CRAB::Vector4Df k = deriv2(t) - deriv(t) * (dot(deriv2(t), deriv(t)) / deriv(t).lengthsq());
 	return k.to_unitary();
 }
+// RETURNS THE CURVE NORMAL UP
+// ---------------------------
+CRAB::Vector4Df Alignment::getNormalUp(const float& t) const
+{
+	CRAB::Vector4Df vUp = { 0.0f, 1.0f, 0.0f, 0.0f };
+	CRAB::Vector4Df vAux = CRAB::cross(vUp, getTan(t)).to_unitary();
+	CRAB::Vector4Df n = CRAB::cross(getTan(t), vAux).to_unitary();
+	return n;
+}
 // RETURNS THE CURVE BINORMAL
 // --------------------------
 CRAB::Vector4Df Alignment::getBinormal(float t) const

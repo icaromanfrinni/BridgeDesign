@@ -40,6 +40,8 @@ public:
 	CRAB::Vector4Df getTan(const float& t) const;
 	// RETURNS THE CURVE NORMAL
 	CRAB::Vector4Df getNormal(const float& t) const;
+	// RETURNS THE CURVE NORMAL UP (Yaw vector)
+	CRAB::Vector4Df getNormalUp(const float& t) const;
 	// RETURNS THE CURVE BINORMAL
 	CRAB::Vector4Df getBinormal(float t) const;
 	// RETURNS THE CURVATURE

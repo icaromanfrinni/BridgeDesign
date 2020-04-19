@@ -458,10 +458,10 @@ namespace EulerOp
 		for (int i = 0; i < STEP; i++)
 		{
 			// Transformation Matrix
-			CRAB::Matrix4 LookAt = toLocal(path.getPosition(t), path.getTan(t), CRAB::Vector4Df{ 0.0f, 1.0f, 0.0f, 0.0f });
+			CRAB::Matrix4 LookAt = toLocal(path.getPosition(t), path.getTan(t), path.getNormalUp(t));
 			//float last_Roll = atanf(25.0f * path.getCurvature(t)) * 180.0f / M_PI;
 			t += 1.0f / STEP;
-			CRAB::Matrix4 ModelSpace = toWorld(path.getPosition(t), path.getTan(t), CRAB::Vector4Df{ 0.0f, 1.0f, 0.0f, 0.0f });
+			CRAB::Matrix4 ModelSpace = toWorld(path.getPosition(t), path.getTan(t), path.getNormalUp(t));
 			//float next_Roll = atanf(25.0f * path.getCurvature(t)) * 180.0f / M_PI;
 			//CRAB::Matrix4 Superelevation = CRAB::rotateZ(next_Roll - last_Roll);
 
