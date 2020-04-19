@@ -39,9 +39,6 @@
     <ClInclude Include="src\DataIO\ObjFile.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\DataStructures\Comp_Geometry.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="src\DataStructures\Bridges\BoxGirder.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -72,13 +69,7 @@
     <ClInclude Include="src\DataStructures\Alignment\Alignment.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\DataStructures\Alignment\Alignment2DVertical.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\DataStructures\Alignment\Alignment2DHorizontal.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\DataStructures\Alignment\Alignment3D.h">
+    <ClInclude Include="src\DataStructures\Geometry.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -129,15 +120,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\DataStructures\Alignment\Alignment.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\DataStructures\Alignment\Alignment2DVertical.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\DataStructures\Alignment\Alignment2DHorizontal.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\DataStructures\Alignment\Alignment3D.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

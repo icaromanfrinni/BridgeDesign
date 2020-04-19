@@ -7,7 +7,6 @@
 
 class BoxGirder : public Bridge
 {
-	Alignment path3D;
 public:
 	// Box-Girder Bridge Attributes
 	float Lb;   // slab cantilever

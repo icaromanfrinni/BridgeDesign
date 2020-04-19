@@ -20,18 +20,6 @@ BoxGirder::BoxGirder(const std::string& _name, Road* _road, const float& cross_s
 	b = int((100.0f * (B - 2.0f * (Lb + INCLINATION_RATIO * (H - h - tv)))) / 5.0f) * 0.05f;
 	th = int((100.0f * (b - 2 * bw) / 5.0f) / 5.0f) * 0.05f;
 
-	// Alignment 3D
-	this->path3D.points.clear();
-	for (int i = 0; i <= STEP; i++)
-	{
-		float t = float(i) / STEP;
-		CRAB::Vector4Df control_point = this->path2Dh.getPosition(t);
-		control_point.y = this->path2Dv.getPosition(t).y;
-		this->path3D.points.push_back(control_point);
-	}
-	//this->path3D.points = this->path2Dh.points;
-	//this->path3D.points = this->path2Dv.points;
-
 	// PIERS
 	// -----
 
@@ -77,12 +65,12 @@ void BoxGirder::update()
 	// ------------------------------
 
 	// Local axis
-	CRAB::Vector4Df vRight = cross(path3D.getTan(t), { 0.0f, 1.0f, 0.0f, 0.0f }).to_unitary();
-	CRAB::Vector4Df vUp = cross(vRight, path3D.getTan(t)).to_unitary();
+	CRAB::Vector4Df vRight = cross(alignment.getTangent(t), { 0.0f, 1.0f, 0.0f, 0.0f }).to_unitary();
+	CRAB::Vector4Df vUp = cross(vRight, alignment.getTangent(t)).to_unitary();
 
 #pragma region TOP_LAYER
 	// v0
-	start_point = path3D.getPosition(0.0f);// -(vUp * TOP_LAYER);
+	start_point = alignment.getPosition(0.0f);// -(vUp * TOP_LAYER);
 	EulerOp::mvfs(model, start_point);
 	model.back()->name = "TOP_LAYER";
 	model.back()->material = { 0.1f, 0.1f, 0.1f, 1.0f };
@@ -102,14 +90,14 @@ void BoxGirder::update()
 	EulerOp::mef(model.back()->halfEdges[0], model.back()->halfEdges[7], 0);
 
 	// SWEEP
-	EulerOp::SWEEP(model.back()->faces.front(), path3D);
+	EulerOp::SWEEP(model.back()->faces.front(), alignment);
 #pragma endregion TOP_LAYER
 
 #pragma region DECK
 	// OFFSET
 	offset = (B / 2.0f - GUARD_RAIL) * SLOPE + TOP_LAYER;
 	// v0
-	start_point = path3D.getPosition(0.0f) - (vUp * offset);
+	start_point = alignment.getPosition(0.0f) - (vUp * offset);
 	EulerOp::mvfs(model, start_point);
 	model.back()->name = "DECK";
 	model.back()->material = { 0.8f, 0.8f, 0.8f, 1.0f };
@@ -193,19 +181,19 @@ void BoxGirder::update()
 	EulerOp::mef(model.back()->halfEdges[0], model.back()->halfEdges[43], 0);
 
 	// SWEEP
-	EulerOp::SWEEP(model.back()->faces.front(), path3D);
+	EulerOp::SWEEP(model.back()->faces.front(), alignment);
 
 #pragma endregion DECK
 
 #pragma region U_SECTION
 	// UPDATE Local axis
 	t = 0.0f;
-	vRight = cross(path3D.getTan(t), { 0.0f, 1.0f, 0.0f, 0.0f }).to_unitary();
-	vUp = cross(vRight, path3D.getTan(t)).to_unitary();
+	vRight = cross(alignment.getTangent(t), { 0.0f, 1.0f, 0.0f, 0.0f }).to_unitary();
+	vUp = cross(vRight, alignment.getTangent(t)).to_unitary();
 	// OFFSET
 	offset = (B / 2.0f - GUARD_RAIL) * SLOPE + H + TOP_LAYER;
 	// v0
-	start_point = path3D.getPosition(0.0f) - (vUp * offset);
+	start_point = alignment.getPosition(0.0f) - (vUp * offset);
 	EulerOp::mvfs(model, start_point);
 	model.back()->name = "U_SECTION";
 	model.back()->material = { 0.8f, 0.8f, 0.8f, 1.0f };
@@ -244,7 +232,7 @@ void BoxGirder::update()
 	EulerOp::mef(model.back()->halfEdges[0], model.back()->halfEdges[19], 0);
 
 	// SWEEP
-	EulerOp::SWEEP(model.back()->faces.front(), path3D);
+	EulerOp::SWEEP(model.back()->faces.front(), alignment);
 
 #pragma endregion U_SECTION
 

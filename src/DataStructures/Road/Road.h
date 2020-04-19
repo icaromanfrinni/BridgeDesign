@@ -7,8 +7,7 @@
 #include <string>
 #include <vector>
 
-#include "Alignment2DHorizontal.h"
-#include "Alignment2DVertical.h"
+#include "Alignment.h"
 
 // Default Vertical curves values
 const float t = 2.5f;	// brake reaction time
@@ -19,8 +18,7 @@ class Road
 	//Alignment path3D;
 public:
 	std::string name;
-	Alignment2DHorizontal path2Dh;
-	Alignment2DVertical path2Dv;
+	Alignment alignment;
 	float width;	// Roadway width
 	float speed;	// Speed design
 	int S;			// Stopping Sight Distance
@@ -28,13 +26,9 @@ public:
 	// DEFAULT CONSTRUCTOR
 	Road();
 	// OVERLOAD CONSTRUCTOR
-	Road(const std::string& _name, const float& _width, const float& _speed);
+	Road(const std::string& _name, const float& _width, const float& _speed, const Alignment& _alignment);
 	// DESTRUCTOR
 	~Road();
-
-	// ADD NEW CONTROL POINT
-	void AddVerPoint(const CRAB::Vector4Df& p);
-	void AddHorPoint(const CRAB::Vector4Df& p);
 };
 
 #endif // ROAD_H

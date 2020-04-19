@@ -8,7 +8,8 @@ Road::Road()
 
 // OVERLOAD CONSTRUCTOR
 // --------------------
-Road::Road(const std::string& _name, const float& _width, const float& _speed) : name(_name), width(_width), speed(_speed)
+Road::Road(const std::string& _name, const float& _width, const float& _speed, const Alignment& _alignment)
+	: name(_name), width(_width), speed(_speed), alignment(_alignment)
 {
 	// Stopping Sight Distance (S)
 	// ---------------------------
@@ -21,15 +22,4 @@ Road::Road(const std::string& _name, const float& _width, const float& _speed) :
 // ----------
 Road::~Road()
 {
-}
-
-// ADD NEW CONTROL POINT
-// ---------------------
-void Road::AddVerPoint(const CRAB::Vector4Df& p)
-{
-	path2Dv.points.push_back(p);
-}
-void Road::AddHorPoint(const CRAB::Vector4Df& p)
-{
-	path2Dh.points.push_back(p);
 }

@@ -7,40 +7,32 @@
 #include <cmath>
 
 #include "Linear_Algebra.h"
+#include "Geometry.h"
 
-const int STEP = 20;
-
-struct Ray
-{
-	CRAB::Vector4Df origin, direction;
-};
+#define STEP 20
 
 // Bézier Curve
 class Alignment
 {
-	int binomialCoefficient(const int& n, const int& i) const;
-	float BernsteinPolynomial(const int& n, const int& i, const float& t) const;
-
-	// CALCULATES THE DERIVATIVE FOR A CURVE OF ORDER 'n'
-	CRAB::Vector4Df deriv(float t) const;
-	CRAB::Vector4Df deriv2(float t) const;
-	// https://pages.mtu.edu/~shene/COURSES/cs3621/NOTES/spline/Bezier/bezier-der.html
-
+	CRAB::Curve VerticalAlignment;
+	CRAB::Curve HorizontalAlignment;
 public:
-	std::vector<CRAB::Vector4Df> points; // control points
+	CRAB::Curve path3D;
 
-	//DEFAULT CONSTRUCTOR
+	// DEFAULT CONSTRUCTOR
 	Alignment();
-	//DESTRUCTOR
+	// OVERLOAD CONSTRUCTOR
+	Alignment(const CRAB::Curve& _vertical, const CRAB::Curve& _horizontal);
+	// DESTRUCTOR
 	~Alignment();
 
 	// RETURNS A POINT ON THE CURVE
 	CRAB::Vector4Df getPosition(const float& t) const;
 	// RETURNS THE CURVE TANGENT
-	CRAB::Vector4Df getTan(const float& t) const;
+	CRAB::Vector4Df getTangent(const float& t) const;
 	// RETURNS THE CURVE NORMAL
 	CRAB::Vector4Df getNormal(const float& t) const;
-	// RETURNS THE CURVE NORMAL UP (Yaw vector)
+	// RETURNS THE CURVE NORMAL UP (w/ Superelevation)
 	CRAB::Vector4Df getNormalUp(const float& t) const;
 	// RETURNS THE CURVE BINORMAL
 	CRAB::Vector4Df getBinormal(float t) const;
@@ -53,13 +45,13 @@ public:
 
 	// ************************************************************************* //
 
-	// Return the closest collision distance of a ray and the segment
-	CRAB::Vector4Df Collision(const Ray& ray) const;
-	// Return true if the point P intersect the segment
-	bool Contains(const CRAB::Vector4Df& p) const;
+	//// Return the closest collision distance of a ray and the segment
+	//CRAB::Vector4Df Collision(const Ray& ray) const;
+	//// Return true if the point P intersect the segment
+	//bool Contains(const CRAB::Vector4Df& p) const;
 
-	CRAB::Vector4Df getPointFromStation(float dist);
-	float getStationFromPoint(CRAB::Vector4Df p);
+	//CRAB::Vector4Df getPointFromStation(float dist);
+	//float getStationFromPoint(CRAB::Vector4Df p);
 };
 
 #endif // ALIGNMENT_H

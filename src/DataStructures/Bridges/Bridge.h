@@ -28,12 +28,12 @@ class Bridge
 {
 	// ALIGNMENTS
 	void Vertical_Alignment();
+	void Horizontal_Alignment();
 
 public:
 	std::string name;
 	Road* road;
-	Alignment2DHorizontal path2Dh;
-	Alignment2DVertical path2Dv;
+	Alignment alignment;
 	std::vector<HED::solid*> model;
 	float CS; // cross station
 	float VC; // vertical clearance

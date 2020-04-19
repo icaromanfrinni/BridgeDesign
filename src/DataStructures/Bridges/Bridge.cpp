@@ -1,36 +1,35 @@
 #include "Bridge.h"
 
-//DEFAULT CONSTRUCTOR
+// DEFAULT CONSTRUCTOR
+// -------------------
 Bridge::Bridge()
 {
 }
 
-//OVERLOAD CONSTRUCTOR
+// OVERLOAD CONSTRUCTOR
+// --------------------
 Bridge::Bridge(const std::string& _name, Road* _road, const float& cross_station, const float& vertical_clearance, const float& horizontal_clearance)
 	: name(_name), road(_road), CS(cross_station), VC(vertical_clearance), HC(horizontal_clearance)
 {
 	// Bridge attributes
-	// -----------------
 	this->mainSpan = 35.0f;
 	this->B = this->road->width + 2 * GUARD_RAIL;
 	this->H = int((100.0f * this->mainSpan / 16.0f) / 5.0f) * 0.05f;
 
-	// Horizontal Alignment
-	// --------------------
-	this->path2Dh = this->road->path2Dh;
-	
-	// Vertical Alignment
-	// ------------------
+	// Alignment
 	//Vertical_Alignment();
-	this->path2Dv = this->road->path2Dv;
+	//Horizontal_Alignment();	
+	this->alignment = this->road->alignment;
 }
 
-//DESTRUCTOR
+// DESTRUCTOR
+// ----------
 Bridge::~Bridge()
 {
 }
 
 // VERTICAL ALIGNMENT
+// ------------------
 void Bridge::Vertical_Alignment()
 {
 	// ********************************** CREST VERTICAL CURVE **********************************
@@ -166,4 +165,11 @@ void Bridge::Vertical_Alignment()
 	//this->path2Dv.segments.push_back(new CircularArc(VPC2, VPI2, VPT2));
 	//this->path2Dv.segments.push_back(new Line(VPT2, VPC3));
 	//this->path2Dv.segments.push_back(new CircularArc(VPC3, VPI3, VPT3));
+}
+
+// HORIZONTAL ALIGNMENT
+// --------------------
+void Bridge::Horizontal_Alignment()
+{
+
 }

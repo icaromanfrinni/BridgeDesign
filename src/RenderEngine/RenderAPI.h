@@ -144,22 +144,27 @@ namespace CRAB
         //std::vector<Mesh> ourMesh_List;
         //ourMesh_List = CRAB::LoadOBJ("objects/cubes.obj");
 
-        // load models (bridges)
-        // ---------------------
-        roadways.push_back(new Road("Rodovia_001", 12.00f, 60.0f));
-        // horizontal
-        roadways.back()->AddHorPoint(CRAB::Vector4Df{ -100.0f, 0.0f, 100.0f, 1.0f });
-        roadways.back()->AddHorPoint(CRAB::Vector4Df{ 0.0f, 0.0f, 0.0f, 1.0f });
-        roadways.back()->AddHorPoint(CRAB::Vector4Df{ 100.0f, 0.0f, 100.0f, 1.0f });
+        // load models
+        // -----------
         // vertical
-        roadways.back()->AddVerPoint(CRAB::Vector4Df{ 0.0f, 0.0f, 0.0f, 1.0f });
-        roadways.back()->AddVerPoint(CRAB::Vector4Df{ 50.0f, 0.0f, 0.0f, 1.0f });
-        roadways.back()->AddVerPoint(CRAB::Vector4Df{ 75.0f, 50.0f, 0.0f, 1.0f });
-        roadways.back()->AddVerPoint(CRAB::Vector4Df{ 100.0f, 0.0f, 0.0f, 1.0f });
-        roadways.back()->AddVerPoint(CRAB::Vector4Df{ 150.0f, 0.0f, 0.0f, 1.0f });
-
+        CRAB::Curve vertical;
+        vertical.AddControlPoint(CRAB::Vector4Df{ 0.0f, 0.0f, 0.0f, 1.0f });
+        vertical.AddControlPoint(CRAB::Vector4Df{ 50.0f, 0.0f, 0.0f, 1.0f });
+        vertical.AddControlPoint(CRAB::Vector4Df{ 75.0f, 50.0f, 0.0f, 1.0f });
+        vertical.AddControlPoint(CRAB::Vector4Df{ 100.0f, 0.0f, 0.0f, 1.0f });
+        vertical.AddControlPoint(CRAB::Vector4Df{ 150.0f, 0.0f, 0.0f, 1.0f });
+        // horizontal
+        CRAB::Curve horizontal;
+        horizontal.AddControlPoint(CRAB::Vector4Df{ -100.0f, 0.0f, 100.0f, 1.0f });
+        horizontal.AddControlPoint(CRAB::Vector4Df{ 0.0f, 0.0f, 0.0f, 1.0f });
+        horizontal.AddControlPoint(CRAB::Vector4Df{ 100.0f, 0.0f, 100.0f, 1.0f });
+        // alignment
+        Alignment alignment(vertical, horizontal);
+        // road
+        roadways.push_back(new Road("Rodovia_001", 12.00f, 60.0f, alignment));
+        // bridge
         bridges.push_back(new BoxGirder("Rio_Pacoti", roadways.back(), 100.0f, 6.0f, 90.0f));
-
+        // mesh
         for (int i = 0; i < bridges.size(); i++)
             for (int j = 0; j < bridges[i]->model.size(); j++)
                 ourMesh_List.push_back(Mesh(bridges[i]->model[j]));
