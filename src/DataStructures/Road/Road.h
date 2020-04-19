@@ -9,7 +9,6 @@
 
 #include "Alignment2DHorizontal.h"
 #include "Alignment2DVertical.h"
-#include "Alignment3D.h"
 
 // Default Vertical curves values
 const float t = 2.5f;	// brake reaction time
@@ -17,11 +16,11 @@ const float a = 3.4f;	// deceleration rate
 
 class Road
 {
+	//Alignment path3D;
 public:
 	std::string name;
 	Alignment2DHorizontal path2Dh;
 	Alignment2DVertical path2Dv;
-	Alignment3D path3D;
 	float width;	// Roadway width
 	float speed;	// Speed design
 	int S;			// Stopping Sight Distance

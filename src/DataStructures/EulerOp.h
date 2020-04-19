@@ -458,11 +458,12 @@ namespace EulerOp
 		for (int i = 0; i < STEP; i++)
 		{
 			// Transformation Matrix
-			//CRAB::Matrix4 LookAt = toLocal(path->getPosition(t), path->getTan(t), path->getNormal(t));
 			CRAB::Matrix4 LookAt = toLocal(path.getPosition(t), path.getTan(t), CRAB::Vector4Df{ 0.0f, 1.0f, 0.0f, 0.0f });
+			//float last_Roll = atanf(25.0f * path.getCurvature(t)) * 180.0f / M_PI;
 			t += 1.0f / STEP;
-			//CRAB::Matrix4 ModelSpace = toWorld(path->getPosition(t), path->getTan(t), path->getNormal(t));
 			CRAB::Matrix4 ModelSpace = toWorld(path.getPosition(t), path.getTan(t), CRAB::Vector4Df{ 0.0f, 1.0f, 0.0f, 0.0f });
+			//float next_Roll = atanf(25.0f * path.getCurvature(t)) * 180.0f / M_PI;
+			//CRAB::Matrix4 Superelevation = CRAB::rotateZ(next_Roll - last_Roll);
 
 			if (currentSolid->faces.size() == 2)
 			{	// use the back face
@@ -470,14 +471,14 @@ namespace EulerOp
 				HED::halfEdge* he = backFace->hEdge;
 
 				// new vertex
-				CRAB::Vector4Df newVertex = ModelSpace * (LookAt * he->vStart->point);
+				CRAB::Vector4Df newVertex = ModelSpace * (/*Superelevation * */(LookAt * he->vStart->point));
 				// first edge
 				mev(he->opp, NULL, he->vStart->id, newVertex);
 				// edges and faces
 				for (he = backFace->hEdge->prev; he != backFace->hEdge; he = he->prev)
 				{
 					// new vertex
-					newVertex = ModelSpace * (LookAt * he->vStart->point);
+					newVertex = ModelSpace * (/*Superelevation * */(LookAt * he->vStart->point));
 					// new edge
 					mev(currentSolid->halfEdges.back()->prev, NULL, currentSolid->vertices.back()->id, newVertex);
 					// new face
@@ -492,14 +493,14 @@ namespace EulerOp
 				HED::halfEdge* he = f->hEdge;
 
 				// new vertex
-				CRAB::Vector4Df newVertex = ModelSpace * (LookAt * he->vStart->point);
+				CRAB::Vector4Df newVertex = ModelSpace * (/*Superelevation * */(LookAt * he->vStart->point));
 				// first edge
 				mev(he->prev->opp, he->opp->next, he->vStart->id, newVertex);
 				// the other edges
 				for (he = f->hEdge->next; he != f->hEdge; he = he->next)
 				{
 					// new vertex
-					newVertex = ModelSpace * (LookAt * he->vStart->point);
+					newVertex = ModelSpace * (/*Superelevation * */(LookAt * he->vStart->point));
 					// new edge
 					mev(he->prev->opp, he->opp->next, he->vStart->id, newVertex);
 				}

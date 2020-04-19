@@ -147,11 +147,17 @@ namespace CRAB
         // load models (bridges)
         // ---------------------
         roadways.push_back(new Road("Rodovia_001", 12.00f, 60.0f));
-        roadways.back()->AddHorPoint(CRAB::Vector4Df{ -100.0f, 0.0f, 0.0f, 1.0f });
+        // horizontal
+        roadways.back()->AddHorPoint(CRAB::Vector4Df{ -100.0f, 0.0f, 100.0f, 1.0f });
         roadways.back()->AddHorPoint(CRAB::Vector4Df{ 0.0f, 0.0f, 0.0f, 1.0f });
-        roadways.back()->AddHorPoint(CRAB::Vector4Df{ 100.0f, 0.0f, 0.0f, 1.0f });
-        roadways.back()->AddHorPoint(CRAB::Vector4Df{ 100.0f, 0.0f, 50.0f, 1.0f });
         roadways.back()->AddHorPoint(CRAB::Vector4Df{ 100.0f, 0.0f, 100.0f, 1.0f });
+        // vertical
+        roadways.back()->AddVerPoint(CRAB::Vector4Df{ 0.0f, 0.0f, 0.0f, 1.0f });
+        roadways.back()->AddVerPoint(CRAB::Vector4Df{ 50.0f, 0.0f, 0.0f, 1.0f });
+        roadways.back()->AddVerPoint(CRAB::Vector4Df{ 75.0f, 50.0f, 0.0f, 1.0f });
+        roadways.back()->AddVerPoint(CRAB::Vector4Df{ 100.0f, 0.0f, 0.0f, 1.0f });
+        roadways.back()->AddVerPoint(CRAB::Vector4Df{ 150.0f, 0.0f, 0.0f, 1.0f });
+
         bridges.push_back(new BoxGirder("Rio_Pacoti", roadways.back(), 100.0f, 6.0f, 90.0f));
 
         for (int i = 0; i < bridges.size(); i++)

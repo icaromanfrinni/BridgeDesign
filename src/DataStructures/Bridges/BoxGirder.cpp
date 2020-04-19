@@ -20,6 +20,18 @@ BoxGirder::BoxGirder(const std::string& _name, Road* _road, const float& cross_s
 	b = int((100.0f * (B - 2.0f * (Lb + INCLINATION_RATIO * (H - h - tv)))) / 5.0f) * 0.05f;
 	th = int((100.0f * (b - 2 * bw) / 5.0f) / 5.0f) * 0.05f;
 
+	// Alignment 3D
+	this->path3D.points.clear();
+	for (int i = 0; i <= STEP; i++)
+	{
+		float t = float(i) / STEP;
+		CRAB::Vector4Df control_point = this->path2Dh.getPosition(t);
+		control_point.y = this->path2Dv.getPosition(t).y;
+		this->path3D.points.push_back(control_point);
+	}
+	//this->path3D.points = this->path2Dh.points;
+	//this->path3D.points = this->path2Dv.points;
+
 	// PIERS
 	// -----
 
@@ -54,7 +66,7 @@ BoxGirder::~BoxGirder()
 // UPDATE THE MODEL
 void BoxGirder::update()
 {
-	//Initialize
+	// Initialize
 	model.clear();
 	CRAB::Vector4Df newVertex, next_position, start_point;
 	float offset; // displacement
@@ -78,10 +90,16 @@ void BoxGirder::update()
 	newVertex = model.back()->vertices.back()->point - (vRight * (B / 2.0f - GUARD_RAIL)) - (vUp * (B / 2.0f - GUARD_RAIL) * SLOPE);
 	EulerOp::mev(model.back()->faces[0]->hEdge, NULL, 0, newVertex);
 	// v2
-	newVertex = model.back()->vertices.back()->point + (vRight * (B - 2.0f * GUARD_RAIL));
+	newVertex = model.back()->vertices.back()->point - (vUp * TOP_LAYER);
 	EulerOp::mev(model.back()->halfEdges[0], NULL, 1, newVertex);
+	// v3
+	newVertex = model.back()->vertices.back()->point + (vRight * (B - 2.0f * GUARD_RAIL));
+	EulerOp::mev(model.back()->halfEdges[2], NULL, 2, newVertex);
+	// v4
+	newVertex = model.back()->vertices.back()->point + (vUp * TOP_LAYER);
+	EulerOp::mev(model.back()->halfEdges[4], NULL, 3, newVertex);
 	// f1
-	EulerOp::mef(model.back()->halfEdges[0], model.back()->halfEdges[3], 0);
+	EulerOp::mef(model.back()->halfEdges[0], model.back()->halfEdges[7], 0);
 
 	// SWEEP
 	EulerOp::SWEEP(model.back()->faces.front(), path3D);
@@ -89,7 +107,7 @@ void BoxGirder::update()
 
 #pragma region DECK
 	// OFFSET
-	offset = (B / 2.0f - GUARD_RAIL) * SLOPE;
+	offset = (B / 2.0f - GUARD_RAIL) * SLOPE + TOP_LAYER;
 	// v0
 	start_point = path3D.getPosition(0.0f) - (vUp * offset);
 	EulerOp::mvfs(model, start_point);
@@ -185,7 +203,7 @@ void BoxGirder::update()
 	vRight = cross(path3D.getTan(t), { 0.0f, 1.0f, 0.0f, 0.0f }).to_unitary();
 	vUp = cross(vRight, path3D.getTan(t)).to_unitary();
 	// OFFSET
-	offset = (B / 2.0f - GUARD_RAIL) * SLOPE + H;
+	offset = (B / 2.0f - GUARD_RAIL) * SLOPE + H + TOP_LAYER;
 	// v0
 	start_point = path3D.getPosition(0.0f) - (vUp * offset);
 	EulerOp::mvfs(model, start_point);

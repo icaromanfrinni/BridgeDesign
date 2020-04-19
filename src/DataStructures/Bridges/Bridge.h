@@ -13,8 +13,8 @@ const float h1 = 1.08;	// height of eye above roadway surface
 const float h2 = 0.60;	// height of object above roadway surface
 
 // Default bridge values
-const float SLOPE = 0.02f;
-//const float TOP_LAYER = 0.07f;
+const float SLOPE = 0.0f;
+const float TOP_LAYER = 0.07f;
 const float GUARD_RAIL = 0.40f;
 const float INCLINATION_RATIO = 0.25f;
 
@@ -34,8 +34,6 @@ public:
 	Road* road;
 	Alignment2DHorizontal path2Dh;
 	Alignment2DVertical path2Dv;
-	Alignment3D path3D;
-	//Alignment2DHorizontal path3D;
 	std::vector<HED::solid*> model;
 	float CS; // cross station
 	float VC; // vertical clearance

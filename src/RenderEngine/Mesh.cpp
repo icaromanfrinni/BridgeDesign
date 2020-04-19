@@ -32,7 +32,7 @@ Mesh::Mesh(const obj& object)
 // constructor (from HalfEdge struct)
 Mesh::Mesh(const HED::solid* solid)
 {
-    /*material.hasTexture = true;
+    material.hasTexture = true;
 
     if (solid->name == "TOP_LAYER")
     {
@@ -45,16 +45,24 @@ Mesh::Mesh(const HED::solid* solid)
         material.textures.push_back(new Texture("textures/concrete_diffuse.png", "diffuse"));
         material.textures.push_back(new Texture("textures/concrete_specular.jpg", "specular"));
         material.textures.push_back(new Texture("textures/concrete_normal.jpg", "normal"));
-    }*/
+    }
 
     // DEBUG
-    if (solid->name == "ROAD")
+    /*if (solid->name == "TOP_LAYER")
     {
         material.hasTexture = false;
         material.ka = { 0.1f, 0.1f, 0.1f };
         material.kd = { 0.1f, 0.1f, 0.1f };
         material.ks = { 0.5f, 0.5f, 0.5f };
     }
+    if (solid->name == "ROAD")
+    {
+        material.hasTexture = false;
+        material.ka = { 0.1f, 0.1f, 0.1f };
+        material.kd = { 0.1f, 0.1f, 0.1f };
+        material.ks = { 0.5f, 0.5f, 0.5f };
+    }*/
+    
         
     for (int i = 0; i < solid->faces.size(); i++)
     {
@@ -72,11 +80,12 @@ Mesh::Mesh(const HED::solid* solid)
         p.triangulate(t);
 
         // MESH
+        CRAB::Vector4Df normal_plane = solid->faces[i]->normal();
         for (int j = 0; j < t.size(); j++)
         {
             Mesh::Vertex vertex1, vertex2, vertex3;
             // ------------------------------------
-            glm::vec3 v_normal = glm::vec3(t[j].normal().to_unitary().x, t[j].normal().to_unitary().y, t[j].normal().to_unitary().z);
+            glm::vec3 v_normal = glm::vec3(normal_plane.x, normal_plane.y, normal_plane.z);
             // ------------------------------------
             vertex1.Normal = v_normal;
             vertex2.Normal = v_normal;

@@ -27,6 +27,28 @@ float Alignment::BernsteinPolynomial(const int& n, const int& i, const float& t)
 	return C * powf(t, i) * powf(1 - t, n - i);
 }
 
+// CALCULATES THE DERIVATIVE FOR A CURVE OF ORDER 'n'
+CRAB::Vector4Df Alignment::deriv(float t) const
+{
+	CRAB::Vector4Df d = { 0.0f, 0.0f, 0.0f, 0.0f };
+	int n = points.size() - 1;
+	if (n >= 1) // at least 2 control points
+		for (int i = 0; i < n; i++) {
+			d += (points[i + 1] - points[i]) * n * BernsteinPolynomial(n - 1, i, t);
+		}
+	return d;
+}
+CRAB::Vector4Df Alignment::deriv2(float t) const
+{
+	CRAB::Vector4Df d = { 0.0f, 0.0f, 0.0f, 0.0f };
+	int n = points.size() - 1;
+	if (n >= 2) // at least 3 control points
+		for (int i = 0; i < (n - 1); i++) {
+			d += (points[i + 2] - (points[i + 1] * 2.0f) + points[i]) * n * (n - 1) * BernsteinPolynomial(n - 2, i, t);
+		}
+	return d;
+}
+
 // RETURNS A POINT ON THE CURVE
 // ----------------------------
 CRAB::Vector4Df Alignment::getPosition(const float& t) const
@@ -43,27 +65,42 @@ CRAB::Vector4Df Alignment::getPosition(const float& t) const
 // -------------------------
 CRAB::Vector4Df Alignment::getTan(const float& t) const
 {
-	CRAB::Vector4Df tan_vector = { 0.0f, 0.0f, 0.0f, 1.0f };
-	int n = points.size() - 1;
-	for (int i = 0; i < points.size(); i++)
-	{
-		tan_vector += points[i] * (n * (BernsteinPolynomial(n - 1, i - 1, t) - BernsteinPolynomial(n - 1, i, t)));
-	}
-	return tan_vector.to_unitary();
+	return deriv(t).to_unitary();
 }
 // RETURNS THE CURVE NORMAL
 // ------------------------
 CRAB::Vector4Df Alignment::getNormal(const float& t) const
 {
-	CRAB::Vector4Df up = { 0.0f, 1.0f, 0.0f, 0.0f };
-	CRAB::Vector4Df i = cross(up, this->getTan(t)).to_unitary();
-	return cross(this->getTan(t), i).to_unitary();
+	CRAB::Vector4Df k = deriv2(t) - deriv(t) * (dot(deriv2(t), deriv(t)) / deriv(t).lengthsq());
+	return k.to_unitary();
+}
+// RETURNS THE CURVE BINORMAL
+// --------------------------
+CRAB::Vector4Df Alignment::getBinormal(float t) const
+{
+	return CRAB::cross(getTan(t), getNormal(t)).to_unitary();
+}
+// RETURNS THE CURVATURE
+// ---------------------
+float Alignment::getCurvature(float t) const
+{
+	float k = cross(deriv(t), deriv2(t)).length() / powf(deriv(t).length(), 3.0f);
+	return k;
+}
+// RETURNS THE RADIUS OF CURVATURE
+// -------------------------------
+float Alignment::getRadius(float t) const
+{
+	float r = 1.0f / getCurvature(t);
+	return r;
 }
 // RETURNS THE CURVE LENGTH
 // ------------------------
 float Alignment::getLength() const
 {
-
+	float length = 0.0f;
+	// TODO
+	return length;
 }
 
 // Return Point from Station

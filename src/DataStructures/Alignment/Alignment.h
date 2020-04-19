@@ -4,10 +4,11 @@
 
 #include <iostream>
 #include <vector>
+#include <cmath>
 
 #include "Linear_Algebra.h"
 
-const int STEP = 100;
+const int STEP = 20;
 
 struct Ray
 {
@@ -19,13 +20,19 @@ class Alignment
 {
 	int binomialCoefficient(const int& n, const int& i) const;
 	float BernsteinPolynomial(const int& n, const int& i, const float& t) const;
+
+	// CALCULATES THE DERIVATIVE FOR A CURVE OF ORDER 'n'
+	CRAB::Vector4Df deriv(float t) const;
+	CRAB::Vector4Df deriv2(float t) const;
+	// https://pages.mtu.edu/~shene/COURSES/cs3621/NOTES/spline/Bezier/bezier-der.html
+
 public:
 	std::vector<CRAB::Vector4Df> points; // control points
 
 	//DEFAULT CONSTRUCTOR
 	Alignment();
 	//DESTRUCTOR
-	virtual ~Alignment() = 0;
+	~Alignment();
 
 	// RETURNS A POINT ON THE CURVE
 	CRAB::Vector4Df getPosition(const float& t) const;
@@ -33,6 +40,12 @@ public:
 	CRAB::Vector4Df getTan(const float& t) const;
 	// RETURNS THE CURVE NORMAL
 	CRAB::Vector4Df getNormal(const float& t) const;
+	// RETURNS THE CURVE BINORMAL
+	CRAB::Vector4Df getBinormal(float t) const;
+	// RETURNS THE CURVATURE
+	float getCurvature(float t) const;
+	// RETURNS THE RADIUS OF CURVATURE
+	float getRadius(float t) const;
 	// RETURNS THE CURVE LENGTH
 	float getLength() const;
 

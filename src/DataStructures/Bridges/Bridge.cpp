@@ -11,7 +11,6 @@ Bridge::Bridge(const std::string& _name, Road* _road, const float& cross_station
 {
 	// Bridge attributes
 	// -----------------
-
 	this->mainSpan = 35.0f;
 	this->B = this->road->width + 2 * GUARD_RAIL;
 	this->H = int((100.0f * this->mainSpan / 16.0f) / 5.0f) * 0.05f;
@@ -24,11 +23,6 @@ Bridge::Bridge(const std::string& _name, Road* _road, const float& cross_station
 	// ------------------
 	//Vertical_Alignment();
 	this->path2Dv = this->road->path2Dv;
-
-	// 3D Alignment
-	// ------------
-	//this->path3D = this->road->path3D;
-	this->path3D.points = this->road->path2Dh.points;
 }
 
 //DESTRUCTOR
