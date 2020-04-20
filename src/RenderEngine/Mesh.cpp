@@ -1,5 +1,5 @@
 #include "Mesh.h"
-#include "Comp_Geometry.h"
+#include "Geometry.h"
 
 // constructor
 Mesh::Mesh(std::vector<Mesh::Vertex> vertices)
@@ -54,8 +54,8 @@ Mesh::Mesh(const HED::solid* solid)
         material.ka = { 0.1f, 0.1f, 0.1f };
         material.kd = { 0.1f, 0.1f, 0.1f };
         material.ks = { 0.5f, 0.5f, 0.5f };
-    }
-    if (solid->name == "ROAD")
+    }*/
+    /*if (solid->name == "ROAD")
     {
         material.hasTexture = false;
         material.ka = { 0.1f, 0.1f, 0.1f };

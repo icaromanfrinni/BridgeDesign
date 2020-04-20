@@ -172,11 +172,11 @@ namespace CRAB
 				}
 			return d;
 		}
-		
+
+	public:
 		// Control Points
 		std::vector<CRAB::Vector4Df> points;
 
-	public:
 		// ADD CONTROL POINTS
 		void AddControlPoint(const CRAB::Vector4Df& p)
 		{
@@ -212,18 +212,18 @@ namespace CRAB
 			return n;
 		}
 		// RETURNS THE CURVE BINORMAL
-		CRAB::Vector4Df getBinormal(float t) const
+		CRAB::Vector4Df getBinormal(const float& t) const
 		{
 			return CRAB::cross(getTangent(t), getNormal(t)).to_unitary();
 		}
 		// RETURNS THE CURVATURE
-		float getCurvature(float t) const
+		float getCurvature(const float& t) const
 		{
 			float k = cross(deriv(t), deriv2(t)).length() / powf(deriv(t).length(), 3.0f);
 			return k;
 		}
 		// RETURNS THE RADIUS OF CURVATURE
-		float getRadius(float t) const
+		float getRadius(const float& t) const
 		{
 			float r = 1.0f / getCurvature(t);
 			return r;
@@ -234,6 +234,15 @@ namespace CRAB
 			float length = 0.0f;
 			// TODO
 			return length;
+		}
+		// CLOCKWISE CHECK
+		bool isClockwise(const float& t) const
+		{
+			CRAB::Vector4Df vup = cross(this->getNormal(t), this->getTangent(t)).to_unitary();
+			float dotP = dot(vup, this->getNormalUp(t));
+			if (dotP > 0.0f)
+				return true;
+			else return false;
 		}
 	};
 }

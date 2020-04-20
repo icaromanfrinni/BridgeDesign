@@ -9,16 +9,16 @@
 #include "Linear_Algebra.h"
 #include "Geometry.h"
 
-#define STEP 20
+#define STEP 50
 
 // Bézier Curve
 class Alignment
 {
 	CRAB::Curve VerticalAlignment;
 	CRAB::Curve HorizontalAlignment;
-public:
 	CRAB::Curve path3D;
-
+public:
+	
 	// DEFAULT CONSTRUCTOR
 	Alignment();
 	// OVERLOAD CONSTRUCTOR
@@ -35,13 +35,15 @@ public:
 	// RETURNS THE CURVE NORMAL UP (w/ Superelevation)
 	CRAB::Vector4Df getNormalUp(const float& t) const;
 	// RETURNS THE CURVE BINORMAL
-	CRAB::Vector4Df getBinormal(float t) const;
+	CRAB::Vector4Df getBinormal(const float& t) const;
 	// RETURNS THE CURVATURE
-	float getCurvature(float t) const;
+	float getCurvature(const float& t) const;
 	// RETURNS THE RADIUS OF CURVATURE
-	float getRadius(float t) const;
+	float getRadius(const float& t) const;
 	// RETURNS THE CURVE LENGTH
 	float getLength() const;
+	// CLOCKWISE CHECK
+	bool isClockwise(const float& t) const;
 
 	// ************************************************************************* //
 

@@ -65,8 +65,10 @@ void BoxGirder::update()
 	// ------------------------------
 
 	// Local axis
-	CRAB::Vector4Df vRight = cross(alignment.getTangent(t), { 0.0f, 1.0f, 0.0f, 0.0f }).to_unitary();
-	CRAB::Vector4Df vUp = cross(vRight, alignment.getTangent(t)).to_unitary();
+	//CRAB::Vector4Df vRight = cross(alignment.getTangent(t), { 0.0f, 1.0f, 0.0f, 0.0f }).to_unitary();
+	//CRAB::Vector4Df vUp = cross(vRight, alignment.getTangent(t)).to_unitary();
+	CRAB::Vector4Df vUp = alignment.getNormalUp(t);
+	CRAB::Vector4Df vRight = cross(alignment.getTangent(t), vUp).to_unitary();
 
 #pragma region TOP_LAYER
 	// v0
@@ -188,8 +190,10 @@ void BoxGirder::update()
 #pragma region U_SECTION
 	// UPDATE Local axis
 	t = 0.0f;
-	vRight = cross(alignment.getTangent(t), { 0.0f, 1.0f, 0.0f, 0.0f }).to_unitary();
-	vUp = cross(vRight, alignment.getTangent(t)).to_unitary();
+	//vRight = cross(alignment.getTangent(t), { 0.0f, 1.0f, 0.0f, 0.0f }).to_unitary();
+	//vUp = cross(vRight, alignment.getTangent(t)).to_unitary();
+	vUp = alignment.getNormalUp(t);
+	vRight = cross(alignment.getTangent(t), vUp).to_unitary();
 	// OFFSET
 	offset = (B / 2.0f - GUARD_RAIL) * SLOPE + H + TOP_LAYER;
 	// v0

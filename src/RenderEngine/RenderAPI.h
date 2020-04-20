@@ -4,6 +4,10 @@
 #include <iostream>
 #include <Windows.h>
 
+// sleep_for Function
+//#include <thread>
+//#include <chrono>
+
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
@@ -38,6 +42,7 @@ namespace CRAB
     float lastX = SCR_WIDTH / 2.0f;
     float lastY = SCR_HEIGHT / 2.0f;
     bool firstMouse = true;
+    float walkAround = 0.0f;
 
     // projection matrix
     glm::mat4 projection = glm::mat4(1.0f);
@@ -148,16 +153,21 @@ namespace CRAB
         // -----------
         // vertical
         CRAB::Curve vertical;
-        vertical.AddControlPoint(CRAB::Vector4Df{ 0.0f, 0.0f, 0.0f, 1.0f });
-        vertical.AddControlPoint(CRAB::Vector4Df{ 50.0f, 0.0f, 0.0f, 1.0f });
-        vertical.AddControlPoint(CRAB::Vector4Df{ 75.0f, 50.0f, 0.0f, 1.0f });
+        vertical.AddControlPoint(CRAB::Vector4Df{ -100.0f, 0.0f, 0.0f, 1.0f });
+        vertical.AddControlPoint(CRAB::Vector4Df{ 0.0f, 50.0f, 0.0f, 1.0f });
         vertical.AddControlPoint(CRAB::Vector4Df{ 100.0f, 0.0f, 0.0f, 1.0f });
-        vertical.AddControlPoint(CRAB::Vector4Df{ 150.0f, 0.0f, 0.0f, 1.0f });
         // horizontal
         CRAB::Curve horizontal;
-        horizontal.AddControlPoint(CRAB::Vector4Df{ -100.0f, 0.0f, 100.0f, 1.0f });
-        horizontal.AddControlPoint(CRAB::Vector4Df{ 0.0f, 0.0f, 0.0f, 1.0f });
-        horizontal.AddControlPoint(CRAB::Vector4Df{ 100.0f, 0.0f, 100.0f, 1.0f });
+        horizontal.AddControlPoint(CRAB::Vector4Df{ -100.0f, 0.0f, 0.0f, 1.0f });
+        horizontal.AddControlPoint(CRAB::Vector4Df{ -50.0f, 0.0f, -50.0f, 1.0f });
+        horizontal.AddControlPoint(CRAB::Vector4Df{ 0.0f, 0.0f, -50.0f, 1.0f });
+        horizontal.AddControlPoint(CRAB::Vector4Df{ 50.0f, 0.0f, -50.0f, 1.0f });
+        horizontal.AddControlPoint(CRAB::Vector4Df{ 100.0f, 0.0f, 0.0f, 1.0f });
+        horizontal.AddControlPoint(CRAB::Vector4Df{ 150.0f, 0.0f, 50.0f, 1.0f });
+        horizontal.AddControlPoint(CRAB::Vector4Df{ 200.0f, 0.0f, 50.0f, 1.0f });
+        horizontal.AddControlPoint(CRAB::Vector4Df{ 250.0f, 0.0f, 50.0f, 1.0f });
+        horizontal.AddControlPoint(CRAB::Vector4Df{ 300.0f, 0.0f, 0.0f, 1.0f });
+
         // alignment
         Alignment alignment(vertical, horizontal);
         // road
@@ -167,7 +177,7 @@ namespace CRAB
         // mesh
         for (int i = 0; i < bridges.size(); i++)
             for (int j = 0; j < bridges[i]->model.size(); j++)
-                ourMesh_List.push_back(Mesh(bridges[i]->model[j]));
+                ourMesh_List.push_back(Mesh(bridges[i]->model[j])); 
 
         // draw in wireframe
         //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
@@ -297,6 +307,30 @@ namespace CRAB
                     //ourMesh_List.push_back(Mesh(solids[i]));
                 }
             }
+        }
+        if (glfwGetKey(window, GLFW_KEY_F) == GLFW_PRESS)
+        {
+            walkAround += deltaTime * 0.1f;
+            if (walkAround > 1.0f)
+                walkAround = 0.0f;
+
+            CRAB::Vector4Df head = bridges.back()->alignment.getPosition(walkAround) + bridges.back()->alignment.getNormalUp(walkAround) * 1.10f;
+            CRAB::Vector4Df view = head + bridges.back()->alignment.getTangent(walkAround);
+            camera.Position = glm::vec3(head.x, head.y, head.z);
+            camera.View = glm::vec3(view.x, view.y, view.z);
+            camera.LookAt = camera.View - camera.Position;
+        }
+        if (glfwGetKey(window, GLFW_KEY_B) == GLFW_PRESS)
+        {
+            walkAround -= deltaTime * 0.1f;
+            if (walkAround < 0.0f)
+                walkAround = 1.0f;
+
+            CRAB::Vector4Df head = bridges.back()->alignment.getPosition(walkAround) + bridges.back()->alignment.getNormalUp(walkAround) * 1.10f;
+            CRAB::Vector4Df view = head + bridges.back()->alignment.getTangent(walkAround);
+            camera.Position = glm::vec3(head.x, head.y, head.z);
+            camera.View = glm::vec3(view.x, view.y, view.z);
+            camera.LookAt = camera.View - camera.Position;
         }
     }
 

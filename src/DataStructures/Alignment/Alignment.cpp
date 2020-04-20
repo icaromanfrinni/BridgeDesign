@@ -11,13 +11,14 @@ Alignment::Alignment()
 Alignment::Alignment(const CRAB::Curve& _vertical, const CRAB::Curve& _horizontal)
 	: VerticalAlignment(_vertical), HorizontalAlignment(_horizontal)
 {
-	for (int i = 0; i <= STEP; i++)
+	/*for (int i = 0; i <= STEP; i++)
 	{
 		float t = float(i) / STEP;
 		CRAB::Vector4Df control_point = this->HorizontalAlignment.getPosition(t);
 		control_point.y = this->VerticalAlignment.getPosition(t).y;
 		this->path3D.AddControlPoint(control_point);
-	}
+	}*/
+	this->path3D.points = this->HorizontalAlignment.points;
 }
 // DESTRUCTOR
 // ----------
@@ -48,23 +49,29 @@ CRAB::Vector4Df Alignment::getNormal(const float& t) const
 // -----------------------------------------------
 CRAB::Vector4Df Alignment::getNormalUp(const float& t) const
 {
-	return path3D.getNormalUp(t);
+	float tan_alfa = 0.0044f * powf(60.0f, 2.0f) / HorizontalAlignment.getRadius(t);
+	float alfa = atanf(tan_alfa) * 180.0f / M_PI;
+	if (this->isClockwise(t))
+		alfa = alfa * (-1.0f);
+	CRAB::Matrix4 R = CRAB::rotateArbitrary(alfa, getTangent(t));
+
+	return (R * path3D.getNormalUp(t)).to_unitary();
 }
 // RETURNS THE CURVE BINORMAL
 // --------------------------
-CRAB::Vector4Df Alignment::getBinormal(float t) const
+CRAB::Vector4Df Alignment::getBinormal(const float& t) const
 {
 	return path3D.getBinormal(t);
 }
 // RETURNS THE CURVATURE
 // ---------------------
-float Alignment::getCurvature(float t) const
+float Alignment::getCurvature(const float& t) const
 {
 	return path3D.getCurvature(t);
 }
 // RETURNS THE RADIUS OF CURVATURE
 // -------------------------------
-float Alignment::getRadius(float t) const
+float Alignment::getRadius(const float& t) const
 {
 	return path3D.getRadius(t);
 }
@@ -73,6 +80,11 @@ float Alignment::getRadius(float t) const
 float Alignment::getLength() const
 {
 	return path3D.getLength();
+}
+// CLOCKWISE CHECK
+bool Alignment::isClockwise(const float& t) const
+{
+	return path3D.isClockwise(t);
 }
 
 // *********************************************************************
