@@ -9,7 +9,10 @@
 #include "Linear_Algebra.h"
 #include "Geometry.h"
 
-#define STEP 50
+#define STEP 100
+
+// MAX Transverse Slope
+const float SLOPE_MAX = 0.10f;
 
 // Bézier Curve
 class Alignment

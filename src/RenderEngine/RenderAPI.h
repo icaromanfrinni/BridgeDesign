@@ -316,9 +316,11 @@ namespace CRAB
 
             CRAB::Vector4Df head = bridges.back()->alignment.getPosition(walkAround) + bridges.back()->alignment.getNormalUp(walkAround) * 1.10f;
             CRAB::Vector4Df view = head + bridges.back()->alignment.getTangent(walkAround);
+            CRAB::Vector4Df up = bridges.back()->alignment.getNormalUp(walkAround);
             camera.Position = glm::vec3(head.x, head.y, head.z);
             camera.View = glm::vec3(view.x, view.y, view.z);
             camera.LookAt = camera.View - camera.Position;
+            camera.Up = glm::vec3(up.x, up.y, up.z);
         }
         if (glfwGetKey(window, GLFW_KEY_B) == GLFW_PRESS)
         {
@@ -328,9 +330,11 @@ namespace CRAB
 
             CRAB::Vector4Df head = bridges.back()->alignment.getPosition(walkAround) + bridges.back()->alignment.getNormalUp(walkAround) * 1.10f;
             CRAB::Vector4Df view = head + bridges.back()->alignment.getTangent(walkAround);
+            CRAB::Vector4Df up = bridges.back()->alignment.getNormalUp(walkAround);
             camera.Position = glm::vec3(head.x, head.y, head.z);
             camera.View = glm::vec3(view.x, view.y, view.z);
             camera.LookAt = camera.View - camera.Position;
+            camera.Up = glm::vec3(up.x, up.y, up.z);
         }
     }
 

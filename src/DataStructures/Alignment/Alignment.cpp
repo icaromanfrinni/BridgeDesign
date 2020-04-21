@@ -50,6 +50,8 @@ CRAB::Vector4Df Alignment::getNormal(const float& t) const
 CRAB::Vector4Df Alignment::getNormalUp(const float& t) const
 {
 	float tan_alfa = 0.0044f * powf(60.0f, 2.0f) / HorizontalAlignment.getRadius(t);
+	if (tan_alfa > SLOPE_MAX)
+		tan_alfa = SLOPE_MAX;
 	float alfa = atanf(tan_alfa) * 180.0f / M_PI;
 	if (this->isClockwise(t))
 		alfa = alfa * (-1.0f);
