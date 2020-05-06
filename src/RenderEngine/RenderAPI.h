@@ -154,7 +154,7 @@ namespace CRAB
         // vertical
         CRAB::Curve vertical;
         vertical.AddControlPoint(CRAB::Vector4Df{ -200.0f, 0.0f, 0.0f, 1.0f });
-        vertical.AddControlPoint(CRAB::Vector4Df{ 0.0f, 50.0f, 0.0f, 1.0f });
+        vertical.AddControlPoint(CRAB::Vector4Df{ 0.0f, 100.0f, 0.0f, 1.0f });
         vertical.AddControlPoint(CRAB::Vector4Df{ 200.0f, 0.0f, 0.0f, 1.0f });
         // horizontal
         CRAB::Curve horizontal;
