@@ -24,6 +24,10 @@
 #include "ObjFile.h"
 #include "Skybox.h"
 
+#include "Line.h"
+#include "CircularArc.h"
+#include "Alignment.h"
+
 #include "BoxGirder.h"
 
 namespace CRAB
@@ -66,6 +70,8 @@ namespace CRAB
     std::vector<Bridge*> bridges;
     //List of Roadways
     std::vector<Road*> roadways;
+    //List of Alignments
+    std::vector<Alignment*> alignments;
 
     /* ====================== END ====================== */
 
@@ -152,28 +158,34 @@ namespace CRAB
         // load models
         // -----------
         // vertical
-        CRAB::Curve vertical;
-        vertical.AddControlPoint(CRAB::Vector4Df{ -200.0f, 0.0f, 0.0f, 1.0f });
-        vertical.AddControlPoint(CRAB::Vector4Df{ 0.0f, 100.0f, 0.0f, 1.0f });
-        vertical.AddControlPoint(CRAB::Vector4Df{ 200.0f, 0.0f, 0.0f, 1.0f });
-        // horizontal
-        CRAB::Curve horizontal;
-        horizontal.AddControlPoint(CRAB::Vector4Df{ -100.0f, 0.0f, 0.0f, 1.0f });
-        horizontal.AddControlPoint(CRAB::Vector4Df{ -50.0f, 0.0f, -50.0f, 1.0f });
-        horizontal.AddControlPoint(CRAB::Vector4Df{ 0.0f, 0.0f, -50.0f, 1.0f });
-        horizontal.AddControlPoint(CRAB::Vector4Df{ 50.0f, 0.0f, -50.0f, 1.0f });
-        horizontal.AddControlPoint(CRAB::Vector4Df{ 100.0f, 0.0f, 0.0f, 1.0f });
-        horizontal.AddControlPoint(CRAB::Vector4Df{ 150.0f, 0.0f, 50.0f, 1.0f });
-        horizontal.AddControlPoint(CRAB::Vector4Df{ 200.0f, 0.0f, 50.0f, 1.0f });
-        horizontal.AddControlPoint(CRAB::Vector4Df{ 250.0f, 0.0f, 50.0f, 1.0f });
-        horizontal.AddControlPoint(CRAB::Vector4Df{ 300.0f, 0.0f, 0.0f, 1.0f });
+        std::vector<Segment*> road_plan;
+        road_plan.push_back(new Line(glm::vec3(40.0f, 0.0f, 80.0f), glm::vec3(40.0f, 0.0f, 20.0f)));
+        road_plan.push_back(new CircularArc(glm::vec3(40.0f, 0.0f, 20.0f), glm::vec3(40.0f, 0.0f, 0.0f), glm::vec3(20.0f, 0.0f, 0.0f)));
+        road_plan.push_back(new CircularArc(glm::vec3(20.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 20.0f)));
+        road_plan.push_back(new CircularArc(glm::vec3(0.0f, 0.0f, 20.0f), glm::vec3(0.0f, 0.0f, 40.0f), glm::vec3(20.0f, 0.0f, 40.0f)));
+        road_plan.push_back(new Line(glm::vec3(20.0f, 0.0f, 40.0f), glm::vec3(100.0f, 0.0f, 40.0f)));
+        road_plan.push_back(new CircularArc(glm::vec3(100.0f, 0.0f, 40.0f), glm::vec3(120.0f, 0.0f, 40.0f), glm::vec3(120.0f, 0.0f, 60.0f)));
+        road_plan.push_back(new CircularArc(glm::vec3(120.0f, 0.0f, 60.0f), glm::vec3(120.0f, 0.0f, 80.0f), glm::vec3(100.0f, 0.0f, 80.0f)));
+        road_plan.push_back(new CircularArc(glm::vec3(100.0f, 0.0f, 80.0f), glm::vec3(80.0f, 0.0f, 80.0f), glm::vec3(80.0f, 0.0f, 60.0f)));
+        road_plan.push_back(new Line(glm::vec3(80.0f, 0.0f, 60.0f), glm::vec3(80.0f, 0.0f, 0.0f)));
+
+        std::vector<Segment*> profile;
+        profile.push_back(new Line(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(50.0f, 0.0f, 0.0f)));
+        profile.push_back(new CircularArc(glm::vec3(50.0f, 0.0f, 0.0f), glm::vec3(60.0f, 0.0f, 0.0f), glm::vec3(69.94f, 1.06f, 0.0f)));
+        profile.push_back(new Line(glm::vec3(69.94f, 1.06f, 0.0f), glm::vec3(144.3f, 8.94f, 0.0f)));
+        profile.push_back(new CircularArc(glm::vec3(144.3f, 8.94f, 0.0f), glm::vec3(154.25f, 10.0f, 0.0f), glm::vec3(164.25f, 10.0f, 0.0f)));
+        profile.push_back(new Line(glm::vec3(164.25f, 10.0f, 0.0f), glm::vec3(224.25f, 10.0f, 0.0f)));
+        profile.push_back(new CircularArc(glm::vec3(224.25f, 10.0f, 0.0f), glm::vec3(234.25f, 10.0f, 0.0f), glm::vec3(244.19f, 8.94f, 0.0f)));
+        profile.push_back(new Line(glm::vec3(244.19f, 8.94f, 0.0f), glm::vec3(318.55f, 1.06f, 0.0f)));
+        profile.push_back(new CircularArc(glm::vec3(318.55f, 1.06f, 0.0f), glm::vec3(328.5f, 0.0f, 0.0f), glm::vec3(338.5f, 0.0f, 0.0f)));
+        profile.push_back(new Line(glm::vec3(338.5f, 0.0f, 0.0f), glm::vec3(388.5f, 0.0f, 0.0f)));
 
         // alignment
-        Alignment alignment(vertical, horizontal);
+        alignments.push_back(new Alignment("Pista_01", road_plan, profile));
         // road
-        roadways.push_back(new Road("Rodovia_001", 12.00f, 60.0f, alignment));
+        roadways.push_back(new Road("Rodovia_001", 12.00f, 60.0f, alignments.back()));
         // bridge
-        bridges.push_back(new BoxGirder("Rio_Pacoti", roadways.back(), 100.0f, 6.0f, 90.0f));
+        bridges.push_back(new BoxGirder("Rio_Pacoti", roadways.back(), 194.25f, 6.0f, 90.0f));
         // mesh
         for (int i = 0; i < bridges.size(); i++)
             for (int j = 0; j < bridges[i]->model.size(); j++)
@@ -314,9 +326,9 @@ namespace CRAB
             if (walkAround > 1.0f)
                 walkAround = 0.0f;
 
-            CRAB::Vector4Df head = bridges.back()->alignment.getPosition(walkAround) + bridges.back()->alignment.getNormalUp(walkAround) * 1.10f;
-            CRAB::Vector4Df view = head + bridges.back()->alignment.getTangent(walkAround);
-            CRAB::Vector4Df up = bridges.back()->alignment.getNormalUp(walkAround);
+            CRAB::Vector4Df head = bridges.back()->alignment->getPosition(walkAround) + bridges.back()->alignment->getNormalUp(walkAround) * 1.10f;
+            CRAB::Vector4Df view = head + bridges.back()->alignment->getTangent(walkAround);
+            CRAB::Vector4Df up = bridges.back()->alignment->getNormalUp(walkAround);
             camera.Position = glm::vec3(head.x, head.y, head.z);
             camera.View = glm::vec3(view.x, view.y, view.z);
             camera.LookAt = camera.View - camera.Position;
@@ -328,9 +340,9 @@ namespace CRAB
             if (walkAround < 0.0f)
                 walkAround = 1.0f;
 
-            CRAB::Vector4Df head = bridges.back()->alignment.getPosition(walkAround) + bridges.back()->alignment.getNormalUp(walkAround) * 1.10f;
-            CRAB::Vector4Df view = head + bridges.back()->alignment.getTangent(walkAround);
-            CRAB::Vector4Df up = bridges.back()->alignment.getNormalUp(walkAround);
+            CRAB::Vector4Df head = bridges.back()->alignment->getPosition(walkAround) + bridges.back()->alignment->getNormalUp(walkAround) * 1.10f;
+            CRAB::Vector4Df view = head + bridges.back()->alignment->getTangent(walkAround);
+            CRAB::Vector4Df up = bridges.back()->alignment->getNormalUp(walkAround);
             camera.Position = glm::vec3(head.x, head.y, head.z);
             camera.View = glm::vec3(view.x, view.y, view.z);
             camera.LookAt = camera.View - camera.Position;

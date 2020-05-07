@@ -18,7 +18,7 @@ class Road
 	//Alignment path3D;
 public:
 	std::string name;
-	Alignment alignment;
+	Alignment* alignment;
 	float width;	// Roadway width
 	float speed;	// Speed design
 	int S;			// Stopping Sight Distance
@@ -26,7 +26,7 @@ public:
 	// DEFAULT CONSTRUCTOR
 	Road();
 	// OVERLOAD CONSTRUCTOR
-	Road(const std::string& _name, const float& _width, const float& _speed, const Alignment& _alignment);
+	Road(const std::string& _name, const float& _width, const float& _speed, Alignment* _alignment);
 	// DESTRUCTOR
 	~Road();
 };

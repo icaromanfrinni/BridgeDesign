@@ -1,166 +1,102 @@
 #include "Alignment.h"
 
+
 // DEFAULT CONSTRUCTOR
 // -------------------
 Alignment::Alignment()
 {
+}
 
-}
-// OVERLOAD CONSTRUCTOR
-// --------------------
-Alignment::Alignment(const CRAB::Curve& _vertical, const CRAB::Curve& _horizontal)
-	: VerticalAlignment(_vertical), HorizontalAlignment(_horizontal)
+// DEFAULT CONSTRUCTOR
+// -------------------
+Alignment::Alignment(const std::string& _name, const std::vector<Segment*>& horizontal, const std::vector<Segment*>& vertical)
+	: name(_name), path2Dh(NURBS(horizontal)), profile(vertical)
 {
-	/*for (int i = 0; i <= STEP; i++)
+	// control points of 3D curve
+	// --------------------------
+	std::vector<glm::vec3> points3D;
+	for (int i = 0; i <= ELEMENTS; i++)
 	{
-		float t = float(i) / STEP;
-		CRAB::Vector4Df control_point = this->HorizontalAlignment.getPosition(t);
-		control_point.y = this->VerticalAlignment.getPosition(t).y;
-		this->path3D.AddControlPoint(control_point);
-	}*/
-	this->path3D.points = this->HorizontalAlignment.points;
+		float t = float(i) / ELEMENTS;
+		// coordenadas em planta (UTM)
+		points3D.push_back(this->path2Dh.getPosition(t));
+		// elevation (m)
+		float distance = this->path2Dh.getDistance(t);
+		int index = findSegment(distance);
+		points3D.back().y = profile[index]->getY(distance);
+	}
+	this->path3D = NURBS(points3D);
 }
+
 // DESTRUCTOR
 // ----------
 Alignment::~Alignment()
 {
-
 }
 
-// RETURNS A POINT ON THE CURVE
-// ----------------------------
+int Alignment::findSegment(const float& station) const
+{
+	// special case
+	if (station > profile.back()->getStartPoint().x)
+		return profile.size() - 1;
+
+	int low = 0;
+	int high = profile.size() - 1;
+	int mid = (low + high) / 2;
+
+	while (station < profile[mid]->getStartPoint().x || station >= profile[mid]->getEndPoint().x)
+	{
+		if (station < profile[mid]->getStartPoint().x)
+			high = mid;
+		else low = mid;
+		mid = (low + high) / 2;
+	}
+	return mid;
+}
+
+// RETURN
+// ------
 CRAB::Vector4Df Alignment::getPosition(const float& t) const
 {
-	return path3D.getPosition(t);
+	glm::vec3 p = this->path3D.getPosition(t);
+	return CRAB::Vector4Df{ p.x, p.y, p.z, 1.0f };
 }
-// RETURNS THE CURVE TANGENT
-// -------------------------
 CRAB::Vector4Df Alignment::getTangent(const float& t) const
 {
-	return path3D.getTangent(t);
+	glm::vec3 tan = this->path3D.getTangent(t);
+	return CRAB::Vector4Df{ tan.x, tan.y, tan.z, 0.0f };
 }
-// RETURNS THE CURVE NORMAL
-// ------------------------
 CRAB::Vector4Df Alignment::getNormal(const float& t) const
 {
-	return path3D.getNormal(t);
-}
-// RETURNS THE CURVE NORMAL UP (w/ Superelevation)
-// -----------------------------------------------
-CRAB::Vector4Df Alignment::getNormalUp(const float& t) const
-{
-	float tan_alfa = 0.0044f * powf(60.0f, 2.0f) / HorizontalAlignment.getRadius(t);
+	glm::vec3 glm_n = this->path2Dh.getNormal(t);
+	CRAB::Vector4Df n = { glm_n.x, glm_n.y, glm_n.z, 0.0f };
+
+	float hor_radius = this->path2Dh.getRadius(t);
+	float tan_alfa = 0.0044f * powf(60.0f, 2.0f) / hor_radius;
 	if (tan_alfa > SLOPE_MAX)
 		tan_alfa = SLOPE_MAX;
 	float alfa = atanf(tan_alfa) * 180.0f / M_PI;
-	if (this->isClockwise(t))
+	if (this->path2Dh.isClockwise(t))
 		alfa = alfa * (-1.0f);
-	CRAB::Matrix4 R = CRAB::rotateArbitrary(alfa, getTangent(t));
+	CRAB::Matrix4 R = CRAB::rotateArbitrary(alfa, this->getTangent(t));
+	return (R * n).to_unitary() * hor_radius;
+}
+CRAB::Vector4Df Alignment::getNormalUp(const float& t) const
+{
+	// if R = inf
+	glm::vec3 glm_n = this->path3D.getNormalUp(t);
+	CRAB::Vector4Df n = { glm_n.x, glm_n.y, glm_n.z, 0.0f };
+	float hor_radius = this->path2Dh.getRadius(t);
+	if (hor_radius == 0.0f)
+		return n;
 
-	return (R * path3D.getNormalUp(t)).to_unitary();
+	// else
+	float tan_alfa = 0.0044f * powf(60.0f, 2.0f) / hor_radius;
+	if (tan_alfa > SLOPE_MAX)
+		tan_alfa = SLOPE_MAX;
+	float alfa = atanf(tan_alfa) * 180.0f / M_PI;
+	if (this->path2Dh.isClockwise(t))
+		alfa = alfa * (-1.0f);
+	CRAB::Matrix4 R = CRAB::rotateArbitrary(alfa, this->getTangent(t));
+	return (R * n).to_unitary();
 }
-// RETURNS THE CURVE BINORMAL
-// --------------------------
-CRAB::Vector4Df Alignment::getBinormal(const float& t) const
-{
-	return path3D.getBinormal(t);
-}
-// RETURNS THE CURVATURE
-// ---------------------
-float Alignment::getCurvature(const float& t) const
-{
-	return path3D.getCurvature(t);
-}
-// RETURNS THE RADIUS OF CURVATURE
-// -------------------------------
-float Alignment::getRadius(const float& t) const
-{
-	return path3D.getRadius(t);
-}
-// RETURNS THE CURVE LENGTH
-// ------------------------
-float Alignment::getLength() const
-{
-	return path3D.getLength();
-}
-// CLOCKWISE CHECK
-bool Alignment::isClockwise(const float& t) const
-{
-	return path3D.isClockwise(t);
-}
-
-// *********************************************************************
-
-//// Return Point from Station
-//// -------------------------
-//CRAB::Vector4Df Alignment::getPointFromStation(float dist)
-//{
-//	CRAB::Vector4Df vPxz = this->getPosition(1.0f) - this->getPosition(0.0f);
-//	vPxz.y = 0.0f;
-//	float t = dist / vPxz.length();
-//	if (t <= 1.0f)
-//		return this->getPosition(t);
-//	else dist -= vPxz.length();
-//
-//	return getPosition(t);
-//}
-//
-//// Return Station from Point
-//// -------------------------
-//float Alignment::getStationFromPoint(CRAB::Vector4Df p)
-//{
-//	CRAB::Vector4Df v = p - this->getPosition(0.0f);
-//	v.y = 0.0f;
-//	return v.length();
-//}
-//
-//// RETURN the closest collision distance of a ray and the segment
-//// --------------------------------------------------------------
-//CRAB::Vector4Df Alignment::Collision(const Ray& ray) const
-//{
-//	CRAB::Vector4Df Up = { 0.0f, 1.0f, 0.0f, 0.0f };
-//
-//	// FIRST TANGENT
-//	// -------------
-//
-//	// normal vector
-//	CRAB::Vector4Df Right = CRAB::cross(this->getTan(0.0f), Up);
-//	CRAB::Vector4Df normal = CRAB::cross(Right, this->getTan(0.0f));
-//
-//	// "t" distance
-//	float t1 = CRAB::dot(this->getPosition(0.0f) - ray.origin, normal) / CRAB::dot(ray.direction, normal);
-//
-//	// SECOND TANGENT
-//	// --------------
-//
-//	// normal vector
-//	Right = CRAB::cross(this->getTan(1.0f), Up);
-//	normal = CRAB::cross(Right, this->getTan(1.0f));
-//
-//	// "t" distance
-//	float t2 = CRAB::dot(this->getPosition(1.0f) - ray.origin, normal) / CRAB::dot(ray.direction, normal);
-//
-//	// Closest collision Point
-//	// -----------------------
-//
-//	if (t1 < t2)
-//		return ray.origin + ray.direction * t1;
-//	else return ray.origin + ray.direction * t2;
-//}
-//// RETURN true if the point P intersect the segment
-//// ------------------------------------------------
-//bool Alignment::Contains(const CRAB::Vector4Df& p) const
-//{
-//	/*CRAB::Vector4Df e1 = this->getMidPoint() - this->getStartPoint();
-//	CRAB::Vector4Df e2 = this->getEndPoint() - this->getMidPoint();
-//
-//	if ((p - this->getStartPoint()).length() <= e1.length() &&
-//		(p - this->getMidPoint()).length() <= e1.length())
-//		return true;
-//	else if ((p - this->getMidPoint()).length() <= e2.length() &&
-//		(p - this->getEndPoint()).length() <= e2.length())
-//		return true;
-//	else return false;*/
-//	
-//	return false;
-//}

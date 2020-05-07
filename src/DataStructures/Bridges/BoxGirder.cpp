@@ -67,12 +67,12 @@ void BoxGirder::update()
 	// Local axis
 	//CRAB::Vector4Df vRight = cross(alignment.getTangent(t), { 0.0f, 1.0f, 0.0f, 0.0f }).to_unitary();
 	//CRAB::Vector4Df vUp = cross(vRight, alignment.getTangent(t)).to_unitary();
-	CRAB::Vector4Df vUp = alignment.getNormalUp(t);
-	CRAB::Vector4Df vRight = cross(alignment.getTangent(t), vUp).to_unitary();
+	CRAB::Vector4Df vUp = alignment->getNormalUp(t);
+	CRAB::Vector4Df vRight = cross(alignment->getTangent(t), vUp).to_unitary();
 
 #pragma region TOP_LAYER
 	// v0
-	start_point = alignment.getPosition(0.0f);// -(vUp * TOP_LAYER);
+	start_point = alignment->getPosition(0.0f);// -(vUp * TOP_LAYER);
 	EulerOp::mvfs(model, start_point);
 	model.back()->name = "TOP_LAYER";
 	model.back()->material = { 0.1f, 0.1f, 0.1f, 1.0f };
@@ -99,7 +99,7 @@ void BoxGirder::update()
 	// OFFSET
 	offset = (B / 2.0f - GUARD_RAIL) * SLOPE + TOP_LAYER;
 	// v0
-	start_point = alignment.getPosition(0.0f) - (vUp * offset);
+	start_point = alignment->getPosition(0.0f) - (vUp * offset);
 	EulerOp::mvfs(model, start_point);
 	model.back()->name = "DECK";
 	model.back()->material = { 0.8f, 0.8f, 0.8f, 1.0f };
@@ -192,12 +192,12 @@ void BoxGirder::update()
 	t = 0.0f;
 	//vRight = cross(alignment.getTangent(t), { 0.0f, 1.0f, 0.0f, 0.0f }).to_unitary();
 	//vUp = cross(vRight, alignment.getTangent(t)).to_unitary();
-	vUp = alignment.getNormalUp(t);
-	vRight = cross(alignment.getTangent(t), vUp).to_unitary();
+	vUp = alignment->getNormalUp(t);
+	vRight = cross(alignment->getTangent(t), vUp).to_unitary();
 	// OFFSET
 	offset = (B / 2.0f - GUARD_RAIL) * SLOPE + H + TOP_LAYER;
 	// v0
-	start_point = alignment.getPosition(0.0f) - (vUp * offset);
+	start_point = alignment->getPosition(0.0f) - (vUp * offset);
 	EulerOp::mvfs(model, start_point);
 	model.back()->name = "U_SECTION";
 	model.back()->material = { 0.8f, 0.8f, 0.8f, 1.0f };

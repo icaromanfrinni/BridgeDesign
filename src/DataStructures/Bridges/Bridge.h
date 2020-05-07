@@ -33,7 +33,7 @@ class Bridge
 public:
 	std::string name;
 	Road* road;
-	Alignment alignment;
+	Alignment* alignment;
 	std::vector<HED::solid*> model;
 	float CS; // cross station
 	float VC; // vertical clearance

@@ -449,26 +449,19 @@ namespace EulerOp
 	// SWEEP
 	// f = face q sofre a varredura
 	// path = curva parametrizada
-	void SWEEP(HED::face* f, const Alignment& path)
+	void SWEEP(HED::face* f, Alignment* path)
 	{
 		// Get Solid
 		HED::solid* currentSolid = f->HedSolid;
 
-		float t = 0.0f;
-		for (int i = 0; i < STEP; i++)
+		//float t = 0.0f;
+		for (int i = 0; i < ELEMENTS; i++)
 		{
+			float t = float(i) / ELEMENTS;
 			// Transformation Matrix
-			//float last_ang = atanf(path.getCurvature(t)) * 180.0f / M_PI;
-			CRAB::Matrix4 LookAt = toLocal(path.getPosition(t), path.getTangent(t), path.getNormalUp(t));
-
-			t += 1.0f / STEP;
-
-			//float next_ang = atanf(path.getCurvature(t)) * 180.0f / M_PI;
-			CRAB::Matrix4 ModelSpace = toWorld(path.getPosition(t), path.getTangent(t), path.getNormalUp(t));
-
-			CRAB::Matrix4 Superelevation = CRAB::rotateZ(0.0f);
-			//CRAB::Matrix4 Superelevation = CRAB::rotateZ(100.0f * (next_ang - last_ang));
-			//std::cout << "ang = " << 100.0f * (next_ang - last_ang) << std::endl;
+			CRAB::Matrix4 LookAt = toLocal(path->getPosition(t), path->getTangent(t), path->getNormalUp(t));
+			t = float(i + 1) / ELEMENTS;
+			CRAB::Matrix4 ModelSpace = toWorld(path->getPosition(t), path->getTangent(t), path->getNormalUp(t));
 
 			if (currentSolid->faces.size() == 2)
 			{	// use the back face
@@ -476,14 +469,14 @@ namespace EulerOp
 				HED::halfEdge* he = backFace->hEdge;
 
 				// new vertex
-				CRAB::Vector4Df newVertex = ModelSpace * (Superelevation * (LookAt * he->vStart->point));
+				CRAB::Vector4Df newVertex = ModelSpace * (LookAt * he->vStart->point);
 				// first edge
 				mev(he->opp, NULL, he->vStart->id, newVertex);
 				// edges and faces
 				for (he = backFace->hEdge->prev; he != backFace->hEdge; he = he->prev)
 				{
 					// new vertex
-					newVertex = ModelSpace * (Superelevation * (LookAt * he->vStart->point));
+					newVertex = ModelSpace * (LookAt * he->vStart->point);
 					// new edge
 					mev(currentSolid->halfEdges.back()->prev, NULL, currentSolid->vertices.back()->id, newVertex);
 					// new face
@@ -498,14 +491,14 @@ namespace EulerOp
 				HED::halfEdge* he = f->hEdge;
 
 				// new vertex
-				CRAB::Vector4Df newVertex = ModelSpace * (Superelevation * (LookAt * he->vStart->point));
+				CRAB::Vector4Df newVertex = ModelSpace * (LookAt * he->vStart->point);
 				// first edge
 				mev(he->prev->opp, he->opp->next, he->vStart->id, newVertex);
 				// the other edges
 				for (he = f->hEdge->next; he != f->hEdge; he = he->next)
 				{
 					// new vertex
-					newVertex = ModelSpace * (Superelevation * (LookAt * he->vStart->point));
+					newVertex = ModelSpace * (LookAt * he->vStart->point);
 					// new edge
 					mev(he->prev->opp, he->opp->next, he->vStart->id, newVertex);
 				}
