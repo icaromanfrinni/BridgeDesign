@@ -4,6 +4,8 @@
 #define ALIGNMENT_H
 
 #include "NURBS.h"
+#include "HorSegment.h"
+#include "VerSegment.h"
 
 // MAX Transverse Slope
 const float SLOPE_MAX = 0.10f;
@@ -15,14 +17,16 @@ private:
 
 public:
 	std::string name;
-	std::vector<Segment*> profile;	// Vertical alignment
-	NURBS path2Dh;	// Horizontal alignment
-	NURBS path3D;	// 3D alignment
+	std::vector<HorSegment*> plan;		// Horizontal alignment
+	std::vector<VerSegment*> profile;	// Vertical alignment
+
+	NURBS path2Dh;	// 2D horizontal curve
+	NURBS path3D;	// 3D curve
 
 	// DEFAULT CONSTRUCTOR
 	Alignment();
 	// DEFAULT CONSTRUCTOR
-	Alignment(const std::string& _name, const std::vector<Segment*>& horizontal, const std::vector<Segment*>& vertical);
+	Alignment(const std::string& _name, const std::vector<HorSegment*>& _plan, const std::vector<VerSegment*>& _profile);
 	// DESTRUCTOR
 	~Alignment();
 

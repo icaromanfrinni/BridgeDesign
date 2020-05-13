@@ -69,25 +69,22 @@
     <ClInclude Include="src\DataStructures\Alignment\Alignment.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\DataStructures\Geometry.h">
+    <ClInclude Include="src\DataStructures\Segments\HorSegment.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\DataStructures\Curves\Bezier.h">
+    <ClInclude Include="src\DataStructures\Segments\VerSegment.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\DataStructures\Curves\Bspline.h">
+    <ClInclude Include="src\DataStructures\Geometry\CircularArc.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\DataStructures\Curves\NURBS.h">
+    <ClInclude Include="src\DataStructures\Geometry\Geometry.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\DataStructures\Segment\CircularArc.h">
+    <ClInclude Include="src\DataStructures\Geometry\Line.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\DataStructures\Segment\Line.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\DataStructures\Segment\Segment.h">
+    <ClInclude Include="src\DataStructures\Geometry\NURBS.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -140,22 +137,22 @@
     <ClCompile Include="src\DataStructures\Alignment\Alignment.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\DataStructures\Curves\Bezier.cpp">
+    <ClCompile Include="src\DataStructures\Segments\HorSegment.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\DataStructures\Curves\Bspline.cpp">
+    <ClCompile Include="src\DataStructures\Segments\VerSegment.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\DataStructures\Curves\NURBS.cpp">
+    <ClCompile Include="src\DataStructures\Geometry\CircularArc.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\DataStructures\Segment\CircularArc.cpp">
+    <ClCompile Include="src\DataStructures\Geometry\Geometry.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\DataStructures\Segment\Line.cpp">
+    <ClCompile Include="src\DataStructures\Geometry\Line.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\DataStructures\Segment\Segment.cpp">
+    <ClCompile Include="src\DataStructures\Geometry\NURBS.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
