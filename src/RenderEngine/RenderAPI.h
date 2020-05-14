@@ -28,7 +28,7 @@
 
 #include "BoxGirder.h"
 
-#define EXAMPLE 2
+#define EXAMPLE 3
 
 namespace CRAB
 {
@@ -160,6 +160,8 @@ namespace CRAB
         
         /* EXEMPLO: Reunião 13 */
 #if EXAMPLE == 1
+
+        // SEM TRANSIÇÃO
         std::vector<HorSegment*> road_plan;
         road_plan.push_back(new HorSegment(glm::vec3(40.0f, 0.0f, 80.0f), glm::vec3(40.0f, 0.0f, 20.0f)));
         road_plan.push_back(new HorSegment(glm::vec3(40.0f, 0.0f, 20.0f), glm::vec3(40.0f, 0.0f, 0.0f), glm::vec3(20.0f, 0.0f, 0.0f)));
@@ -193,22 +195,44 @@ namespace CRAB
         /* EXEMPLO: Curva Horizontal com Transição simétrica */
 #if EXAMPLE == 2
         std::vector<HorSegment*> road_plan;
-        road_plan.push_back(new HorSegment(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(300.0f, 0.0f, 0.0f), glm::vec3(300.0f, 0.0f, 300.0f), 50.0f, 1.0f / 264.0f));
+        road_plan.push_back(new HorSegment(
+            glm::vec3(247.56f, 0.0f, 490.49f), 
+            glm::vec3(600.0f, 0.0f, 693.98f), 
+            glm::vec3(952.44f, 0.0f, 490.49f), 
+            120.0f, 1.0f / 600.0f, BOTH));
 
         std::vector<VerSegment*> profile;
-        profile.push_back(new VerSegment(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(50.0f, 0.0f, 0.0f)));
+        profile.push_back(new VerSegment(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(50.0f, 10.0f, 0.0f)));
         /*profile.push_back(new VerSegment(glm::vec3(30.0f, 10.0f, 0.0f), glm::vec3(60.0f, 20.0f, 0.0f), glm::vec3(90.0f, 10.0f, 0.0f)));
         profile.push_back(new VerSegment(glm::vec3(90.0f, 10.0f, 0.0f), glm::vec3(120.0f, 0.0f, 0.0f)));*/
 
         // alignment
         alignments.push_back(new Alignment("Nivel_1", road_plan, profile));
         // road
-        roadways.push_back(new Road("Av_Eng_Santana_Jr", 7.0f, 60.0f, alignments.back()));
+        roadways.push_back(new Road("Av_Eng_Santana_Jr", 12.0f, 60.0f, alignments.back()));
         // bridge
         bridges.push_back(new BoxGirder("Viaduto_1", roadways.back(), 190.0f, 6.5f, 160.0f));
 #endif
         
-        
+        /* EXEMPLO: Superelevação */
+#if EXAMPLE == 3
+
+        std::vector<HorSegment*> road_plan;
+        road_plan.push_back(new HorSegment(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(100.0f, 0.0f, 0.0f)));
+        road_plan.push_back(new HorSegment(glm::vec3(100.0f, 0.0f, 0.0f), glm::vec3(200.0f, 0.0f, 0.0f), glm::vec3(200.0f, 0.0f, 100.0f)));
+        road_plan.push_back(new HorSegment(glm::vec3(200.0f, 0.0f, 100.0f), glm::vec3(200.0f, 0.0f, 200.0f)));
+
+        std::vector<VerSegment*> profile;
+        profile.push_back(new VerSegment(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(50.0f, 0.0f, 0.0f)));
+
+        // alignment
+        alignments.push_back(new Alignment("Pista_01", road_plan, profile));
+        // road
+        roadways.push_back(new Road("Rodovia_001", 8.00f, 60.0f, alignments.back()));
+        // bridge
+        bridges.push_back(new BoxGirder("Rio_Pacoti", roadways.back(), 194.25f, 6.0f, 90.0f));
+#endif
+
         // mesh
         for (int i = 0; i < bridges.size(); i++)
             for (int j = 0; j < bridges[i]->model.size(); j++)
@@ -240,11 +264,11 @@ namespace CRAB
         }*/
 
         // draw in wireframe
-        glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+        //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
         // pass projection matrix to shader (as projection matrix rarely changes there's no need to do this per frame)
         // -----------------------------------------------------------------------------------------------------------
-        projection = glm::perspective(glm::radians(camera.FieldOfView), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.10f, 1000.0f);
+        projection = glm::perspective(glm::radians(camera.FieldOfView), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.10f, 5000.0f);
         //projection = glm::ortho(-100.0f, 100.0f, -100.0f, 100.0f, 0.10f, 1000.0f);
 
         // render loop
@@ -407,7 +431,7 @@ namespace CRAB
         glViewport(0, 0, width, height);
 
         // update
-        projection = glm::perspective(glm::radians(camera.FieldOfView), (float)width / (float)height, 0.1f, 1000.0f);
+        projection = glm::perspective(glm::radians(camera.FieldOfView), (float)width / (float)height, 0.1f, 5000.0f);
         //projection = glm::ortho(-100.0f, 100.0f, -100.0f, 100.0f, 0.10f, 1000.0f);
     }
 

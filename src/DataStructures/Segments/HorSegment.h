@@ -8,6 +8,11 @@
 #include "Linear_Algebra.h"
 #include "Geometry.h"
 
+// Transition
+#define START 1
+#define END 2
+#define BOTH 3
+
 /* Meek and Walton (2004) */
 struct Clothoid
 {
@@ -26,7 +31,7 @@ public:
 	// Straight Line || Circular Arc || Circular Arc with Transition Curve (Clothoid)
 	Geometry* segment;
 	// Transition curve
-	bool transition;
+	int transition;
 	Clothoid spiral;
 
 	// DEFAULT CONSTRUCTOR
@@ -36,12 +41,14 @@ public:
 	// OVERLOAD CONSTRUCTOR (Horizontal Circular Arc)
 	HorSegment(const glm::vec3& _p0, const glm::vec3& _p1, const glm::vec3& _p2);
 	// OVERLOAD CONSTRUCTOR (Circular Arc with Transition Curve)
-	HorSegment(const glm::vec3& _p0, const glm::vec3& _p1, const glm::vec3& _p2, const float& _S, const float& _kB);
+	HorSegment(const glm::vec3& _p0, const glm::vec3& _p1, const glm::vec3& _p2, const float& _S, const float& _kB, const int& _transition);
 	// DESTRUCTOR
 	~HorSegment();
 
-	// RETURN DISCRETIZED HORIZONTAL CURVE WITH SPIRAL TRANSITION SYMMETRIC
+	// RETURN DISCRETIZED HORIZONTAL CURVE WITH SPIRAL TRANSITION
 	std::vector<Geometry*> HorizontalCurve() const;
+	std::vector<Geometry*> HorizontalCurveStartTransition() const;
+	std::vector<Geometry*> HorizontalCurveEndTransition() const;
 };
 
 #endif // HORSEGMENT_H

@@ -12,22 +12,22 @@ HorSegment::HorSegment()
 HorSegment::HorSegment(const glm::vec3& _p0, const glm::vec3& _p1)
 {
 	this->segment = new Line(_p0, _p1);
-	this->transition = false;
+	this->transition = 0;
 }
 // OVERLOAD CONSTRUCTOR (Horizontal Curve)
 // ---------------------------------------
 HorSegment::HorSegment(const glm::vec3& _p0, const glm::vec3& _p1, const glm::vec3& _p2)
 {
 	this->segment = new CircularArc(_p0, _p1, _p2);
-	this->transition = false;
+	this->transition = 0;
 }
 
 // OVERLOAD CONSTRUCTOR (Circular Arc with Transition Curve)
 // ---------------------------------------------------------
-HorSegment::HorSegment(const glm::vec3& _p0, const glm::vec3& _p1, const glm::vec3& _p2, const float& _S, const float& _kB)
+HorSegment::HorSegment(const glm::vec3& _p0, const glm::vec3& _p1, const glm::vec3& _p2, const float& _S, const float& _kB, const int& _transition)
 {
 	this->segment = new CircularArc(_p0, _p1, _p2);
-	this->transition = true;
+	this->transition = _transition;
 	this->spiral.kA = 0.0f;
 	this->spiral.kB = _kB;
 	this->spiral.S = _S;
@@ -44,8 +44,8 @@ HorSegment::~HorSegment()
 {
 }
 
-// RETURN DISCRETIZED HORIZONTAL CURVE WITH SPIRAL TRANSITION SYMMETRIC
-// --------------------------------------------------------------------
+// RETURN DISCRETIZED HORIZONTAL CURVE WITH SPIRAL TRANSITION
+// ----------------------------------------------------------
 std::vector<Geometry*> HorSegment::HorizontalCurve() const
 {
 	std::vector<Geometry*> StartSpiral;
@@ -95,7 +95,96 @@ std::vector<Geometry*> HorSegment::HorizontalCurve() const
 
 	return FinalCurve;
 }
+std::vector<Geometry*> HorSegment::HorizontalCurveStartTransition() const
+{
+	std::vector<Geometry*> StartSpiral;
+	std::vector<Geometry*> FinalCurve;
 
+	// Circular Curve
+	CRAB::Vector4Df SC, PI, CT;
+
+	// Normal total
+	CRAB::Vector4Df tanA = (segment->getMid4DPoint() - segment->getStart4DPoint()).to_unitary();
+	CRAB::Vector4Df AB = (segment->getEnd4DPoint() - segment->getStart4DPoint()).to_unitary();
+	CRAB::Vector4Df N = CRAB::cross(tanA, AB).to_unitary();
+
+	/* -------------- * Start Spiral * -------------- */
+	StartSpiral = this->DiscretizedClothoid(segment->getStart4DPoint(), segment->getEnd4DPoint(), segment->getMid4DPoint());
+	SC = StartSpiral.back()->getEnd4DPoint();
+	CT = segment->getEnd4DPoint();
+
+	/* -------------- * Circular Curve * -------------- */
+	{
+		// Raio da curva circular
+		float Rc = 1.0f / this->spiral.kB;
+		// Corda da curva circular
+		CRAB::Vector4Df Chord = CT - SC;
+		// Ângulo central circular / 2.0f
+		float w = asinf(Chord.length() / (2.0f * Rc));
+		// Tangente
+		float T = Rc * tanf(w);
+		// Matriz de rotação da corda
+		w = (w * 180.0f) / M_PI;
+		CRAB::Matrix4 R_chord = CRAB::rotateArbitrary(w, N);
+		// Ponto de interseção das tangentes
+		PI = SC + ((R_chord * Chord).to_unitary() * T);
+	}
+
+	/* -------------- * Final Curve * -------------- */
+	{
+		FinalCurve = StartSpiral;
+		FinalCurve.push_back(new CircularArc(SC, PI, CT));
+	}
+
+	return FinalCurve;
+}
+std::vector<Geometry*> HorSegment::HorizontalCurveEndTransition() const
+{
+	std::vector<Geometry*> EndSpiral;
+	std::vector<Geometry*> FinalCurve;
+
+	// Circular Curve
+	CRAB::Vector4Df TC, PI, CS;
+
+	// Normal total
+	CRAB::Vector4Df tanA = (segment->getMid4DPoint() - segment->getStart4DPoint()).to_unitary();
+	CRAB::Vector4Df AB = (segment->getEnd4DPoint() - segment->getStart4DPoint()).to_unitary();
+	CRAB::Vector4Df N = CRAB::cross(tanA, AB).to_unitary();
+
+	TC = segment->getStart4DPoint();
+	/* -------------- * End Spiral * -------------- */
+	EndSpiral = this->DiscretizedClothoidInverted(segment->getStart4DPoint(), segment->getEnd4DPoint(), segment->getMid4DPoint());
+	CS = EndSpiral.back()->getStart4DPoint();
+
+	/* -------------- * Circular Curve * -------------- */
+	{
+		// Raio da curva circular
+		float Rc = 1.0f / this->spiral.kB;
+		// Corda da curva circular
+		CRAB::Vector4Df Chord = CS - TC;
+		// Ângulo central circular / 2.0f
+		float w = asinf(Chord.length() / (2.0f * Rc));
+		// Tangente
+		float T = Rc * tanf(w);
+		// Matriz de rotação da corda
+		w = (w * 180.0f) / M_PI;
+		CRAB::Matrix4 R_chord = CRAB::rotateArbitrary(w, N);
+		// Ponto de interseção das tangentes
+		PI = TC + ((R_chord * Chord).to_unitary() * T);
+	}
+
+	/* -------------- * Final Curve * -------------- */
+	{
+		FinalCurve.push_back(new CircularArc(TC, PI, CS));
+		for (int i = EndSpiral.size() - 1; i >= 0; i--)
+			FinalCurve.push_back(EndSpiral[i]);
+	}
+
+	return FinalCurve;
+}
+
+// PRIVATE FUNCTIONS
+// -----------------
 std::vector<Geometry*> HorSegment::DiscretizedClothoid(const CRAB::Vector4Df& A, const CRAB::Vector4Df& B, const CRAB::Vector4Df& V) const
 {
 	// AUXILIARY CALCULATIONS
