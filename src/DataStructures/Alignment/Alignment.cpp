@@ -17,25 +17,7 @@ Alignment::Alignment(const std::string& _name, const std::vector<HorSegment*>& _
 	std::vector<Geometry*> hor2DSegments;
 	for (int i = 0; i < this->plan.size(); i++)
 	{
-		std::vector<Geometry*> horizontal_curve;
-		switch (this->plan[i]->transition)
-		{
-		case BOTH:
-			horizontal_curve = this->plan[i]->HorizontalCurve();
-			hor2DSegments.insert(hor2DSegments.end(), horizontal_curve.begin(), horizontal_curve.end());
-			break;
-		case START:
-			horizontal_curve = this->plan[i]->HorizontalCurveStartTransition();
-			hor2DSegments.insert(hor2DSegments.end(), horizontal_curve.begin(), horizontal_curve.end());
-			break;
-		case END:
-			horizontal_curve = this->plan[i]->HorizontalCurveEndTransition();
-			hor2DSegments.insert(hor2DSegments.end(), horizontal_curve.begin(), horizontal_curve.end());
-			break;
-		default:
-			hor2DSegments.push_back(this->plan[i]->segment);
-			break;
-		}
+		hor2DSegments.push_back(this->plan[i]->segment);
 	}
 	this->path2Dh = NURBS(hor2DSegments);
 
@@ -93,45 +75,24 @@ CRAB::Vector4Df Alignment::getTangent(const float& t) const
 	glm::vec3 tan = this->path3D.getTangent(t);
 	return CRAB::Vector4Df{ tan.x, tan.y, tan.z, 0.0f };
 }
-CRAB::Vector4Df Alignment::getNormalUp(const float& t) const
+CRAB::Vector4Df Alignment::getNormalUp(const float& t, const float& V) const
 {
 	// if R = inf
 	glm::vec3 glm_n = this->path3D.getNormalUp(t);
 	CRAB::Vector4Df n = { glm_n.x, glm_n.y, glm_n.z, 0.0f };
-	return n;
-
-	/*
-	float hor_radius = this->path2Dh.getRadius(t);
-	if (hor_radius == 0.0f)
+	float k = this->path2Dh.getCurvature(t);
+	if (k < SMALL_NUMBER)
 		return n;
 
 	// else
-	float Vp = 40.0f; // velocidade de projeto
-	float tan_alfa = 0.0044f * powf(Vp, 2.0f) / hor_radius;
-	if (tan_alfa > SLOPE_MAX)
-		tan_alfa = SLOPE_MAX;
-	float alfa = atanf(tan_alfa) * 180.0f / M_PI;
+	float slope = 0.0044f * powf(V, 2.0f) * k;
+	if (slope > SLOPE_MAX)
+		slope = SLOPE_MAX;
+	float alfa = atanf(slope) * 180.0f / M_PI;
 	
 	if (this->path2Dh.isClockwise(t))
 		alfa = alfa * (-1.0f);
 	CRAB::Matrix4 R = CRAB::rotateArbitrary(alfa, this->getTangent(t));
 	return (R * n).to_unitary();
-	*/
-}
-float Alignment::getSuperelevation(const float& t, const float& V) const
-{
-	// Curvature
-	float k = this->path2Dh.getCurvature(t);
-	if (k < SMALL_NUMBER)
-		return 0.0f; //k = 0.0f;
-	// Inclination
-	float e = 0.0044f * powf(V, 2.0f) * k;
-	if (e > SLOPE_MAX)
-		e = SLOPE_MAX;
-	float alfa = atanf(e) * 180.0f / M_PI;
-	// Right or Left ?
-	if (this->path2Dh.isClockwise(t))
-		alfa = alfa * (-1.0f);
-
-	return alfa;
+	
 }

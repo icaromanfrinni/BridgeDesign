@@ -143,7 +143,15 @@ namespace CRAB
            "skybox/color/side.jpg",        // front
            "skybox/color/side.jpg"         // back
         };
-        Skybox skybox(faces2);
+        std::vector<std::string> faces3 = {
+           "skybox/clouds/right.jpg",        // right
+           "skybox/clouds/left.jpg",        // left
+           "skybox/clouds/top.jpg",        // top
+           "skybox/clouds/bottom.jpg",        // bottom
+           "skybox/clouds/front.jpg",        // front
+           "skybox/clouds/back.jpg"         // back
+        };
+        Skybox skybox(faces3);
 
         // shader configuration
         // --------------------
@@ -378,9 +386,9 @@ namespace CRAB
             if (walkAround > 1.0f)
                 walkAround = 0.0f;
 
-            CRAB::Vector4Df head = bridges.back()->alignment->getPosition(walkAround) + bridges.back()->alignment->getNormalUp(walkAround) * 1.10f;
+            CRAB::Vector4Df head = bridges.back()->alignment->getPosition(walkAround) + bridges.back()->alignment->getNormalUp(walkAround, bridges.back()->road->speed) * 1.10f;
             CRAB::Vector4Df view = head + bridges.back()->alignment->getTangent(walkAround);
-            CRAB::Vector4Df up = bridges.back()->alignment->getNormalUp(walkAround);
+            CRAB::Vector4Df up = bridges.back()->alignment->getNormalUp(walkAround, bridges.back()->road->speed);
             camera.Position = glm::vec3(head.x, head.y, head.z);
             camera.View = glm::vec3(view.x, view.y, view.z);
             camera.LookAt = camera.View - camera.Position;
@@ -392,9 +400,9 @@ namespace CRAB
             if (walkAround < 0.0f)
                 walkAround = 1.0f;
 
-            CRAB::Vector4Df head = bridges.back()->alignment->getPosition(walkAround) + bridges.back()->alignment->getNormalUp(walkAround) * 1.10f;
+            CRAB::Vector4Df head = bridges.back()->alignment->getPosition(walkAround) + bridges.back()->alignment->getNormalUp(walkAround, bridges.back()->road->speed) * 1.10f;
             CRAB::Vector4Df view = head + bridges.back()->alignment->getTangent(walkAround);
-            CRAB::Vector4Df up = bridges.back()->alignment->getNormalUp(walkAround);
+            CRAB::Vector4Df up = bridges.back()->alignment->getNormalUp(walkAround, bridges.back()->road->speed);
             camera.Position = glm::vec3(head.x, head.y, head.z);
             camera.View = glm::vec3(view.x, view.y, view.z);
             camera.LookAt = camera.View - camera.Position;

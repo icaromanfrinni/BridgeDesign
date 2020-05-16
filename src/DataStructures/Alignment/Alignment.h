@@ -31,8 +31,7 @@ public:
 	// RETURN
 	CRAB::Vector4Df getPosition(const float& t) const;
 	CRAB::Vector4Df getTangent(const float& t) const;
-	CRAB::Vector4Df getNormalUp(const float& t) const;
-	float getSuperelevation(const float& t, const float& V) const;
+	CRAB::Vector4Df getNormalUp(const float& t, const float& V) const;
 };
 
 #endif
