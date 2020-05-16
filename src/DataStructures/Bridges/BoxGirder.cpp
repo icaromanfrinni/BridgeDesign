@@ -92,7 +92,7 @@ void BoxGirder::update()
 	EulerOp::mef(model.back()->halfEdges[0], model.back()->halfEdges[7], 0);
 
 	// SWEEP
-	EulerOp::SWEEP(model.back()->faces.front(), alignment);
+	EulerOp::SWEEP(model.back()->faces.front(), alignment, road);
 #pragma endregion TOP_LAYER
 
 #pragma region DECK
@@ -183,7 +183,7 @@ void BoxGirder::update()
 	EulerOp::mef(model.back()->halfEdges[0], model.back()->halfEdges[43], 0);
 
 	// SWEEP
-	EulerOp::SWEEP(model.back()->faces.front(), alignment);
+	EulerOp::SWEEP(model.back()->faces.front(), alignment, road);
 
 #pragma endregion DECK
 
@@ -236,7 +236,7 @@ void BoxGirder::update()
 	EulerOp::mef(model.back()->halfEdges[0], model.back()->halfEdges[19], 0);
 
 	// SWEEP
-	EulerOp::SWEEP(model.back()->faces.front(), alignment);
+	EulerOp::SWEEP(model.back()->faces.front(), alignment, road);
 
 #pragma endregion U_SECTION
 

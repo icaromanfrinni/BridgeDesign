@@ -3,9 +3,9 @@
 #define BOXGIRDER_H
 
 #include "Bridge.h"
-//#include "Coord_System.h"
 
-class BoxGirder : public Bridge
+class BoxGirder
+	: public Bridge
 {
 public:
 	// Box-Girder Bridge Attributes
@@ -20,7 +20,6 @@ public:
 	BoxGirder();
 	//OVERLOAD CONSTRUCTOR
 	BoxGirder(const std::string& _name, Road* _road, const float& cross_station, const float& vertical_clearance, const float& horizontal_clearance);
-
 	//DESTRUCTOR
 	~BoxGirder();
 

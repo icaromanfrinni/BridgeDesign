@@ -449,19 +449,70 @@ namespace EulerOp
 	// SWEEP
 	// f = face q sofre a varredura
 	// path = curva parametrizada
-	void SWEEP(HED::face* f, Alignment* path)
+	void SWEEP(HED::face* f, Alignment* path, Road* road)
 	{
 		// Get Solid
 		HED::solid* currentSolid = f->HedSolid;
 
-		//float t = 0.0f;
 		for (int i = 0; i < ELEMENTS; i++)
 		{
+			/* ---------- TRANSFORMATION MATRIX ---------- */
+
+			// CURRENT POSITION
 			float t = float(i) / ELEMENTS;
-			// Transformation Matrix
-			CRAB::Matrix4 LookAt = toLocal(path->getPosition(t), path->getTangent(t), path->getNormalUp(t));
+			// Superelevation
+			float alfa = path->getSuperelevation(t, road->speed);
+			CRAB::Vector4Df Tangent = path->getTangent(t);
+			CRAB::Matrix4 R = CRAB::rotateArbitrary(alfa, Tangent);
+			CRAB::Vector4Df Up = path->getNormalUp(t);
+			CRAB::Vector4Df NormalRotated = R * Up;
+			CRAB::Vector4Df Right = CRAB::cross(Tangent, Up).to_unitary();
+			CRAB::Vector4Df PositionTranslated = path->getPosition(t);
+			std::cout << "alfa local = " << alfa << std::endl;
+			// Local View
+			CRAB::Matrix4 LookAt = toLocal(PositionTranslated, Tangent, NormalRotated);
+
+			// NEXT POSITION
 			t = float(i + 1) / ELEMENTS;
-			CRAB::Matrix4 ModelSpace = toWorld(path->getPosition(t), path->getTangent(t), path->getNormalUp(t));
+			// Superelevation
+			float next_alfa = path->getSuperelevation(t, road->speed);
+			/*if ((next_alfa - alfa) > 0.0f)
+			{
+				if (next_alfa == 0.0f)
+					PositionTranslated = PositionTranslated + (Right * (road->width / 2.0f));
+				else PositionTranslated = PositionTranslated - (Right * (road->width / 2.0f));
+				LookAt = toLocal(PositionTranslated, Tangent, NormalRotated);
+			}
+			else if ((next_alfa - alfa) < 0.0f)
+			{
+				if (next_alfa == 0.0f)
+					PositionTranslated = PositionTranslated - (Right * (road->width / 2.0f));
+				else PositionTranslated = PositionTranslated + (Right * (road->width / 2.0f));
+				LookAt = toLocal(PositionTranslated, Tangent, NormalRotated);
+			}*/
+			Tangent = path->getTangent(t);
+			R = CRAB::rotateArbitrary(next_alfa, Tangent);
+			Up = path->getNormalUp(t);
+			NormalRotated = R * Up;
+			Right = CRAB::cross(Tangent, Up).to_unitary();
+			PositionTranslated = path->getPosition(t);
+			/*if ((next_alfa - alfa) > 0.0f)
+			{
+				if (next_alfa == 0.0f)
+					PositionTranslated = PositionTranslated + (Right * (road->width / 2.0f));
+				else PositionTranslated = PositionTranslated - (Right * (road->width / 2.0f));
+			}
+			else if ((next_alfa - alfa) < 0.0f)
+			{
+				if (next_alfa == 0.0f)
+					PositionTranslated = PositionTranslated - (Right * (road->width / 2.0f));
+				else PositionTranslated = PositionTranslated + (Right * (road->width / 2.0f));
+			}*/
+			std::cout << "next_alfa = " << next_alfa << std::endl;
+			// Next View
+			CRAB::Matrix4 ModelSpace = toWorld(PositionTranslated, Tangent, NormalRotated);
+
+			/* ---------------- EXTRUDE ---------------- */
 
 			if (currentSolid->faces.size() == 2)
 			{	// use the back face

@@ -28,7 +28,7 @@
 
 #include "BoxGirder.h"
 
-#define EXAMPLE 3
+#define EXAMPLE 1
 
 namespace CRAB
 {
@@ -191,39 +191,19 @@ namespace CRAB
         // bridge
         bridges.push_back(new BoxGirder("Rio_Pacoti", roadways.back(), 194.25f, 6.0f, 90.0f));
 #endif
-
-        /* EXEMPLO: Curva Horizontal com Transição simétrica */
-#if EXAMPLE == 2
-        std::vector<HorSegment*> road_plan;
-        road_plan.push_back(new HorSegment(
-            glm::vec3(247.56f, 0.0f, 490.49f), 
-            glm::vec3(600.0f, 0.0f, 693.98f), 
-            glm::vec3(952.44f, 0.0f, 490.49f), 
-            120.0f, 1.0f / 600.0f, BOTH));
-
-        std::vector<VerSegment*> profile;
-        profile.push_back(new VerSegment(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(50.0f, 10.0f, 0.0f)));
-        /*profile.push_back(new VerSegment(glm::vec3(30.0f, 10.0f, 0.0f), glm::vec3(60.0f, 20.0f, 0.0f), glm::vec3(90.0f, 10.0f, 0.0f)));
-        profile.push_back(new VerSegment(glm::vec3(90.0f, 10.0f, 0.0f), glm::vec3(120.0f, 0.0f, 0.0f)));*/
-
-        // alignment
-        alignments.push_back(new Alignment("Nivel_1", road_plan, profile));
-        // road
-        roadways.push_back(new Road("Av_Eng_Santana_Jr", 12.0f, 60.0f, alignments.back()));
-        // bridge
-        bridges.push_back(new BoxGirder("Viaduto_1", roadways.back(), 190.0f, 6.5f, 160.0f));
-#endif
-        
+       
         /* EXEMPLO: Superelevação */
-#if EXAMPLE == 3
+#if EXAMPLE == 2
 
         std::vector<HorSegment*> road_plan;
         road_plan.push_back(new HorSegment(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(100.0f, 0.0f, 0.0f)));
-        road_plan.push_back(new HorSegment(glm::vec3(100.0f, 0.0f, 0.0f), glm::vec3(200.0f, 0.0f, 0.0f), glm::vec3(200.0f, 0.0f, 100.0f)));
+        road_plan.push_back(new HorSegment(glm::vec3(100.0f, 0.0f, 0.0f), glm::vec3(200.0f, 0.0f, 0.0f), glm::vec3(200.0f, 0.0f, 100.0f)/*, 60.0f, 1.0f / 68.0f, BOTH*/));
         road_plan.push_back(new HorSegment(glm::vec3(200.0f, 0.0f, 100.0f), glm::vec3(200.0f, 0.0f, 200.0f)));
 
         std::vector<VerSegment*> profile;
-        profile.push_back(new VerSegment(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(50.0f, 0.0f, 0.0f)));
+        profile.push_back(new VerSegment(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(30.0f, 40.0f, 0.0f)));
+        profile.push_back(new VerSegment(glm::vec3(30.0f, 40.0f, 0.0f), glm::vec3(60.0f, 80.0f, 0.0f), glm::vec3(90.0f, 40.0f, 0.0f)));
+        profile.push_back(new VerSegment(glm::vec3(90.0f, 40.0f, 0.0f), glm::vec3(120.0f, 0.0f, 0.0f)));
 
         // alignment
         alignments.push_back(new Alignment("Pista_01", road_plan, profile));

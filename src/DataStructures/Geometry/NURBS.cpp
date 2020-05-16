@@ -41,7 +41,9 @@ NURBS::NURBS(const std::vector<glm::vec3>& _points)
 // ------------------------------------
 NURBS::NURBS(const std::vector<Geometry*>& segments)
 {
-	this->P = 2;
+	/* ------------ NON-UNIFORM ------------ */
+
+	/*this->P = 2;
 	float distance = 0.0;
 	this->T = { 0.0f, 0.0f, 0.0f };
 	for (int i = 0; i < segments.size(); i++)
@@ -60,7 +62,42 @@ NURBS::NURBS(const std::vector<Geometry*>& segments)
 	}
 	this->T.insert(T.end(), 1, distance);
 	for (int i = 0; i < this->T.size(); i++)
-		this->T[i] = this->T[i] / distance;
+		this->T[i] = this->T[i] / distance;*/
+
+		/* ------------ UNIFORM ------------ */
+
+		// control points and weights
+	for (int i = 0; i < segments.size(); i++)
+	{
+		if (i == 0)
+		{
+			this->points.push_back(segments[i]->getStartPoint());
+			this->w.push_back(1.0f);
+		}
+		this->points.push_back(segments[i]->getMidPoint());
+		this->w.push_back(segments[i]->midPointWeight());
+		this->points.push_back(segments[i]->getEndPoint());
+		this->w.push_back(1.0f);
+	}
+	// degree
+	this->P = this->points.size() - 1;
+	if (this->P > 5)
+		this->P = 5;
+	// knot vector
+	int m = points.size() + this->P;
+	int n = points.size() - 1;
+	for (int i = 0; i <= m; i++)
+	{
+		if (i <= this->P)
+			this->T.push_back(0.0f);
+		else if (i > n)
+			this->T.push_back(1.0f);
+		else
+		{
+			float u = float(i - this->P) / float(n - this->P + 1);
+			this->T.push_back(u);
+		}
+	}
 }
 
 // DESTRUCTOR
