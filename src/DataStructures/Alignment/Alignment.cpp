@@ -21,10 +21,16 @@ Alignment::Alignment(const std::string& _name, const std::vector<HorSegment*>& _
 	}
 	this->path2Dh = NURBS(hor2DSegments);
 
+	// Start & End Stations
+	// --------------------
+	float D = this->path2Dh.getLength();
+	int start_station = (this->profile.front()->getStartPoint().x / D) * ELEMENTS;
+	int end_station = (this->profile.back()->getEndPoint().x / D) * ELEMENTS;
+
 	// 3D Curve CONSTRUCTOR
 	// --------------------
 	std::vector<glm::vec3> points3D;
-	for (int i = 0; i <= ELEMENTS; i++)
+	for (int i = start_station; i <= end_station; i++)
 	{
 		float t = float(i) / ELEMENTS;
 		// coordenadas em planta (UTM)

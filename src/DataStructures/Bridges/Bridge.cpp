@@ -17,9 +17,8 @@ Bridge::Bridge(const std::string& _name, Road* _road, const float& cross_station
 	this->H = int((100.0f * this->mainSpan / 16.0f) / 5.0f) * 0.05f;
 
 	// Alignment
-	//Vertical_Alignment();
-	//Horizontal_Alignment();	
-	this->alignment = this->road->alignment;
+	//this->alignment = this->road->alignment;
+	this->alignment = new Alignment(this->name, this->Horizontal_Alignment(), this->Vertical_Alignment());
 }
 
 // DESTRUCTOR
@@ -28,34 +27,56 @@ Bridge::~Bridge()
 {
 }
 
+// HORIZONTAL ALIGNMENT
+// --------------------
+std::vector<HorSegment*> Bridge::Horizontal_Alignment()
+{
+	return this->road->alignment->plan;
+}
+
 // VERTICAL ALIGNMENT
 // ------------------
-void Bridge::Vertical_Alignment()
+std::vector<VerSegment*> Bridge::Vertical_Alignment()
 {
+	//return this->road->alignment->profile;
+	std::vector<VerSegment*> profile;
+
 	// ********************************** CREST VERTICAL CURVE **********************************
 
-	//// Length of crest vertical curve
-	//float Lc = this->HC;
+	// Length of crest vertical curve
+	float Lc = this->HC;
 
-	//// Algebraic difference in grades (%)
-	//float A;
-	//if (this->road->S < Lc)
-	//	A = Lc * 100 * (powf(sqrtf(2 * h1) + sqrtf(2 * h2), 2.0f)) / powf(this->road->S, 2.0f);
-	//else
-	//	A = (200 * powf(sqrtf(h1) + sqrtf(h2), 2.0f)) / (2.0f * this->road->S - Lc);
-	//
-	//// Round up
-	//A = ceilf(A);
+	// Algebraic difference in grades (%)
+	float A;
+	if (this->road->S < Lc)
+		A = Lc * 100 * (powf(sqrtf(2 * h1) + sqrtf(2 * h2), 2.0f)) / powf(this->road->S, 2.0f);
+	else
+		A = (200 * powf(sqrtf(h1) + sqrtf(h2), 2.0f)) / (2.0f * this->road->S - Lc);
+	
+	// Round up
+	A = ceilf(A);
 
-	//// VPC
-	//CRAB::Vector4Df VPC2 = this->road->path2Dv.getPointFromStation(this->CS - Lc / 2);
-	//VPC2.y += this->VC + this->H;
-	//// VPI
-	//CRAB::Vector4Df VPI2 = this->road->path2Dv.getPointFromStation(this->CS);
-	//VPI2.y += this->VC + this->H + (A / 200) * Lc / 2;
-	//// VPT
-	//CRAB::Vector4Df VPT2 = this->road->path2Dv.getPointFromStation(this->CS + Lc / 2);
-	//VPT2.y += this->VC + this->H;
+	// VPC
+	/*CRAB::Vector4Df VPC2 = this->road->path2Dv.getPointFromStation(this->CS - Lc / 2);
+	VPC2.y += this->VC + this->H;*/
+	CRAB::Vector4Df VPC2 = { 0.0f, 0.0f, 0.0f, 1.0f };
+	VPC2.x = this->CS - Lc / 2.0f;														// coordenada horizontal
+	int index = this->road->alignment->findSegment(VPC2.x);								// segmento onde está contido
+	VPC2.y = this->road->alignment->profile[index]->getY(VPC2.x) + this->VC + this->H;	// coordenada vertical
+	// VPI
+	/*CRAB::Vector4Df VPI2 = this->road->path2Dv.getPointFromStation(this->CS);
+	VPI2.y += this->VC + this->H + (A / 200) * Lc / 2;*/
+	CRAB::Vector4Df VPI2 = { 0.0f, 0.0f, 0.0f, 1.0f };
+	VPI2.x = this->CS;																								// coordenada horizontal
+	index = this->road->alignment->findSegment(VPI2.x);																// segmento onde está contido
+	VPI2.y = this->road->alignment->profile[index]->getY(VPI2.x) + this->VC + this->H + (A / 200.0f) * Lc / 2.0f;	// coordenada vertical
+	// VPT
+	/*CRAB::Vector4Df VPT2 = this->road->path2Dv.getPointFromStation(this->CS + Lc / 2);
+	VPT2.y += this->VC + this->H;*/
+	CRAB::Vector4Df VPT2 = { 0.0f, 0.0f, 0.0f, 1.0f };
+	VPT2.x = this->CS + Lc / 2.0f;														// coordenada horizontal
+	index = this->road->alignment->findSegment(VPT2.x);									// segmento onde está contido
+	VPT2.y = this->road->alignment->profile[index]->getY(VPT2.x) + this->VC + this->H;	// coordenada vertical
 
 	//// ********************************** SAG VERTICAL CURVE **********************************
 
@@ -162,14 +183,16 @@ void Bridge::Vertical_Alignment()
 
 	//this->path2Dv.segments.push_back(new CircularArc(VPC1, VPI1, VPT1));
 	//this->path2Dv.segments.push_back(new Line(VPT1, VPC2));
-	//this->path2Dv.segments.push_back(new CircularArc(VPC2, VPI2, VPT2));
+	profile.push_back(new VerSegment(VPC2, VPI2, VPT2));
 	//this->path2Dv.segments.push_back(new Line(VPT2, VPC3));
 	//this->path2Dv.segments.push_back(new CircularArc(VPC3, VPI3, VPT3));
-}
 
-// HORIZONTAL ALIGNMENT
-// --------------------
-void Bridge::Horizontal_Alignment()
-{
+	// ********************************** DEBUG **********************************
 
+	std::cout << "VPC2 = [" << VPC2.x << "; " << VPC2.y << "; " << VPC2.z << "]" << std::endl;
+	std::cout << "VPI2 = [" << VPI2.x << "; " << VPI2.y << "; " << VPI2.z << "]" << std::endl;
+	std::cout << "VPT2 = [" << VPT2.x << "; " << VPT2.y << "; " << VPT2.z << "]" << std::endl;
+	system("pause");
+
+	return profile;
 }

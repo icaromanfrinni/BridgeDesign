@@ -14,9 +14,21 @@ VerSegment::VerSegment(const glm::vec3& _p0, const glm::vec3& _p1)
 {
 	this->segment = new Line(_p0, _p1);
 }
-// OVERLOAD CONSTRUCTOR (Vertical Curve)
+// OVERLOAD CONSTRUCTOR (Straight Line from CRAB::Vector)
+// ------------------------------------------------------
+VerSegment::VerSegment(const CRAB::Vector4Df& _p0, const CRAB::Vector4Df& _p1)
+{
+	this->segment = new Line(_p0, _p1);
+}
+// OVERLOAD CONSTRUCTOR (Circular Arc)
 // ---------------------------------------
 VerSegment::VerSegment(const glm::vec3& _p0, const glm::vec3& _p1, const glm::vec3& _p2)
+{
+	this->segment = new CircularArc(_p0, _p1, _p2);
+}
+// OVERLOAD CONSTRUCTOR (Circular Arc from CRAB::Vector)
+// -----------------------------------------------------
+VerSegment::VerSegment(const CRAB::Vector4Df& _p0, const CRAB::Vector4Df& _p1, const CRAB::Vector4Df& _p2)
 {
 	this->segment = new CircularArc(_p0, _p1, _p2);
 }

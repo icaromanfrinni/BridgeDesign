@@ -28,7 +28,7 @@
 
 #include "BoxGirder.h"
 
-#define EXAMPLE 1
+#define EXAMPLE 3
 
 namespace CRAB
 {
@@ -221,35 +221,26 @@ namespace CRAB
         bridges.push_back(new BoxGirder("Rio_Pacoti", roadways.back(), 194.25f, 6.0f, 90.0f));
 #endif
 
+        /* EXEMPLO: Viaduto Reto */
+#if EXAMPLE == 3
+        std::vector<HorSegment*> road_plan;
+        road_plan.push_back(new HorSegment(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(500.0f, 0.0f, 0.0f)));
+
+        std::vector<VerSegment*> road_profile;
+        road_profile.push_back(new VerSegment(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(250.0f, 50.0f, 0.0f), glm::vec3(500.0f, 0.0f, 0.0f)));
+
+        // alignment
+        alignments.push_back(new Alignment("Pista_01", road_plan, road_profile));
+        // road
+        roadways.push_back(new Road("Rodovia_001", 12.00f, 80.0f, alignments.back()));
+        // bridge
+        bridges.push_back(new BoxGirder("Rio_Pacoti", roadways.back(), 250.0f, 6.0f, 90.0f));
+#endif
+
         // mesh
         for (int i = 0; i < bridges.size(); i++)
             for (int j = 0; j < bridges[i]->model.size(); j++)
                 ourMesh_List.push_back(Mesh(bridges[i]->model[j])); 
-
-        // DEBUG
-
-        /*for (int i = 0; i <= ELEMENTS; i++)
-        {
-            float t = float(i) / ELEMENTS;
-            glm::vec3 p = alignments.back()->path2Dh.getPosition(t);
-            float R = alignments.back()->path2Dh.getRadius(t);
-            float L = alignments.back()->path2Dh.getDistance(t);
-
-            std::cout << "\n" << std::endl;
-            std::cout << "\ti = " << i << std::endl;
-            std::cout << "p = [" << p.x << "; " << p.y << "; " << p.z << "]" << std::endl;
-            std::cout << "R(" << t << ") = " << R << std::endl;
-            std::cout << "L(" << t << ") = " << L << std::endl;
-        }*/
-
-        /*for (int i = 0; i < alignments.back()->path2Dh.points.size(); i++)
-        {
-            glm::vec3 p = alignments.back()->path2Dh.points[i];
-
-            std::cout << "\n" << std::endl;
-            std::cout << "\ti = " << i << std::endl;
-            std::cout << "p = [" << p.x << "; " << p.y << "; " << p.z << "]" << std::endl;
-        }*/
 
         // draw in wireframe
         //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
@@ -386,9 +377,10 @@ namespace CRAB
             if (walkAround > 1.0f)
                 walkAround = 0.0f;
 
-            CRAB::Vector4Df head = bridges.back()->alignment->getPosition(walkAround) + bridges.back()->alignment->getNormalUp(walkAround, bridges.back()->road->speed) * 1.10f;
-            CRAB::Vector4Df view = head + bridges.back()->alignment->getTangent(walkAround);
             CRAB::Vector4Df up = bridges.back()->alignment->getNormalUp(walkAround, bridges.back()->road->speed);
+            CRAB::Vector4Df head = bridges.back()->alignment->getPosition(walkAround) + up * 1.50f;
+            CRAB::Vector4Df view = head + bridges.back()->alignment->getTangent(walkAround);
+            
             camera.Position = glm::vec3(head.x, head.y, head.z);
             camera.View = glm::vec3(view.x, view.y, view.z);
             camera.LookAt = camera.View - camera.Position;
@@ -400,9 +392,9 @@ namespace CRAB
             if (walkAround < 0.0f)
                 walkAround = 1.0f;
 
-            CRAB::Vector4Df head = bridges.back()->alignment->getPosition(walkAround) + bridges.back()->alignment->getNormalUp(walkAround, bridges.back()->road->speed) * 1.10f;
-            CRAB::Vector4Df view = head + bridges.back()->alignment->getTangent(walkAround);
             CRAB::Vector4Df up = bridges.back()->alignment->getNormalUp(walkAround, bridges.back()->road->speed);
+            CRAB::Vector4Df head = bridges.back()->alignment->getPosition(walkAround) + up * 1.50f;
+            CRAB::Vector4Df view = head + bridges.back()->alignment->getTangent(walkAround);
             camera.Position = glm::vec3(head.x, head.y, head.z);
             camera.View = glm::vec3(view.x, view.y, view.z);
             camera.LookAt = camera.View - camera.Position;

@@ -27,8 +27,8 @@ const float INCLINATION_RATIO = 0.25f;
 class Bridge
 {
 	// ALIGNMENTS
-	void Vertical_Alignment();
-	void Horizontal_Alignment();
+	std::vector<HorSegment*> Horizontal_Alignment();
+	std::vector<VerSegment*> Vertical_Alignment();
 
 public:
 	std::string name;

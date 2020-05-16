@@ -11,7 +11,7 @@
 class HorSegment
 {
 public:
-	// Straight Line || Circular Arc || Circular Arc with Transition Curve (Clothoid)
+	// Straight Line || Circular Arc
 	Geometry* segment;
 
 	// DEFAULT CONSTRUCTOR

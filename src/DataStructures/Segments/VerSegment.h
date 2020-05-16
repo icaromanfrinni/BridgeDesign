@@ -16,8 +16,12 @@ public:
 	VerSegment();
 	// OVERLOAD CONSTRUCTOR (Straight Line)
 	VerSegment(const glm::vec3& _p0, const glm::vec3& _p1);
-	// OVERLOAD CONSTRUCTOR (Horizontal Circular Arc)
+	// OVERLOAD CONSTRUCTOR (Straight Line from CRAB::Vector)
+	VerSegment(const CRAB::Vector4Df& _p0, const CRAB::Vector4Df& _p1);
+	// OVERLOAD CONSTRUCTOR (Circular Arc)
 	VerSegment(const glm::vec3& _p0, const glm::vec3& _p1, const glm::vec3& _p2);
+	// OVERLOAD CONSTRUCTOR (Circular Arc from CRAB::Vector)
+	VerSegment(const CRAB::Vector4Df& _p0, const CRAB::Vector4Df& _p1, const CRAB::Vector4Df& _p2);
 	// DESTRUCTOR
 	~VerSegment();
 

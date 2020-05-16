@@ -13,9 +13,9 @@ const float SLOPE_MAX = 0.10f;
 class Alignment
 {
 private:
-	int findSegment(const float& station) const;
 	NURBS path2Dh;	// 2D horizontal curve
 	NURBS path3D;	// 3D curve
+
 public:
 	std::string name;
 	std::vector<HorSegment*> plan;		// Horizontal alignment
@@ -32,6 +32,7 @@ public:
 	CRAB::Vector4Df getPosition(const float& t) const;
 	CRAB::Vector4Df getTangent(const float& t) const;
 	CRAB::Vector4Df getNormalUp(const float& t, const float& V) const;
+	int findSegment(const float& station) const;
 };
 
 #endif
