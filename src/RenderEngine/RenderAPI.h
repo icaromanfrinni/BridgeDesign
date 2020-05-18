@@ -282,7 +282,7 @@ namespace CRAB
         // alignment
         alignments.push_back(new Alignment("Pista_2", road_plan, road_profile));
         // road
-        roadways.push_back(new Road("Av_Ant_Sales", 8.50f, 60.0f, alignments.back()));
+        roadways.push_back(new Road("Av_Ant_Sales", 8.50f, 40.0f, alignments.back()));
         // bridge
         bridges.push_back(new BoxGirder("Viaduto_2", roadways.back(), 267.0f, 11.0f, 80.0f));
 

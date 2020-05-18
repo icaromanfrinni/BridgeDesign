@@ -29,11 +29,20 @@ public:
 	// DESTRUCTOR
 	~Alignment();
 
+	// FIND THE VERTICAL SEGMENT FROM STATION
+	int findSegment(const float& station) const;
+
 	// RETURN
 	CRAB::Vector4Df getPosition(const float& t) const;
 	CRAB::Vector4Df getTangent(const float& t) const;
 	CRAB::Vector4Df getNormalUp(const float& t, const float& V) const;
-	int findSegment(const float& station) const;
+
+	// RETURNS THE LENGTH OF VERTICAL ALIGNMENT
+	float getProfileLength() const;
+	// RETURNS THE 4D POINT FROM STATION
+	CRAB::Vector4Df getPositionFromStation(const float& station) const;
+	// RETURNS THE 4D TANGENT VECTOR FROM STATION
+	CRAB::Vector4Df getTangentFromStation(const float& station) const;
 };
 
 #endif

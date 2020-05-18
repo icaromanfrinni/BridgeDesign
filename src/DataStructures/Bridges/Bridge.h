@@ -17,11 +17,11 @@ const float TOP_LAYER = 0.10f;
 const float GUARD_RAIL = 0.40f;
 const float INCLINATION_RATIO = 0.25f;
 
-//struct Pier
-//{
-//	float b, h, L;
-//	CRAB::Vector4Df base;
-//};
+struct Pier
+{
+	float b, h, L;
+	CRAB::Vector4Df base, dir;
+};
 
 class Bridge
 {
@@ -37,7 +37,7 @@ public:
 	float CS; // cross station
 	float VC; // vertical clearance
 	float HC; // horizontal clearance
-	//std::vector<Pier> piers;
+	std::vector<Pier> piers;
 
 	// Bridge attributes
 	float B;		// Width

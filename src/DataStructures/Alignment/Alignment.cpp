@@ -88,6 +88,8 @@ float Alignment::findParameter(const float& distance) const
 	return mid;
 }
 
+// FIND THE VERTICAL SEGMENT FROM STATION
+// --------------------------------------
 int Alignment::findSegment(const float& station) const
 {
 	// special case
@@ -142,4 +144,32 @@ CRAB::Vector4Df Alignment::getNormalUp(const float& t, const float& V) const
 	CRAB::Matrix4 R = CRAB::rotateArbitrary(alfa, this->getTangent(t));
 	return (R * n).to_unitary();
 	
+}
+
+// RETURNS THE LENGTH OF VERTICAL ALIGNMENT
+// ----------------------------------------
+float Alignment::getProfileLength() const
+{
+	float Lv = this->profile.back()->getEndPoint().x - this->profile.front()->getStartPoint().x;
+	return Lv;
+}
+// RETURNS THE 4D POINT FROM STATION
+// ---------------------------------
+CRAB::Vector4Df Alignment::getPositionFromStation(const float& station) const
+{
+	float t = this->findParameter(station);
+	glm::vec3 p = this->path2Dh.getPosition(t);
+	int index = this->findSegment(station);
+	p.y = this->profile[index]->getY(station);
+	
+	return CRAB::Vector4Df{ p.x, p.y, p.z, 1.0f };
+}
+// RETURNS THE 4D TANGENT VECTOR FROM STATION
+// ------------------------------------------
+CRAB::Vector4Df Alignment::getTangentFromStation(const float& station) const
+{
+	float t = this->findParameter(station);
+	glm::vec3 tan = this->path2Dh.getTangent(t);
+
+	return CRAB::Vector4Df{ tan.x, tan.y, tan.z, 0.0f };
 }
