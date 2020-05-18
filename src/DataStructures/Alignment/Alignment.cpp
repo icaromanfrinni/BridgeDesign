@@ -12,8 +12,12 @@ Alignment::Alignment()
 Alignment::Alignment(const std::string& _name, const std::vector<HorSegment*>& _plan, const std::vector<VerSegment*>& _profile)
 	: name(_name), plan(_plan), profile(_profile)
 {
+	std::cout << std::endl;
+	std::cout << "\tNEW Alignment ............................ " << name << std::endl;
+
 	// 2D Horizontal Curve CONSTRUCTOR
 	// -------------------------------
+	std::cout << "\tBuilding the horizontal NURBS curve" << std::endl;
 	std::vector<Geometry*> hor2DSegments;
 	for (int i = 0; i < this->plan.size(); i++)
 	{
@@ -23,23 +27,35 @@ Alignment::Alignment(const std::string& _name, const std::vector<HorSegment*>& _
 
 	// Start & End Stations
 	// --------------------
-	float D = this->path2Dh.getLength();
-	int start_station = (this->profile.front()->getStartPoint().x / D) * ELEMENTS;
-	int end_station = (this->profile.back()->getEndPoint().x / D) * ELEMENTS;
+	float start_station = this->findParameter(this->profile.front()->getStartPoint().x);
+	float end_station = this->findParameter(this->profile.back()->getEndPoint().x);
 
 	// 3D Curve CONSTRUCTOR
 	// --------------------
+	std::cout << "\tBuilding the 3D NURBS curve" << std::endl;
 	std::vector<glm::vec3> points3D;
-	for (int i = start_station; i <= end_station; i++)
+	float t = start_station;
+	while (t <= end_station)
 	{
-		float t = float(i) / ELEMENTS;
 		// coordenadas em planta (UTM)
 		points3D.push_back(this->path2Dh.getPosition(t));
 		// elevation (m)
 		float distance = this->path2Dh.getDistance(t);
 		int index = findSegment(distance);
 		points3D.back().y = profile[index]->getY(distance);
+
+		t += 1.0f / ELEMENTS;
 	}
+	//for (int i = /*start_station*/0; i <= /*end_station*/ELEMENTS; i++)
+	//{
+	//	float t = float(i) / ELEMENTS;
+	//	// coordenadas em planta (UTM)
+	//	points3D.push_back(this->path2Dh.getPosition(t));
+	//	// elevation (m)
+	//	float distance = this->path2Dh.getDistance(t);
+	//	int index = findSegment(distance);
+	//	points3D.back().y = profile[index]->getY(distance);
+	//}
 	this->path3D = NURBS(points3D);
 }
 
@@ -49,11 +65,36 @@ Alignment::~Alignment()
 {
 }
 
+float Alignment::findParameter(const float& distance) const
+{
+	if (distance >= this->path2Dh.getLength())
+		return 1.0f;
+	if (distance <= 0.0f)
+		return 0.0f;
+
+	float low = 0.0f;
+	float high = 1.0f;
+	float mid = (low + high) / 2.0f;
+
+	while (distance < this->path2Dh.getDistance(mid) || distance >= this->path2Dh.getDistance(mid))
+	{
+		if (distance < this->path2Dh.getDistance(mid))
+			high = mid;
+		else low = mid;
+		mid = (low + high) / 2.0f;
+		if (fabsf(low - mid) < SMALL_NUMBER)
+			return mid;
+	}
+	return mid;
+}
+
 int Alignment::findSegment(const float& station) const
 {
 	// special case
 	if (station >= profile.back()->getStartPoint().x)
 		return profile.size() - 1;
+	if (station < profile.front()->getStartPoint().x)
+		return 0;
 
 	int low = 0;
 	int high = profile.size() - 1;

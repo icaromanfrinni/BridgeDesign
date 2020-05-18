@@ -11,6 +11,9 @@ Bridge::Bridge()
 Bridge::Bridge(const std::string& _name, Road* _road, const float& cross_station, const float& vertical_clearance, const float& horizontal_clearance)
 	: name(_name), road(_road), CS(cross_station), VC(vertical_clearance), HC(horizontal_clearance)
 {
+	std::cout << std::endl;
+	std::cout << "\tNEW Bridge ............................... " << name << std::endl;
+
 	// Bridge attributes
 	this->mainSpan = 35.0f;
 	this->B = this->road->width + 2 * GUARD_RAIL;
@@ -31,6 +34,7 @@ Bridge::~Bridge()
 // --------------------
 std::vector<HorSegment*> Bridge::Horizontal_Alignment()
 {
+	std::cout << "\tHorizontal alignment" << std::endl;
 	return this->road->alignment->plan;
 }
 
@@ -38,6 +42,7 @@ std::vector<HorSegment*> Bridge::Horizontal_Alignment()
 // ------------------
 std::vector<VerSegment*> Bridge::Vertical_Alignment()
 {
+	std::cout << "\tVertical alignment" << std::endl;
 	//return this->road->alignment->profile;
 	std::vector<VerSegment*> profile;
 
@@ -80,119 +85,127 @@ std::vector<VerSegment*> Bridge::Vertical_Alignment()
 
 	//// ********************************** SAG VERTICAL CURVE **********************************
 
-	//// Length of sag vertical curve (S > L)
-	//float Ls = 2 * this->road->S - ((120 + 3.5 * this->road->S) / (A / 2));
-	//Ls = int(round(Ls / 5)) * 5;
-	//// Minimun length of vertical curve (0.6 Vp)
-	//float Lmin = 0.60f * this->road->speed;
-	//// CHECK
-	//if (Ls < Lmin) Ls = Lmin;
+	// Length of sag vertical curve (S > L)
+	float Ls = 2 * this->road->S - ((120 + 3.5 * this->road->S) / (A / 2));
+	Ls = int(round(Ls / 5)) * 5;
+	// Minimun length of vertical curve (0.6 Vp)
+	float Lmin = 0.60f * this->road->speed;
+	// CHECK
+	if (Ls < Lmin) Ls = Lmin;
 
-	//// Grades
-	//Ray g1, g2;
-	//g1.origin = VPC2;
-	//g1.direction = (VPC2 - VPI2).to_unitary();
-	//g2.origin = VPT2;
-	//g2.direction = (VPT2 - VPI2).to_unitary();
+	// Grades
+	CRAB::Ray g1, g2;
+	g1.origin = VPC2;
+	g1.direction = (VPC2 - VPI2).to_unitary();
+	g2.origin = VPT2;
+	g2.direction = (VPT2 - VPI2).to_unitary();
 
-	//// Tangent of the collided segment
-	//CRAB::Vector4Df tan_Segment;
+	// Tangent of the collided segment
+	CRAB::Vector4Df tan_Segment;
 
-	//// Length of tangent segment
-	//float d;
+	// Length of tangent segment
+	float d;
 
-	//// Horizontal Matrix
-	//CRAB::Matrix4 PlaneXZ = CRAB::Matrix4{
-	//		1, 0, 0, 0,
-	//		0, 0, 0, 0,
-	//		0, 0, 1, 0,
-	//		0, 0, 0, 1 };
-	//// Horizontal Vector
-	//CRAB::Vector4Df vPxz;
+	// Horizontal Matrix
+	CRAB::Matrix4 PlaneXZ = CRAB::Matrix4{
+			1, 0, 0, 0,
+			0, 0, 0, 0,
+			0, 0, 1, 0,
+			0, 0, 0, 1 };
+	// Horizontal Vector
+	CRAB::Vector4Df vPxz;
 
-	//// Angle of the tangent
-	//float cosTeta1, cosTeta2;
+	// Angle of the tangent
+	float cosTeta1, cosTeta2;
 
-	//// --------------
-	////      LEFT
-	//// --------------
+	// --------------
+	//      LEFT
+	// --------------
 
-	//// VPI
-	//CRAB::Vector4Df VPI1;
-	//for (int i = 0; i < this->road->path2Dv.segments.size(); i++)
-	//{
-	//	// get the intersect point
-	//	CRAB::Vector4Df P = this->road->path2Dv.segments[i]->Collision(g1);
-	//	// check if its between the extreme points
-	//	if (this->road->path2Dv.segments[i]->Contains(P))
-	//	{
-	//		VPI1 = P;
-	//		tan_Segment = this->road->path2Dv.segments[i]->getTan(0.0f).to_unitary();
-	//		break;
-	//	}
-	//	// if its before all segments
-	//	if (i == 0)
-	//	{
-	//		VPI1 = P;
-	//		tan_Segment = this->road->path2Dv.segments[i]->getTan(0.0f).to_unitary();
-	//	}
-	//}
-	//// Projections (hor & vert)
-	//vPxz = (PlaneXZ * tan_Segment).to_unitary();
-	//cosTeta1 = fabsf(CRAB::dot(tan_Segment, vPxz));
-	//cosTeta2 = fabsf(CRAB::dot(g1.direction, vPxz));
-	//d = Ls / (cosTeta1 + cosTeta2);
+	// VPI
+	CRAB::Vector4Df VPI1;
+	for (int i = 0; i < this->road->alignment->profile.size(); i++)
+	{
+		// get the intersect point
+		CRAB::Vector4Df P = this->road->alignment->profile[i]->Collision(g1);
+		// check if its between the extreme points
+		if (this->road->alignment->profile[i]->Contains(P))
+		{
+			VPI1 = P;
+			tan_Segment = (this->road->alignment->profile[i]->getMid4DPoint() - this->road->alignment->profile[i]->getStart4DPoint()).to_unitary();
+			break;
+		}
+		// if its before all segments
+		if (i == 0)
+		{
+			VPI1 = P;
+			tan_Segment = (this->road->alignment->profile[i]->getMid4DPoint() - this->road->alignment->profile[i]->getStart4DPoint()).to_unitary();
+		}
+	}
+	// Projections (hor & vert)
+	vPxz = (PlaneXZ * tan_Segment).to_unitary();
+	cosTeta1 = fabsf(CRAB::dot(tan_Segment, vPxz));
+	cosTeta2 = fabsf(CRAB::dot(g1.direction, vPxz));
+	d = Ls / (cosTeta1 + cosTeta2);
 
-	//// VPC
-	//CRAB::Vector4Df VPC1 = VPI1 + (tan_Segment * -1.0f) * d;
-	//// VPT
-	//CRAB::Vector4Df VPT1 = VPI1 + (g1.direction * -1.0f) * d;
+	// VPC
+	CRAB::Vector4Df VPC1 = VPI1 + (tan_Segment * -1.0f) * d;
+	// VPT
+	CRAB::Vector4Df VPT1 = VPI1 + (g1.direction * -1.0f) * d;
 
-	//// ---------------
-	////      RIGHT
-	//// ---------------
+	// ---------------
+	//      RIGHT
+	// ---------------
 
-	//// VPI
-	//CRAB::Vector4Df VPI3;
-	//for (int i = 0; i < this->road->path2Dv.segments.size(); i++)
-	//{
-	//	// get the intersect point
-	//	CRAB::Vector4Df P = this->road->path2Dv.segments[i]->Collision(g2);
-	//	// check if its between the extreme points
-	//	if (this->road->path2Dv.segments[i]->Contains(P))
-	//	{
-	//		VPI3 = P;
-	//		tan_Segment = this->road->path2Dv.segments[i]->getTan(1.0f);
-	//		break;
-	//	}
-	//	// if its after all segments
-	//	VPI3 = P;
-	//	tan_Segment = this->road->path2Dv.segments[i]->getTan(1.0f);
-	//}
-	//// Projections (hor & vert)
-	//vPxz = (PlaneXZ * tan_Segment).to_unitary();
-	//cosTeta1 = fabsf(CRAB::dot(g2.direction, vPxz));
-	//cosTeta2 = fabsf(CRAB::dot(tan_Segment, vPxz));
-	//d = Ls / (cosTeta1 + cosTeta2);
-	//// VPC
-	//CRAB::Vector4Df VPC3 = VPI3 + (g2.direction * -1.0f) * d;
-	//// VPT
-	//CRAB::Vector4Df VPT3 = VPI3 + tan_Segment * d;
+	// VPI
+	CRAB::Vector4Df VPI3;
+	for (int i = 0; i < this->road->alignment->profile.size(); i++)
+	{
+		// get the intersect point
+		CRAB::Vector4Df P = this->road->alignment->profile[i]->Collision(g2);
+		// check if its between the extreme points
+		if (this->road->alignment->profile[i]->Contains(P))
+		{
+			VPI3 = P;
+			tan_Segment = (this->road->alignment->profile[i]->getEnd4DPoint() - this->road->alignment->profile[i]->getMid4DPoint()).to_unitary();
+			break;
+		}
+		// if its after all segments
+		VPI3 = P;
+		tan_Segment = (this->road->alignment->profile[i]->getEnd4DPoint() - this->road->alignment->profile[i]->getMid4DPoint()).to_unitary();
+	}
+	// Projections (hor & vert)
+	vPxz = (PlaneXZ * tan_Segment).to_unitary();
+	cosTeta1 = fabsf(CRAB::dot(g2.direction, vPxz));
+	cosTeta2 = fabsf(CRAB::dot(tan_Segment, vPxz));
+	d = Ls / (cosTeta1 + cosTeta2);
+	// VPC
+	CRAB::Vector4Df VPC3 = VPI3 + (g2.direction * -1.0f) * d;
+	// VPT
+	CRAB::Vector4Df VPT3 = VPI3 + tan_Segment * d;
 
 	//// ********************************** RETURN **********************************
 
-	//this->path2Dv.segments.push_back(new CircularArc(VPC1, VPI1, VPT1));
-	//this->path2Dv.segments.push_back(new Line(VPT1, VPC2));
+	profile.push_back(new VerSegment(VPC1, VPI1, VPT1));
+	profile.push_back(new VerSegment(VPT1, VPC2));
 	profile.push_back(new VerSegment(VPC2, VPI2, VPT2));
-	//this->path2Dv.segments.push_back(new Line(VPT2, VPC3));
-	//this->path2Dv.segments.push_back(new CircularArc(VPC3, VPI3, VPT3));
+	profile.push_back(new VerSegment(VPT2, VPC3));
+	profile.push_back(new VerSegment(VPC3, VPI3, VPT3));
 
 	// ********************************** DEBUG **********************************
 
+	/*std::cout << "\nCURVE 1" << std::endl;
+	std::cout << "VPC1 = [" << VPC1.x << "; " << VPC1.y << "; " << VPC1.z << "]" << std::endl;
+	std::cout << "VPI1 = [" << VPI1.x << "; " << VPI1.y << "; " << VPI1.z << "]" << std::endl;
+	std::cout << "VPT1 = [" << VPT1.x << "; " << VPT1.y << "; " << VPT1.z << "]" << std::endl;
+	std::cout << "\nCURVE 2" << std::endl;
 	std::cout << "VPC2 = [" << VPC2.x << "; " << VPC2.y << "; " << VPC2.z << "]" << std::endl;
 	std::cout << "VPI2 = [" << VPI2.x << "; " << VPI2.y << "; " << VPI2.z << "]" << std::endl;
 	std::cout << "VPT2 = [" << VPT2.x << "; " << VPT2.y << "; " << VPT2.z << "]" << std::endl;
-	system("pause");
+	std::cout << "\nCURVE 3" << std::endl;
+	std::cout << "VPC3 = [" << VPC3.x << "; " << VPC3.y << "; " << VPC3.z << "]" << std::endl;
+	std::cout << "VPI3 = [" << VPI3.x << "; " << VPI3.y << "; " << VPI3.z << "]" << std::endl;
+	std::cout << "VPT3 = [" << VPT3.x << "; " << VPT3.y << "; " << VPT3.z << "]" << std::endl;*/
 
 	return profile;
 }

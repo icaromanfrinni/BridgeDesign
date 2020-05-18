@@ -5,7 +5,7 @@
 namespace EulerOp
 {
 	//MAKE Vertex Face Solid
-	void mvfs(std::vector<HED::solid*>& model, const CRAB::Vector4Df& point)
+	inline void mvfs(std::vector<HED::solid*>& model, const CRAB::Vector4Df& point)
 	{
 		//Initialize
 		HED::solid* newSolid = new HED::solid;
@@ -41,7 +41,7 @@ namespace EulerOp
 	}
 
 	//MAKE Edge Vertex
-	void mev(HED::halfEdge* he1, HED::halfEdge* he2, const int& v, const CRAB::Vector4Df& point)
+	inline void mev(HED::halfEdge* he1, HED::halfEdge* he2, const int& v, const CRAB::Vector4Df& point)
 	{
 		//Get Solid
 		HED::solid* currentSolid = he1->leftFace->HedSolid;
@@ -125,7 +125,7 @@ namespace EulerOp
 	}
 
 	//MAKE Edge Face
-	void mef(HED::halfEdge* he1, HED::halfEdge* he2, const int& f)
+	inline void mef(HED::halfEdge* he1, HED::halfEdge* he2, const int& f)
 	{
 		//Get Solid
 		HED::solid* currentSolid = he1->leftFace->HedSolid;
@@ -263,7 +263,7 @@ namespace EulerOp
 	// Translational Sweep
 	// ID da superfície de base = 1 (face q permanece onde foi criada)
 	// ID da superfície q acompanha a construção do volume = 0 (cópia da face base com deslocamento no sentido do vetor 'dir', sem alterar o sentido da normal)
-	void EXTRUDE(HED::face* f, const CRAB::Vector4Df& dir, const float& depth)
+	inline void EXTRUDE(HED::face* f, const CRAB::Vector4Df& dir, const float& depth)
 	{
 		// Get Solid
 		HED::solid* currentSolid = f->HedSolid;
@@ -310,7 +310,7 @@ namespace EulerOp
 	// ID da superfície q acompanha a construção do volume = 0 (cópia da face base com deslocamento no sentido do vetor 'dir')
 	// Vetor normal da nova face na mesma direção do deslocamento 'dir'
 	// Distância dos novos vértices é calculada em função do ponto de referência (vStart da halfEdge de referência da face base)
-	void NORMAL_EXTRUDE(HED::face* f, const CRAB::Vector4Df& dir, const float& depth)
+	inline void NORMAL_EXTRUDE(HED::face* f, const CRAB::Vector4Df& dir, const float& depth)
 	{
 		// Get Solid
 		HED::solid* currentSolid = f->HedSolid;
@@ -374,7 +374,7 @@ namespace EulerOp
 	// f = face q sofre a extrusão
 	// tan_dir = direção tangente no novo ponto do alinhamento (perpendicular à nova face)
 	// depth = distância entre o ponto de referência e o novo ponto
-	void SWEEP(HED::face* f, const CRAB::Vector4Df& tan_dir, const float& depth)
+	inline void SWEEP(HED::face* f, const CRAB::Vector4Df& tan_dir, const float& depth)
 	{
 		// Get Solid
 		HED::solid* currentSolid = f->HedSolid;
@@ -449,7 +449,7 @@ namespace EulerOp
 	// SWEEP
 	// f = face q sofre a varredura
 	// path = curva parametrizada
-	void SWEEP(HED::face* f, Alignment* path, Road* road)
+	inline void SWEEP(HED::face* f, Alignment* path, const float& V)
 	{
 		// Get Solid
 		HED::solid* currentSolid = f->HedSolid;
@@ -461,12 +461,12 @@ namespace EulerOp
 			// CURRENT POSITION
 			float t = float(i) / ELEMENTS;
 			// Local View
-			CRAB::Matrix4 LookAt = toLocal(path->getPosition(t), path->getTangent(t), path->getNormalUp(t, road->speed));
+			CRAB::Matrix4 LookAt = toLocal(path->getPosition(t), path->getTangent(t), path->getNormalUp(t, V));
 
 			// NEXT POSITION
 			t = float(i + 1) / ELEMENTS;
 			// Next View
-			CRAB::Matrix4 ModelSpace = toWorld(path->getPosition(t), path->getTangent(t), path->getNormalUp(t, road->speed));
+			CRAB::Matrix4 ModelSpace = toWorld(path->getPosition(t), path->getTangent(t), path->getNormalUp(t, V));
 
 			/* ---------------- EXTRUDE ---------------- */
 

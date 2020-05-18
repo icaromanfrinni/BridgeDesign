@@ -64,9 +64,9 @@ NURBS::NURBS(const std::vector<Geometry*>& segments)
 	for (int i = 0; i < this->T.size(); i++)
 		this->T[i] = this->T[i] / distance;*/
 
-		/* ------------ UNIFORM ------------ */
+	/* ------------ UNIFORM ------------ */
 
-		// control points and weights
+	// control points and weights
 	for (int i = 0; i < segments.size(); i++)
 	{
 		if (i == 0)

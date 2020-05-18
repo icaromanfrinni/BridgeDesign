@@ -13,6 +13,7 @@ const float SLOPE_MAX = 0.10f;
 class Alignment
 {
 private:
+	float findParameter(const float& distance) const;
 	NURBS path2Dh;	// 2D horizontal curve
 	NURBS path3D;	// 3D curve
 

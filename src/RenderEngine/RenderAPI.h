@@ -28,7 +28,7 @@
 
 #include "BoxGirder.h"
 
-#define EXAMPLE 3
+#define EXAMPLE 4
 
 namespace CRAB
 {
@@ -165,6 +165,9 @@ namespace CRAB
 
         // load models
         // -----------
+        std::cout << std::endl;
+        std::cout << "\tLOAD MODELS" << std::endl;
+        std::cout << "\t-----------" << std::endl;
         
         /* EXEMPLO: Reunião 13 */
 #if EXAMPLE == 1
@@ -197,7 +200,7 @@ namespace CRAB
         // road
         roadways.push_back(new Road("Rodovia_001", 8.00f, 60.0f, alignments.back()));
         // bridge
-        bridges.push_back(new BoxGirder("Rio_Pacoti", roadways.back(), 194.25f, 6.0f, 90.0f));
+        bridges.push_back(new BoxGirder("Rio_Pacoti", roadways.back(), 180.0f, 6.0f, 90.0f));
 #endif
        
         /* EXEMPLO: Superelevação */
@@ -218,31 +221,89 @@ namespace CRAB
         // road
         roadways.push_back(new Road("Rodovia_001", 8.00f, 60.0f, alignments.back()));
         // bridge
-        bridges.push_back(new BoxGirder("Rio_Pacoti", roadways.back(), 194.25f, 6.0f, 90.0f));
+        bridges.push_back(new BoxGirder("Rio_Pacoti", roadways.back(), 100.0f, 6.0f, 50.0f));
 #endif
 
-        /* EXEMPLO: Viaduto Reto */
+        /* EXEMPLO: Reunião 13 (com cálculo automático do alinhamento vertical) */
 #if EXAMPLE == 3
         std::vector<HorSegment*> road_plan;
-        road_plan.push_back(new HorSegment(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(500.0f, 0.0f, 0.0f)));
+        road_plan.push_back(new HorSegment(glm::vec3(40.0f, 0.0f, 280.0f), glm::vec3(40.0f, 0.0f, 20.0f)));
+        road_plan.push_back(new HorSegment(glm::vec3(40.0f, 0.0f, 20.0f), glm::vec3(40.0f, 0.0f, 0.0f), glm::vec3(20.0f, 0.0f, 0.0f)));
+        road_plan.push_back(new HorSegment(glm::vec3(20.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 20.0f)));
+        road_plan.push_back(new HorSegment(glm::vec3(0.0f, 0.0f, 20.0f), glm::vec3(0.0f, 0.0f, 40.0f), glm::vec3(20.0f, 0.0f, 40.0f)));
+        road_plan.push_back(new HorSegment(glm::vec3(20.0f, 0.0f, 40.0f), glm::vec3(100.0f, 0.0f, 40.0f)));
+        road_plan.push_back(new HorSegment(glm::vec3(100.0f, 0.0f, 40.0f), glm::vec3(120.0f, 0.0f, 40.0f), glm::vec3(120.0f, 0.0f, 60.0f)));
+        road_plan.push_back(new HorSegment(glm::vec3(120.0f, 0.0f, 60.0f), glm::vec3(120.0f, 0.0f, 80.0f), glm::vec3(100.0f, 0.0f, 80.0f)));
+        road_plan.push_back(new HorSegment(glm::vec3(100.0f, 0.0f, 80.0f), glm::vec3(80.0f, 0.0f, 80.0f), glm::vec3(80.0f, 0.0f, 60.0f)));
+        road_plan.push_back(new HorSegment(glm::vec3(80.0f, 0.0f, 60.0f), glm::vec3(80.0f, 0.0f, -200.0f)));
 
         std::vector<VerSegment*> road_profile;
-        road_profile.push_back(new VerSegment(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(250.0f, 50.0f, 0.0f), glm::vec3(500.0f, 0.0f, 0.0f)));
+        road_profile.push_back(new VerSegment(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(788.5f, 0.0f, 0.0f)));
 
         // alignment
         alignments.push_back(new Alignment("Pista_01", road_plan, road_profile));
         // road
-        roadways.push_back(new Road("Rodovia_001", 12.00f, 80.0f, alignments.back()));
+        roadways.push_back(new Road("Rodovia_001", 8.00f, 60.0f, alignments.back()));
         // bridge
-        bridges.push_back(new BoxGirder("Rio_Pacoti", roadways.back(), 250.0f, 6.0f, 90.0f));
+        bridges.push_back(new BoxGirder("Rio_Pacoti", roadways.back(), 394.25f, 10.0f, 100.0f));
+#endif
+
+        /* EXEMPLO: Viadutos do Cocó */
+#if EXAMPLE == 4
+
+        std::vector<HorSegment*> road_plan;
+        std::vector<VerSegment*> road_profile;
+
+        /* ----------------- Viaduto 1 ----------------- */
+        // road_plan
+        road_plan.push_back(new HorSegment(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(238.28f, 0.0f, 439.57f)));
+        // road_profile
+        road_profile.push_back(new VerSegment(glm::vec3(0.0f, 4.67f, 0.0f), glm::vec3(323.23f, 4.67f, 0.0f)));
+        road_profile.push_back(new VerSegment(glm::vec3(323.23f, 4.67f, 0.0f), glm::vec3(345.95f, 4.67f, 0.0f), glm::vec3(366.85f, 5.712f, 0.0f)));
+        road_profile.push_back(new VerSegment(glm::vec3(366.85f, 5.712f, 0.0f), glm::vec3(500.0f, 12.348f, 0.0f)));
+        // alignment
+        alignments.push_back(new Alignment("Pista_1", road_plan, road_profile));
+        // road
+        roadways.push_back(new Road("Av_Eng_Santana_Jr", 7.00f, 60.0f, alignments.back()));
+        // bridge
+        bridges.push_back(new BoxGirder("Viaduto_1", roadways.back(), 330.0f, 5.5f, 56.0f));
+
+        /* ----------------- Viaduto 2 ----------------- */
+        road_plan.clear();
+        road_profile.clear();
+        // road_plan
+        road_plan.push_back(new HorSegment(glm::vec3(382.06f, 0.0f, 172.76f), glm::vec3(211.03f, 0.0f, 248.89f)));
+        road_plan.push_back(new HorSegment(glm::vec3(211.03f, 0.0f, 248.89f), glm::vec3(141.85f, 0.0f, 279.68f), glm::vec3(177.97f, 0.0f, 346.23f)));
+        road_plan.push_back(new HorSegment(glm::vec3(177.97f, 0.0f, 346.23f), glm::vec3(287.92f, 0.0f, 548.79f)));
+        // road_profile
+        road_profile.push_back(new VerSegment(glm::vec3(0.0f, 13.322f, 0.0f), glm::vec3(192.33f, 6.526f, 0.0f)));
+        road_profile.push_back(new VerSegment(glm::vec3(192.33f, 6.526f, 0.0f), glm::vec3(249.03f, 4.522f, 0.0f), glm::vec3(303.88f, 6.991f, 0.0f)));
+        road_profile.push_back(new VerSegment(glm::vec3(303.88f, 6.991f, 0.0f), glm::vec3(533.14f, 17.311f, 0.0f)));
+        // alignment
+        alignments.push_back(new Alignment("Pista_2", road_plan, road_profile));
+        // road
+        roadways.push_back(new Road("Av_Ant_Sales", 8.50f, 60.0f, alignments.back()));
+        // bridge
+        bridges.push_back(new BoxGirder("Viaduto_2", roadways.back(), 267.0f, 11.0f, 80.0f));
+
 #endif
 
         // mesh
+        // ----
+        std::cout << std::endl;
+        std::cout << "\tPROCESS MESH" << std::endl;
+        std::cout << "\t------------" << std::endl;
+        std::cout << "\t* Bridges" << std::endl;
         for (int i = 0; i < bridges.size(); i++)
             for (int j = 0; j < bridges[i]->model.size(); j++)
                 ourMesh_List.push_back(Mesh(bridges[i]->model[j])); 
+        std::cout << "\t* Roads" << std::endl;
+        for (int i = 0; i < roadways.size(); i++)
+            for (int j = 0; j < roadways[i]->model.size(); j++)
+                ourMesh_List.push_back(Mesh(roadways[i]->model[j]));
 
         // draw in wireframe
+        // -----------------
         //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
         // pass projection matrix to shader (as projection matrix rarely changes there's no need to do this per frame)

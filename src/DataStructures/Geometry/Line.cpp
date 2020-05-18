@@ -76,3 +76,30 @@ float Line::midPointWeight() const
 {
 	return 1.0f;
 }
+
+// RETURN THE CLOSEST COLLISION DISTANCE OF A RAY AND THE SEGMENT
+// --------------------------------------------------------------
+CRAB::Vector4Df Line::Collision(const CRAB::Ray& ray) const
+{
+	// tangent vector
+	glm::vec3 glm_tan = glm::normalize(p1 - p0);
+	CRAB::Vector4Df tan = { glm_tan.x, glm_tan.y, glm_tan.z, 0.0f };
+	// normal vector
+	CRAB::Vector4Df Up = { 0.0f, 1.0f, 0.0f, 0.0f };
+	CRAB::Vector4Df Right = CRAB::cross(tan, Up);
+	CRAB::Vector4Df normal = CRAB::cross(Right, tan);
+	// "t" distance
+	float t = CRAB::dot(this->getStart4DPoint() - ray.origin, normal) / CRAB::dot(ray.direction, normal);
+	// Closest collision Point
+	return ray.origin + ray.direction * t;
+}
+
+// RETURN TRUE IF THE POINT 'P' INTERSECT THE SEGMENT
+// --------------------------------------------------
+bool Line::Contains(const CRAB::Vector4Df& p) const
+{
+	if ((p - this->getStart4DPoint()).length() <= this->getLength() &&
+		(p - this->getEnd4DPoint()).length() <= this->getLength())
+		return true;
+	else return false;
+}

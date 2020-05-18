@@ -75,3 +75,17 @@ float VerSegment::getY(const float& x) const
 {
 	return segment->getY(x);
 }
+
+// RETURN THE CLOSEST COLLISION DISTANCE
+// -------------------------------------
+CRAB::Vector4Df VerSegment::Collision(const CRAB::Ray& ray) const
+{
+	return segment->Collision(ray);
+}
+
+// RETURN TRUE IF THE POINT 'P' INTERSECT THE SEGMENT
+// --------------------------------------------------
+bool VerSegment::Contains(const CRAB::Vector4Df& p) const
+{
+	return segment->Contains(p);
+}

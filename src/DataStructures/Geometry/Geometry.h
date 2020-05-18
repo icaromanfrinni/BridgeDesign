@@ -147,6 +147,8 @@ public:
 	virtual float getLength() const = 0;
 	virtual float getY(const float& x) const = 0;
 	virtual float midPointWeight() const = 0;
+	virtual CRAB::Vector4Df Collision(const CRAB::Ray& ray) const = 0;
+	virtual bool Contains(const CRAB::Vector4Df& p) const = 0;
 };
 
 #endif // GEOMETRY_H

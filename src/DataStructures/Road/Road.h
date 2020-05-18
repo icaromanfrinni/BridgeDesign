@@ -7,6 +7,7 @@
 #include <string>
 #include <vector>
 
+#include "HalfEdge.h"
 #include "Alignment.h"
 
 // Default Vertical curves values
@@ -19,6 +20,7 @@ class Road
 public:
 	std::string name;
 	Alignment* alignment;
+	std::vector<HED::solid*> model;
 	float width;	// Roadway width
 	float speed;	// Speed design
 	int S;			// Stopping Sight Distance
@@ -29,6 +31,9 @@ public:
 	Road(const std::string& _name, const float& _width, const float& _speed, Alignment* _alignment);
 	// DESTRUCTOR
 	~Road();
+
+	//MODEL CONSTRUCTOR
+	void update();
 };
 
 #endif // ROAD_H

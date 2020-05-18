@@ -36,6 +36,10 @@ public:
 
 	// RETURN THE ELEVATION
 	float getY(const float& x) const;
+	// RETURN THE CLOSEST COLLISION DISTANCE
+	CRAB::Vector4Df Collision(const CRAB::Ray& ray) const;
+
+	bool Contains(const CRAB::Vector4Df& p) const;
 };
 
 #endif // VERSEGMENT_H

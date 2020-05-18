@@ -5,7 +5,6 @@
 #include <vector>
 #include <string>
 
-#include "HalfEdge.h"
 #include "Road.h"
 
 // Default Vertical curves values
