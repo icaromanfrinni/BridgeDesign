@@ -2,13 +2,53 @@
 #include "EulerOp.h"
 
 // DEFAULT CONSTRUCTOR
+// -------------------
 BoxGirder::BoxGirder()
 {
 }
 
-// OVERLOAD CONSTRUCTOR
+// OVERLOAD CONSTRUCTOR (Viaduct)
+// ------------------------------
 BoxGirder::BoxGirder(const std::string& _name, Road* _road, const float& cross_station, const float& vertical_clearance, const float& horizontal_clearance)
 	: Bridge(_name, _road, cross_station, vertical_clearance, horizontal_clearance)
+{
+	// Preliminary calculations
+	this->SetupBoxGirder();
+	// Model
+	this->update();
+}
+
+// OVERLOAD CONSTRUCTOR (Overpass)
+// -------------------------------
+BoxGirder::BoxGirder(const std::string& _name, Road* _road, const float& cross_station, const float& vertical_clearance, const float& horizontal_clearance, const float& elevation_level)
+	: Bridge(_name, _road, cross_station, vertical_clearance, horizontal_clearance, elevation_level)
+{
+	// Preliminary calculations
+	this->SetupBoxGirder();
+	// Model
+	this->update();
+}
+
+// OVERLOAD CONSTRUCTOR (Bridge)
+// -----------------------------
+BoxGirder::BoxGirder(const std::string& _name, Road* _road, const float& cross_station, const float& vertical_clearance, const float& horizontal_clearance, const float& elevation_level, const float& water_surface)
+	: Bridge(_name, _road, cross_station, vertical_clearance, horizontal_clearance, elevation_level, water_surface)
+{
+	// Preliminary calculations
+	this->SetupBoxGirder();
+	// Model
+	this->update();
+}
+
+// DESTRUCTOR
+// ----------
+BoxGirder::~BoxGirder()
+{
+}
+
+// INITIALIZES ALL THE PARAMETERS
+// ------------------------------
+void BoxGirder::SetupBoxGirder()
 {
 	// Box-Girder Bridge Attributes
 	Lb = int((100.0f * B / 4.3f) / 5.0f) * 0.05f;
@@ -27,6 +67,8 @@ BoxGirder::BoxGirder(const std::string& _name, Road* _road, const float& cross_s
 	float h_Pier = b_Pier;
 	float total_length = this->alignment->getProfileLength();
 	int nPiers = total_length / this->mainSpan;
+	if (nPiers < 2)
+		nPiers = 2;
 	float end_length = (total_length - (nPiers - 1) * this->mainSpan) / 2.0f;
 	// first pier
 	float station = this->alignment->profile.front()->getStart4DPoint().x + end_length;
@@ -36,24 +78,20 @@ BoxGirder::BoxGirder(const std::string& _name, Road* _road, const float& cross_s
 		Pier P;
 		P.b = b_Pier;
 		P.h = h_Pier;
-		P.base = this->road->alignment->getPositionFromStation(station);
 		P.dir = this->alignment->getTangentFromStation(station);
+		P.base = this->road->alignment->getPositionFromStation(station);
+		if (P.base.y > this->EL)
+			P.base.y = this->EL;
+		P.base.y -= 0.50f; // topo do bloco
 		CRAB::Vector4Df top = this->alignment->getPositionFromStation(station);
-		P.L = (top - P.base).length() - this->H;		
+		P.L = (top - P.base).length() - this->H;
 		piers.push_back(P);
 		station += this->mainSpan;
 	}
-
-	// Model
-	update();
-}
-
-// DESTRUCTOR
-BoxGirder::~BoxGirder()
-{
 }
 
 // UPDATE THE MODEL
+// ----------------
 void BoxGirder::update()
 {
 	// Initialize

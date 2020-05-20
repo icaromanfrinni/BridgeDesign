@@ -28,7 +28,7 @@
 
 #include "BoxGirder.h"
 
-#define EXAMPLE 4
+#define EXAMPLE 7
 
 namespace CRAB
 {
@@ -288,6 +288,54 @@ namespace CRAB
 
 #endif
 
+        /* CASO 1: Viaduct */
+#if EXAMPLE == 5
+        std::vector<HorSegment*> road_plan;
+        std::vector<VerSegment*> road_profile;
+        // road_plan
+        road_plan.push_back(new HorSegment(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(500.0f, 0.0f, 0.0f)));
+        // road_profile
+        road_profile.push_back(new VerSegment(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(500.0f, 0.0f, 0.0f)));
+        // alignment
+        alignments.push_back(new Alignment("Pista_1", road_plan, road_profile));
+        // road
+        roadways.push_back(new Road("Rodovia_1", 8.00f, 40.0f, alignments.back()));
+        // bridge
+        bridges.push_back(new BoxGirder("Viaduto_1", roadways.back(), 250.0f, 5.5f, 60.0f));
+#endif
+
+        /* CASO 2: Overpass */
+#if EXAMPLE == 6
+        std::vector<HorSegment*> road_plan;
+        std::vector<VerSegment*> road_profile;
+        // road_plan
+        road_plan.push_back(new HorSegment(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(500.0f, 0.0f, 0.0f)));
+        // road_profile
+        road_profile.push_back(new VerSegment(glm::vec3(0.0f, 10.0f, 0.0f), glm::vec3(500.0f, 10.0f, 0.0f)));
+        // alignment
+        alignments.push_back(new Alignment("Pista_1", road_plan, road_profile));
+        // road
+        roadways.push_back(new Road("Rodovia_1", 8.00f, 40.0f, alignments.back()));
+        // bridge
+        bridges.push_back(new BoxGirder("Viaduto_1", roadways.back(), 250.0f, 10.0f, 60.0f, 0.0f));
+#endif
+
+        /* CASO 3: Bridge */
+#if EXAMPLE == 7
+        std::vector<HorSegment*> road_plan;
+        std::vector<VerSegment*> road_profile;
+        // road_plan
+        road_plan.push_back(new HorSegment(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(500.0f, 0.0f, 0.0f)));
+        // road_profile
+        road_profile.push_back(new VerSegment(glm::vec3(0.0f, 10.0f, 0.0f), glm::vec3(500.0f, 10.0f, 0.0f)));
+        // alignment
+        alignments.push_back(new Alignment("Pista_1", road_plan, road_profile));
+        // road
+        roadways.push_back(new Road("Rodovia_1", 8.00f, 40.0f, alignments.back()));
+        // bridge
+        bridges.push_back(new BoxGirder("Viaduto_1", roadways.back(), 250.0f, 1.0f, 60.0f, 0.0f, 9.50f));
+#endif
+
         // mesh
         // ----
         std::cout << std::endl;
@@ -297,10 +345,10 @@ namespace CRAB
         for (int i = 0; i < bridges.size(); i++)
             for (int j = 0; j < bridges[i]->model.size(); j++)
                 ourMesh_List.push_back(Mesh(bridges[i]->model[j])); 
-        std::cout << "\t* Roads" << std::endl;
+        /*std::cout << "\t* Roads" << std::endl;
         for (int i = 0; i < roadways.size(); i++)
             for (int j = 0; j < roadways[i]->model.size(); j++)
-                ourMesh_List.push_back(Mesh(roadways[i]->model[j]));
+                ourMesh_List.push_back(Mesh(roadways[i]->model[j]));*/
 
         // draw in wireframe
         // -----------------

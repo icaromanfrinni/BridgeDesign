@@ -25,6 +25,8 @@ struct Pier
 
 class Bridge
 {
+	// INITIALIZES ALL THE PARAMETERS
+	void SetupBridge();
 	// ALIGNMENTS
 	std::vector<HorSegment*> Horizontal_Alignment();
 	std::vector<VerSegment*> Vertical_Alignment();
@@ -37,6 +39,8 @@ public:
 	float CS; // cross station
 	float VC; // vertical clearance
 	float HC; // horizontal clearance
+	float EL; // elevation level
+	float WS; // water surface
 	std::vector<Pier> piers;
 
 	// Bridge attributes
@@ -46,8 +50,12 @@ public:
 
 	// DEFAULT CONSTRUCTOR
 	Bridge();
-	// OVERLOAD CONSTRUCTOR
+	// OVERLOAD CONSTRUCTOR (Viaduct)
 	Bridge(const std::string& _name, Road* _road, const float& cross_station, const float& vertical_clearance, const float& horizontal_clearance);
+	// OVERLOAD CONSTRUCTOR (Overpass)
+	Bridge(const std::string& _name, Road* _road, const float& cross_station, const float& vertical_clearance, const float& horizontal_clearance, const float& elevation_level);
+	// OVERLOAD CONSTRUCTOR (Bridge)
+	Bridge(const std::string& _name, Road* _road, const float& cross_station, const float& vertical_clearance, const float& horizontal_clearance, const float& elevation_level, const float& water_surface);
 	// DESTRUCTOR
 	virtual ~Bridge() = 0;
 

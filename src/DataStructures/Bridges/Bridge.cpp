@@ -6,14 +6,56 @@ Bridge::Bridge()
 {
 }
 
-// OVERLOAD CONSTRUCTOR
-// --------------------
+// OVERLOAD CONSTRUCTOR (Viaduct)
+// ------------------------------
 Bridge::Bridge(const std::string& _name, Road* _road, const float& cross_station, const float& vertical_clearance, const float& horizontal_clearance)
 	: name(_name), road(_road), CS(cross_station), VC(vertical_clearance), HC(horizontal_clearance)
 {
 	std::cout << std::endl;
-	std::cout << "\tNEW Bridge ............................... " << name << std::endl;
+	std::cout << "\tNEW MODEL (Viaduct) ...................... " << name << std::endl;	
+	// Viaduct
+	int index = this->road->alignment->findSegment(this->CS);
+	this->EL = this->road->alignment->profile[index]->getY(this->CS);
+	this->WS = this->EL;
 
+	// Preliminary calculations
+	this->SetupBridge();
+}
+// OVERLOAD CONSTRUCTOR (Overpass)
+// -------------------------------
+Bridge::Bridge(const std::string& _name, Road* _road, const float& cross_station, const float& vertical_clearance, const float& horizontal_clearance, const float& elevation_level)
+	: name(_name), road(_road), CS(cross_station), VC(vertical_clearance), HC(horizontal_clearance), EL(elevation_level)
+{
+	std::cout << std::endl;
+	std::cout << "\tNEW MODEL (Overpass) ..................... " << name << std::endl;
+	// Overpass
+	this->WS = this->EL;
+
+	// Preliminary calculations
+	this->SetupBridge();
+}
+// OVERLOAD CONSTRUCTOR (Bridge)
+// -----------------------------
+Bridge::Bridge(const std::string& _name, Road* _road, const float& cross_station, const float& vertical_clearance, const float& horizontal_clearance, const float& elevation_level, const float& water_surface)
+	: name(_name), road(_road), CS(cross_station), VC(vertical_clearance), HC(horizontal_clearance), EL(elevation_level), WS(water_surface)
+{
+	std::cout << std::endl;
+	std::cout << "\tNEW MODEL (Bridge) ....................... " << name << std::endl;
+
+	// Preliminary calculations
+	this->SetupBridge();
+}
+
+// DESTRUCTOR
+// ----------
+Bridge::~Bridge()
+{
+}
+
+// INITIALIZES ALL THE PARAMETERS
+// ------------------------------
+void Bridge::SetupBridge()
+{
 	// Bridge attributes
 	this->mainSpan = 35.0f;
 	this->B = this->road->width + 2 * GUARD_RAIL;
@@ -22,12 +64,6 @@ Bridge::Bridge(const std::string& _name, Road* _road, const float& cross_station
 	// Alignment
 	//this->alignment = this->road->alignment;
 	this->alignment = new Alignment(this->name, this->Horizontal_Alignment(), this->Vertical_Alignment());
-}
-
-// DESTRUCTOR
-// ----------
-Bridge::~Bridge()
-{
 }
 
 // HORIZONTAL ALIGNMENT
@@ -45,6 +81,27 @@ std::vector<VerSegment*> Bridge::Vertical_Alignment()
 	std::cout << "\tVertical alignment" << std::endl;
 	//return this->road->alignment->profile;
 	std::vector<VerSegment*> profile;
+
+	// Check type of bridge
+	int index = this->road->alignment->findSegment(this->CS);
+	float CSy = this->road->alignment->profile[index]->getY(this->CS);
+	if (fabsf(CSy - this->EL) >= (this->VC + this->H)
+		&& fabsf(CSy - this->WS) >= (this->VC + this->H))
+	{
+		// Start
+		CRAB::Vector4Df VPT = { 0.0f, 0.0f, 0.0f, 1.0f };
+		VPT.x = this->CS - this->HC / 2.0f;
+		index = this->road->alignment->findSegment(VPT.x);
+		VPT.y = this->road->alignment->profile[index]->getY(VPT.x);
+		// End
+		CRAB::Vector4Df VPC = { 0.0f, 0.0f, 0.0f, 1.0f };
+		VPC.x = this->CS + this->HC / 2.0f;
+		index = this->road->alignment->findSegment(VPC.x);
+		VPC.y = this->road->alignment->profile[index]->getY(VPC.x);
+
+		profile.push_back(new VerSegment(VPT, VPC));
+		return profile;
+	}
 
 	// ********************************** CREST VERTICAL CURVE **********************************
 
@@ -66,22 +123,28 @@ std::vector<VerSegment*> Bridge::Vertical_Alignment()
 	VPC2.y += this->VC + this->H;*/
 	CRAB::Vector4Df VPC2 = { 0.0f, 0.0f, 0.0f, 1.0f };
 	VPC2.x = this->CS - Lc / 2.0f;														// coordenada horizontal
-	int index = this->road->alignment->findSegment(VPC2.x);								// segmento onde está contido
-	VPC2.y = this->road->alignment->profile[index]->getY(VPC2.x) + this->VC + this->H;	// coordenada vertical
+	//index = this->road->alignment->findSegment(VPC2.x);									// segmento onde está contido
+	//VPC2.y = this->road->alignment->profile[index]->getY(VPC2.x) + this->VC + this->H;	// coordenada vertical
+	//VPC2.y = this->EL + this->VC + this->H;
+	VPC2.y = this->WS + this->VC + this->H;
 	// VPI
 	/*CRAB::Vector4Df VPI2 = this->road->path2Dv.getPointFromStation(this->CS);
 	VPI2.y += this->VC + this->H + (A / 200) * Lc / 2;*/
 	CRAB::Vector4Df VPI2 = { 0.0f, 0.0f, 0.0f, 1.0f };
 	VPI2.x = this->CS;																								// coordenada horizontal
-	index = this->road->alignment->findSegment(VPI2.x);																// segmento onde está contido
-	VPI2.y = this->road->alignment->profile[index]->getY(VPI2.x) + this->VC + this->H + (A / 200.0f) * Lc / 2.0f;	// coordenada vertical
+	//index = this->road->alignment->findSegment(VPI2.x);																// segmento onde está contido
+	//VPI2.y = this->road->alignment->profile[index]->getY(VPI2.x) + this->VC + this->H + (A / 200.0f) * Lc / 2.0f;	// coordenada vertical
+	//VPI2.y = this->EL + this->VC + this->H + (A / 200.0f) * Lc / 2.0f;
+	VPI2.y = this->WS + this->VC + this->H + (A / 200.0f) * Lc / 2.0f;
 	// VPT
 	/*CRAB::Vector4Df VPT2 = this->road->path2Dv.getPointFromStation(this->CS + Lc / 2);
 	VPT2.y += this->VC + this->H;*/
 	CRAB::Vector4Df VPT2 = { 0.0f, 0.0f, 0.0f, 1.0f };
 	VPT2.x = this->CS + Lc / 2.0f;														// coordenada horizontal
-	index = this->road->alignment->findSegment(VPT2.x);									// segmento onde está contido
-	VPT2.y = this->road->alignment->profile[index]->getY(VPT2.x) + this->VC + this->H;	// coordenada vertical
+	//index = this->road->alignment->findSegment(VPT2.x);									// segmento onde está contido
+	//VPT2.y = this->road->alignment->profile[index]->getY(VPT2.x) + this->VC + this->H;	// coordenada vertical
+	//VPT2.y = this->EL + this->VC + this->H;
+	VPT2.y = this->WS + this->VC + this->H;
 
 	//// ********************************** SAG VERTICAL CURVE **********************************
 
@@ -185,7 +248,7 @@ std::vector<VerSegment*> Bridge::Vertical_Alignment()
 	CRAB::Vector4Df VPT3 = VPI3 + tan_Segment * d;
 
 	//// ********************************** RETURN **********************************
-
+	
 	profile.push_back(new VerSegment(VPC1, VPI1, VPT1));
 	profile.push_back(new VerSegment(VPT1, VPC2));
 	profile.push_back(new VerSegment(VPC2, VPI2, VPT2));
