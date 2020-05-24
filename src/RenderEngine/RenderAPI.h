@@ -28,7 +28,7 @@
 
 #include "BoxGirder.h"
 
-#define EXAMPLE 7
+#define EXAMPLE 8
 
 namespace CRAB
 {
@@ -334,6 +334,22 @@ namespace CRAB
         roadways.push_back(new Road("Rodovia_1", 8.00f, 40.0f, alignments.back()));
         // bridge
         bridges.push_back(new BoxGirder("Viaduto_1", roadways.back(), 250.0f, 1.0f, 60.0f, 0.0f, 9.50f));
+#endif
+
+        /* Bridge with Terrain */
+#if EXAMPLE == 8
+        std::vector<HorSegment*> road_plan;
+        std::vector<VerSegment*> road_profile;
+        // road_plan
+        road_plan.push_back(new HorSegment(glm::vec3(-688.40f, 0.0f, 418.69f), glm::vec3(639.13f, 0.0f, -345.17f)));
+        // road_profile
+        road_profile.push_back(new VerSegment(glm::vec3(0.0f, 37.18f, 0.0f), glm::vec3(1531.61f, 34.54f, 0.0f)));
+        // alignment
+        alignments.push_back(new Alignment("Pista_1", road_plan, road_profile));
+        // road
+        roadways.push_back(new Road("Rodovia_1", 15.00f, 60.0f, alignments.back()));
+        // bridge
+        bridges.push_back(new BoxGirder("Viaduto_1", roadways.back(), 765.81f, 1.0f, 1400.0f, 0.0f, 10.0f));
 #endif
 
         // mesh

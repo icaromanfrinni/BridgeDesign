@@ -63,8 +63,8 @@ void BoxGirder::SetupBoxGirder()
 	// PIERS
 	// -----
 
-	float b_Pier = 0.5f * b;
-	float h_Pier = b_Pier;
+	float b_Pier = 0.6f * b;
+	float h_Pier = 0.5f * b_Pier;
 	float total_length = this->alignment->getProfileLength();
 	int nPiers = total_length / this->mainSpan;
 	if (nPiers < 2)
