@@ -19,6 +19,7 @@ void ObjFile::ClearCurrentObj(obj &_obj)
 {
 	_obj.Name = "";
 	_obj.Vertices.clear();
+	_obj.vTexture.clear();
 	_obj.vNormals.clear();
 	_obj.Lines.clear();
 	_obj.Faces.clear();
@@ -37,6 +38,7 @@ bool ObjFile::ReadObjFile(const std::string& inName)
 	//Initialize
 	objectList.clear();
 	int vertexCount = 0;
+	int vertexTextureCount = 0;
 	int vertexNormalCount = 0;
 	//Read a file line by line
 	std::string line;
@@ -82,6 +84,20 @@ bool ObjFile::ReadObjFile(const std::string& inName)
 				currentObj.vNormals.push_back(vertex);
 			}
 
+			/*-------------------* VERTEX TEXTURE *-------------------*/
+
+			if (line.substr(0, 2) == "vt")
+			{
+				CRAB::Vector4Df vertex;
+				line = line.substr(2);
+				std::istringstream s(line);
+				s >> vertex.x;
+				s >> vertex.y;
+				vertex.z = 0.0f;
+				vertex.w = 0.0f;
+				currentObj.vTexture.push_back(vertex);
+			}
+
 			/*-------------------* VERTEX *-------------------*/
 
 			if (line.substr(0, 1) == "v")
@@ -115,7 +131,7 @@ bool ObjFile::ReadObjFile(const std::string& inName)
 
 			if (line.substr(0, 1) == "f")
 			{
-				unsigned int v, vn;
+				unsigned int v, vt, vn;
 				char c;
 				objFace face;
 				line = line.substr(1);
@@ -123,11 +139,23 @@ bool ObjFile::ReadObjFile(const std::string& inName)
 
 				while (true)
 				{
-					s >> v >> c >> c >> vn;
-					if (!s)
-						break;
-					face.vertices.push_back(v - vertexCount);
-					face.normals.push_back(vn - vertexNormalCount);
+					if (currentObj.vTexture.empty())
+					{
+						s >> v >> c >> c >> vn;
+						if (!s)
+							break;
+						face.vertices.push_back(v - vertexCount);
+						face.normals.push_back(vn - vertexNormalCount);
+					}
+					else 
+					{
+						s >> v >> c >> vt >> c >> vn;
+						if (!s)
+							break;
+						face.vertices.push_back(v - vertexCount);
+						face.textures.push_back(vt - vertexTextureCount);
+						face.normals.push_back(vn - vertexNormalCount);
+					}
 				}
 				currentObj.Faces.push_back(face);
 			}

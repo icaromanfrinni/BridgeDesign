@@ -12,6 +12,14 @@ Mesh::Mesh(std::vector<Mesh::Vertex> vertices)
 // constructor (from OBJ struct)
 Mesh::Mesh(const obj& object)
 {
+    if (!object.vTexture.empty())
+    {
+        material.hasTexture = true;
+        material.textures.push_back(new Texture("textures/" + object.Name + ".jpg", "diffuse"));
+        material.textures.push_back(new Texture("textures/" + object.Name + ".jpg", "specular"));
+        material.textures.push_back(new Texture("textures/" + object.Name + ".jpg", "normal"));
+    }
+
     for (int i = 0; i < object.Faces.size(); i++)
         for (int j = 0; j < object.Faces[i].vertices.size(); j++)
         {
@@ -22,6 +30,12 @@ Mesh::Mesh(const obj& object)
             vertex.Position = glm::vec3(object.Vertices[index].x, object.Vertices[index].y, object.Vertices[index].z);
             index = object.Faces[i].normals[j] - 1;
             vertex.Normal = glm::vec3(object.vNormals[index].x, object.vNormals[index].y, object.vNormals[index].z);
+
+            if (material.hasTexture)
+            {
+                index = object.Faces[i].textures[j] - 1;
+                vertex.TexCoords = glm::vec2(object.vTexture[index].x, object.vTexture[index].y);
+            }
             
             vertices.push_back(vertex);
         }

@@ -18,6 +18,7 @@ struct objLine
 struct objFace
 {
 	std::vector<int> vertices;
+	std::vector<int> textures;
 	std::vector<int> normals;
 };
 
@@ -25,6 +26,7 @@ struct obj
 {
 	std::string Name;
 	std::vector<CRAB::Vector4Df> Vertices;
+	std::vector<CRAB::Vector4Df> vTexture;
 	std::vector<CRAB::Vector4Df> vNormals;
 	std::vector<objLine> Lines;
 	std::vector<objFace> Faces;
