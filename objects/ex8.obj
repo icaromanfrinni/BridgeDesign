@@ -4,7 +4,7 @@
 
 mtllib bridge.mtl
 
-o terrain
+o ex8
 
 usemtl Location_Snapshot_2
 v -966.3 -13.2583 -819.621
