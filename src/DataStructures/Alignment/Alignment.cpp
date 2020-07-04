@@ -134,10 +134,13 @@ CRAB::Vector4Df Alignment::getNormalUp(const float& t, const float& V) const
 		return n;
 
 	// else
-	float slope = 0.0044f * powf(V, 2.0f) * k;
+	// float slope = 0.0044f * powf(V, 2.0f) * k; // DNIT
+	float slope = powf(V, 2.0f) * k / 127.0f; // AASHTO
 	if (slope > SLOPE_MAX)
 		slope = SLOPE_MAX;
 	float alfa = atanf(slope) * 180.0f / M_PI;
+
+	//std::cout << "\t t = " << t  << "; alfa = " << alfa << "; k = " << k << std::endl;
 	
 	if (this->path2Dh.isClockwise(t))
 		alfa = alfa * (-1.0f);

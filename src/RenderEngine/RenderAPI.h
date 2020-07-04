@@ -28,7 +28,7 @@
 
 #include "BoxGirder.h"
 
-#define EXAMPLE 4
+#define EXAMPLE 12
 
 namespace CRAB
 {
@@ -212,9 +212,7 @@ namespace CRAB
         road_plan.push_back(new HorSegment(glm::vec3(200.0f, 0.0f, 100.0f), glm::vec3(200.0f, 0.0f, 200.0f)));
 
         std::vector<VerSegment*> profile;
-        profile.push_back(new VerSegment(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(30.0f, 40.0f, 0.0f)));
-        profile.push_back(new VerSegment(glm::vec3(30.0f, 40.0f, 0.0f), glm::vec3(60.0f, 80.0f, 0.0f), glm::vec3(90.0f, 40.0f, 0.0f)));
-        profile.push_back(new VerSegment(glm::vec3(90.0f, 40.0f, 0.0f), glm::vec3(120.0f, 0.0f, 0.0f)));
+        profile.push_back(new VerSegment(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(50.0f, 0.0f, 0.0f)));
 
         // alignment
         alignments.push_back(new Alignment("Pista_01", road_plan, profile));
@@ -392,6 +390,78 @@ namespace CRAB
         bridges.push_back(new BoxGirder("Viaduto_2", roadways.back(), 250.0f, 6.0f, 90.0f));
 #endif
 
+        /* Viadutos: AirportFlyover with Terrain */
+#if EXAMPLE == 10
+        std::vector<HorSegment*> road_plan;
+        std::vector<VerSegment*> road_profile;
+        /* VIADUTO 1 */
+        // road_plan
+        road_plan.push_back(new HorSegment(glm::vec3(-40.51f, 0.0f, 348.17f), glm::vec3(2.71f, 0.0f, -112.22f)));
+        road_plan.push_back(new HorSegment(glm::vec3(2.71f, 0.0f, -112.22f), glm::vec3(22.92f, 0.0f, -327.59f), glm::vec3(-124.72f, 0.0f, -485.68f)));
+        // road_profile
+        road_profile.push_back(new VerSegment(glm::vec3(0.0f, 6.93f, 0.0f), glm::vec3(362.0f, 9.49f, 0.0f)));
+        road_profile.push_back(new VerSegment(glm::vec3(362.0f, 9.49f, 0.0f), glm::vec3(462.0f, 10.2f, 0.0f), glm::vec3(561.99f, 9.05f, 0.0f)));
+        road_profile.push_back(new VerSegment(glm::vec3(561.99f, 9.05f, 0.0f), glm::vec3(869.0f, 5.50f, 0.0f)));
+        // alignment
+        alignments.push_back(new Alignment("Pista_1", road_plan, road_profile));
+        // road
+        roadways.push_back(new Road("Southern_Cross_Way", 10.00f, 40.0f, alignments.back()));
+        // bridge
+        bridges.push_back(new BoxGirder("Viaduto_1", roadways.back(), 400.0, 5.0f, 50.0f));
+#endif
+
+        /* Creugenat Viaducts */
+#if EXAMPLE == 11
+        std::vector<HorSegment*> road_plan;
+        std::vector<VerSegment*> road_profile;
+
+        /* VIADUTO 1 */
+        // road_plan
+        road_plan.push_back(new HorSegment(glm::vec3(-414.27f, 0.0f, -252.65f), glm::vec3(-78.99f, 0.0f, 120.87f), glm::vec3(422.73f, 0.0f, 134.7f)));
+        // road_profile
+        road_profile.push_back(new VerSegment(glm::vec3(0.0f, 497.49f, 0.0f), glm::vec3(948.1f, 515.21f, 0.0f)));
+        // alignment
+        alignments.push_back(new Alignment("Pista_1", road_plan, road_profile));
+        // road
+        roadways.push_back(new Road("Road_1", 10.50f, 60.0f, alignments.back()));
+        // bridge
+        bridges.push_back(new BoxGirder("Viaduto_1", roadways.back(), 541.21f, 6.0f, 730.0f, 448.25f));
+
+        /* VIADUTO 2 */
+        road_plan.clear();
+        road_profile.clear();
+        // road_plan
+        road_plan.push_back(new HorSegment(glm::vec3(-404.3f, 0.0f, -217.8f), glm::vec3(-96.0f, 0.0f, 119.06f), glm::vec3(357.12f, 0.0f, 175.69f)));
+        // road_profile
+        road_profile.push_back(new VerSegment(glm::vec3(0.0f, 496.68f, 0.0f), glm::vec3(875.12f, 512.38f, 0.0f)));
+        // alignment
+        alignments.push_back(new Alignment("Pista_2", road_plan, road_profile));
+        // road
+        roadways.push_back(new Road("Road_2", 10.50f, 60.0f, alignments.back()));
+        // bridge
+        bridges.push_back(new BoxGirder("Viaduto_2", roadways.back(), 496.5f, 6.0f, 730.0f, 448.25f));
+#endif
+
+        /* SVR2020: ROUNDABOUT INTERCHANGE */
+#if EXAMPLE == 12
+        std::vector<HorSegment*> road_plan;
+        std::vector<VerSegment*> road_profile;
+        // road_plan
+        road_plan.push_back(new HorSegment(glm::vec3(506.63f, 0.0f, -174.31f), glm::vec3(363.37f, 0.0f, -170.8f)));
+        road_plan.push_back(new HorSegment(glm::vec3(363.37f, 0.0f, -170.8f), glm::vec3(316.18f, 0.0f, -169.69f), glm::vec3(273.46f, 0.0f, -189.7f)));
+        road_plan.push_back(new HorSegment(glm::vec3(273.46f, 0.0f, -189.7f), glm::vec3(74.31f, 0.0f, -283.21f), glm::vec3(134.81f, 0.0f, -71.68f)));
+        road_plan.push_back(new HorSegment(glm::vec3(134.81f, 0.0f, -71.68f), glm::vec3(142.52f, 0.0f, -44.72f), glm::vec3(142.52f, 0.0f, -16.68f)));
+        road_plan.push_back(new HorSegment(glm::vec3(142.52f, 0.0f, -16.68f), glm::vec3(142.52f, 0.0f, 0.0f)));
+        // road_profile
+        road_profile.push_back(new VerSegment(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(556.44f, 0.0f, 0.0f)));
+        // alignment
+        alignments.push_back(new Alignment("Pista_1", road_plan, road_profile));
+        // road
+        roadways.push_back(new Road("INDIANA", 8.00f, 50.0f, alignments.back()));
+        // bridge
+        bridges.push_back(new BoxGirder("Viaduto_1", roadways.back(), 370.0, 5.0f, 75.0f));
+#endif
+
         // mesh
         // ----
         std::cout << std::endl;
@@ -401,10 +471,10 @@ namespace CRAB
         for (int i = 0; i < bridges.size(); i++)
             for (int j = 0; j < bridges[i]->model.size(); j++)
                 ourMesh_List.push_back(Mesh(bridges[i]->model[j])); 
-        /*std::cout << "\t* Roads" << std::endl;
+        std::cout << "\t* Roads" << std::endl;
         for (int i = 0; i < roadways.size(); i++)
             for (int j = 0; j < roadways[i]->model.size(); j++)
-                ourMesh_List.push_back(Mesh(roadways[i]->model[j]));*/
+                ourMesh_List.push_back(Mesh(roadways[i]->model[j]));
 
         // draw in wireframe
         // -----------------
