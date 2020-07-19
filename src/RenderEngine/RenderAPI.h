@@ -3,6 +3,7 @@
 
 #include <iostream>
 #include <Windows.h>
+#include <chrono>
 
 // sleep_for Function
 //#include <thread>
@@ -162,6 +163,10 @@ namespace CRAB
         // ---------------------------
         //std::vector<Mesh> ourMesh_List;
         //ourMesh_List = CRAB::LoadOBJ("objects/cubes.obj");
+
+        // time before
+        // -----------
+        auto t1 = std::chrono::high_resolution_clock::now();
 
         // load models
         // -----------
@@ -476,6 +481,15 @@ namespace CRAB
             for (int j = 0; j < roadways[i]->model.size(); j++)
                 ourMesh_List.push_back(Mesh(roadways[i]->model[j]));
 
+        // time after
+        // ----------
+        auto t2 = std::chrono::high_resolution_clock::now();
+
+        // duration
+        // --------
+        auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(t2 - t1).count();
+        std::cout << "\tExecution time:............... " << duration << " ms" << std::endl;
+
         // draw in wireframe
         // -----------------
         //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
@@ -502,6 +516,7 @@ namespace CRAB
             // render
             // ------
             glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+            //glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
             ourShader.use();
             ourShader.setVec3("viewPos", camera.Position);

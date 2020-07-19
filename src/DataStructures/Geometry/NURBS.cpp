@@ -98,6 +98,15 @@ NURBS::NURBS(const std::vector<Geometry*>& segments)
 			this->T.push_back(u);
 		}
 	}
+
+	/*std::cout << "number of segments = " << segments.size() << std::endl;
+	std::cout << "number of control points = " << this->points.size() << std::endl;
+
+	for (int i = 0; i < this->w.size(); i++)
+		std::cout << "w[" << i << "] = " << this->w[i] << std::endl;
+
+	for (int i = 0; i < this->T.size(); i++)
+		std::cout << "u[" << i << "] = " << this->T[i] << std::endl;*/
 }
 
 // DESTRUCTOR
