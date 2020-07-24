@@ -73,6 +73,7 @@ void Camera::ProcessMouseScroll(float yoffset)
 {
     glm::vec3 front = View - Position;
     Position += front * yoffset * MouseSensitivity;
+   // View += front * yoffset * MouseSensitivity;
 }
 
 // Calculates the front vector from the Camera's (updated) Euler Angles

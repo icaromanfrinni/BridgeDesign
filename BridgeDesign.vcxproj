@@ -182,6 +182,7 @@
     <ClInclude Include="src\DataStructures\Segments\VerSegment.h" />
     <ClInclude Include="src\DataStructures\Texture\Texture.h" />
     <ClInclude Include="src\RenderEngine\Camera.h" />
+    <ClInclude Include="src\RenderEngine\Grid.h" />
     <ClInclude Include="src\RenderEngine\Mesh.h" />
     <ClInclude Include="src\RenderEngine\RenderAPI.h" />
     <ClInclude Include="src\RenderEngine\Shader.h" />
@@ -207,11 +208,14 @@
     <ClCompile Include="src\glad.c" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\RenderEngine\Camera.cpp" />
+    <ClCompile Include="src\RenderEngine\Grid.cpp" />
     <ClCompile Include="src\RenderEngine\Mesh.cpp" />
     <ClCompile Include="src\RenderEngine\Shader.cpp" />
     <ClCompile Include="src\RenderEngine\Skybox.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="shaders\grid.fs" />
+    <None Include="shaders\grid.vs" />
     <None Include="shaders\shader.fs" />
     <None Include="shaders\shader.vs" />
     <None Include="shaders\skybox.fs" />

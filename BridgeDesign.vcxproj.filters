@@ -87,6 +87,9 @@
     <ClInclude Include="src\DataStructures\Geometry\NURBS.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\RenderEngine\Grid.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\RenderEngine\Camera.cpp">
@@ -155,11 +158,16 @@
     <ClCompile Include="src\DataStructures\Geometry\NURBS.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\RenderEngine\Grid.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="shaders\shader.fs" />
     <None Include="shaders\skybox.fs" />
     <None Include="shaders\skybox.vs" />
     <None Include="shaders\shader.vs" />
+    <None Include="shaders\grid.fs" />
+    <None Include="shaders\grid.vs" />
   </ItemGroup>
 </Project>

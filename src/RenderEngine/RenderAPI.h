@@ -22,6 +22,7 @@
 #include "Camera.h"
 #include "DirectionalLight.h"
 #include "Mesh.h"
+#include "Grid.h"
 #include "ObjFile.h"
 #include "Skybox.h"
 
@@ -29,7 +30,7 @@
 
 #include "BoxGirder.h"
 
-#define EXAMPLE 12
+#define EXAMPLE 6
 
 namespace CRAB
 {
@@ -57,7 +58,7 @@ namespace CRAB
     float lastFrame = 0.0f;
 
     // lighting
-    DirectionalLight mainLight({ 1.0f, 1.0f, 1.0f }, { -1.0f, -1.0f, -1.0f });
+    DirectionalLight mainLight({ 0.9f, 0.9f, 0.9f }, camera.LookAt);
 
     // mouse event handlers
     int TheKeyState = GLFW_KEY_LEFT_CONTROL;
@@ -125,6 +126,11 @@ namespace CRAB
         // -------------------------------------
         Shader ourShader("shaders/shader.vs", "shaders/shader.fs");
         Shader skyboxShader("shaders/skybox.vs", "shaders/skybox.fs");
+        Shader gridShader("shaders/grid.vs", "shaders/grid.fs");
+
+        // load grid
+        // ---------
+        Grid grid_Mesh;
 
         // load SKYBOX textures
         // --------------------
@@ -152,7 +158,7 @@ namespace CRAB
            "skybox/clouds/front.jpg",        // front
            "skybox/clouds/back.jpg"         // back
         };
-        Skybox skybox(faces3);
+        Skybox skybox(faces2);
 
         // shader configuration
         // --------------------
@@ -312,7 +318,7 @@ namespace CRAB
         std::vector<HorSegment*> road_plan;
         std::vector<VerSegment*> road_profile;
         // road_plan
-        road_plan.push_back(new HorSegment(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(500.0f, 0.0f, 0.0f)));
+        road_plan.push_back(new HorSegment(glm::vec3(-250.0f, 0.0f, 0.0f), glm::vec3(250.0f, 0.0f, 0.0f)));
         // road_profile
         road_profile.push_back(new VerSegment(glm::vec3(0.0f, 10.0f, 0.0f), glm::vec3(500.0f, 10.0f, 0.0f)));
         // alignment
@@ -476,10 +482,10 @@ namespace CRAB
         for (int i = 0; i < bridges.size(); i++)
             for (int j = 0; j < bridges[i]->model.size(); j++)
                 ourMesh_List.push_back(Mesh(bridges[i]->model[j])); 
-        std::cout << "\t* Roads" << std::endl;
+       /* std::cout << "\t* Roads" << std::endl;
         for (int i = 0; i < roadways.size(); i++)
             for (int j = 0; j < roadways[i]->model.size(); j++)
-                ourMesh_List.push_back(Mesh(roadways[i]->model[j]));
+                ourMesh_List.push_back(Mesh(roadways[i]->model[j]));*/
 
         // time after
         // ----------
@@ -515,7 +521,7 @@ namespace CRAB
 
             // render
             // ------
-            glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+            glClearColor(0.4f, 0.4f, 0.4f, 1.0f);
             //glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
             ourShader.use();
@@ -524,6 +530,7 @@ namespace CRAB
             // light properties
             // ----------------
             // directional light
+            mainLight.direction = camera.LookAt;
             ourShader.setDirLight(mainLight);
 
             // view/projection transformations
@@ -541,6 +548,13 @@ namespace CRAB
             {
                 ourMesh_List[i].Draw(ourShader);
             }
+
+            // draw grid
+            gridShader.use();
+            gridShader.setMat4("projection", projection);
+            gridShader.setMat4("view", view);
+            gridShader.setMat4("model", model);
+            grid_Mesh.Draw(gridShader);
 
             // draw skybox as last
             glDepthFunc(GL_LEQUAL);  // change depth function so depth test passes when values are equal to depth buffer's content

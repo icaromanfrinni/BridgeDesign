@@ -9,15 +9,16 @@ Mesh::Mesh(std::vector<Mesh::Vertex> vertices)
     // now that we have all the required data, set the vertex buffers and its attribute pointers.
     setupMesh();
 }
+
 // constructor (from OBJ struct)
 Mesh::Mesh(const obj& object)
 {
     if (!object.vTexture.empty())
     {
         material.hasTexture = true;
-        material.textures.push_back(new Texture("textures/" + object.Name + ".jpg", "diffuse"));
-        material.textures.push_back(new Texture("textures/" + object.Name + ".jpg", "specular"));
-        material.textures.push_back(new Texture("textures/" + object.Name + ".jpg", "normal"));
+        material.textures.push_back(new Texture("textures/" + object.Name + "_diffuse.jpg", "diffuse"));
+        material.textures.push_back(new Texture("textures/" + object.Name + "_specular.jpg", "specular"));
+        material.textures.push_back(new Texture("textures/" + object.Name + "_normal.jpg", "normal"));
     }
 
     for (int i = 0; i < object.Faces.size(); i++)
@@ -43,10 +44,11 @@ Mesh::Mesh(const obj& object)
     // now that we have all the required data, set the vertex buffers and its attribute pointers.
     setupMesh();
 }
+
 // constructor (from HalfEdge struct)
 Mesh::Mesh(const HED::solid* solid)
 {
-    material.hasTexture = true;
+    material.hasTexture = false;
 
     if (solid->name == "TOP_LAYER")
     {
@@ -135,6 +137,7 @@ Mesh::Mesh(const HED::solid* solid)
     // now that we have all the required data, set the vertex buffers and its attribute pointers.
     setupMesh();
 }
+
 // destructor
 Mesh::~Mesh()
 {
