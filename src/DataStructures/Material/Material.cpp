@@ -4,8 +4,8 @@
 Material::Material()
 {
 	name = "default";
-    ka = { 0.4f, 0.4f, 0.4f };
-    kd = { 0.6f, 0.6f, 0.6f };
+    ka = { 0.5f, 0.5f, 0.5f };
+    kd = { 0.7f, 0.7f, 0.7f };
     ks = { 0.8f, 0.8f, 0.8f };
     shininess = 32.0f;
 }

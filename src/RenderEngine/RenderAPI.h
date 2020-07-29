@@ -18,6 +18,11 @@
 #define STB_IMAGE_IMPLEMENTATION
 //#include "stb_image.h"
 
+#include <imgui/imgui.h>
+#include <imgui/imgui_impl_glfw.h>
+#include <imgui/imgui_impl_opengl3.h>
+//#include <imgui/imgui_stdlib.h>
+
 #include "Shader.h"
 #include "Camera.h"
 #include "DirectionalLight.h"
@@ -25,12 +30,11 @@
 #include "Grid.h"
 #include "ObjFile.h"
 #include "Skybox.h"
-
 #include "Alignment.h"
-
 #include "BoxGirder.h"
 
-#define EXAMPLE 6
+#define EXAMPLE 5
+#define DEBUG 1
 
 namespace CRAB
 {
@@ -40,8 +44,8 @@ namespace CRAB
     void processInput(GLFWwindow* window);
 
     // settings
-    const unsigned int SCR_WIDTH = 1280;
-    const unsigned int SCR_HEIGHT = 720;
+    const unsigned int SCR_WIDTH = 800;
+    const unsigned int SCR_HEIGHT = 600;
 
     // camera
     Camera camera;
@@ -59,9 +63,13 @@ namespace CRAB
 
     // lighting
     DirectionalLight mainLight({ 0.9f, 0.9f, 0.9f }, camera.LookAt);
+    //DirectionalLight mainLight({ 0.9f, 0.9f, 0.9f }, { -1.0f, -1.0f, -1.0f });
 
     // mouse event handlers
     int TheKeyState = GLFW_KEY_LEFT_CONTROL;
+
+    // drafting settings
+    static bool grid_on = true;
 
     //List of Solids (to load .obj file)
     std::vector<HED::solid*> solids;
@@ -80,16 +88,27 @@ namespace CRAB
     // List of Meshes
     std::vector<Mesh> ourMesh_List;
 
+    static void glfw_error_callback(int error, const char* description)
+    {
+        fprintf(stderr, "Glfw Error %d: %s\n", error, description);
+    }
+
     int main()
     {
         // glfw: initialize and configure
         // ------------------------------
-        glfwInit();
+        // Setup window
+        glfwSetErrorCallback(glfw_error_callback);
+        if (!glfwInit())
+            return 1;
+        const char* glsl_version = "#version 130";
         glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
         glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 0);
         glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
+        // Decide GL+GLSL versions
 #ifdef __APPLE__
+        const char* glsl_version = "#version 150";
         glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE); // uncomment this statement to fix compilation on OS X
 #endif
 
@@ -121,6 +140,23 @@ namespace CRAB
         // configure global opengl state
         // -----------------------------
         glEnable(GL_DEPTH_TEST);
+
+        /* ================================= ImGui ================================= */
+#if DEBUG == 1
+        // Setup Dear ImGui context
+        // ------------------------
+        IMGUI_CHECKVERSION();
+        ImGui::CreateContext();
+        ImGuiIO& io = ImGui::GetIO(); (void)io;
+        // Setup Platform/Renderer bindings
+        // --------------------------------
+        ImGui_ImplGlfw_InitForOpenGL(window, true);
+        ImGui_ImplOpenGL3_Init(glsl_version);
+        // Setup Dear ImGui style
+        // ----------------------
+        ImGui::StyleColorsDark();
+#endif
+        /* ========================================================================= */
 
         // build and compile our shader zprogram
         // -------------------------------------
@@ -302,7 +338,7 @@ namespace CRAB
         std::vector<HorSegment*> road_plan;
         std::vector<VerSegment*> road_profile;
         // road_plan
-        road_plan.push_back(new HorSegment(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(500.0f, 0.0f, 0.0f)));
+        road_plan.push_back(new HorSegment(glm::vec3(-250.0f, 0.0f, 0.0f), glm::vec3(250.0f, 0.0f, 0.0f)));
         // road_profile
         road_profile.push_back(new VerSegment(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(500.0f, 0.0f, 0.0f)));
         // alignment
@@ -505,10 +541,70 @@ namespace CRAB
         projection = glm::perspective(glm::radians(camera.FieldOfView), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.10f, 5000.0f);
         //projection = glm::ortho(-100.0f, 100.0f, -100.0f, 100.0f, 0.10f, 1000.0f);
 
+#if DEBUG == 1
+        // Our state
+        bool show_demo_window = true;
+        bool show_another_window = true;
+        ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
+#endif
+
         // render loop
         // -----------
         while (!glfwWindowShouldClose(window))
         {
+            /* ================================= ImGui ================================= */
+#if DEBUG == 1
+            // Start the Dear ImGui frame
+            // --------------------------
+            ImGui_ImplOpenGL3_NewFrame();
+            ImGui_ImplGlfw_NewFrame();
+            ImGui::NewFrame();
+
+            // 1. Show the big demo window (Most of the sample code is in ImGui::ShowDemoWindow()! You can browse its code to learn more about Dear ImGui!).
+            if (show_demo_window)
+                ImGui::ShowDemoWindow(&show_demo_window);
+
+            // 2. Show a simple window that we create ourselves. We use a Begin/End pair to created a named window.
+            {
+                static float f = 0.0f;
+                static int counter = 0;
+
+                ImGui::Begin("Hello, world!");                          // Create a window called "Hello, world!" and append into it.
+
+                ImGui::Text("This is some useful text.");               // Display some text (you can use a format strings too)
+                ImGui::Checkbox("Demo Window", &show_demo_window);      // Edit bools storing our window open/close state
+                ImGui::Checkbox("Another Window", &show_another_window);
+
+                ImGui::SliderFloat("float", &f, 0.0f, 1.0f);            // Edit 1 float using a slider from 0.0f to 1.0f
+                ImGui::ColorEdit3("clear color", (float*)&clear_color); // Edit 3 floats representing a color
+
+                if (ImGui::Button("Button"))                            // Buttons return true when clicked (most widgets return true when edited/activated)
+                    counter++;
+                ImGui::SameLine();
+                ImGui::Text("counter = %d", counter);
+
+                ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
+                ImGui::End();
+            }
+
+            // 3. Show another simple window.
+            if (show_another_window)
+            {
+                ImGui::Begin("Another Window", &show_another_window);   // Pass a pointer to our bool variable (the window will have a closing button that will clear the bool when clicked)
+                ImGui::Text("Hello from another window!");
+                if (ImGui::Button("Close Me"))
+                    show_another_window = false;
+                ImGui::End();
+            }
+#endif
+            /* ========================================================================= */
+
+            // init
+            // ----
+            glClearColor(0.4f, 0.4f, 0.4f, 1.0f);
+            //glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
+            glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
             // per-frame time logic
             // --------------------
             float currentFrame = glfwGetTime();
@@ -521,9 +617,6 @@ namespace CRAB
 
             // render
             // ------
-            glClearColor(0.4f, 0.4f, 0.4f, 1.0f);
-            //glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
-            glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
             ourShader.use();
             ourShader.setVec3("viewPos", camera.Position);
 
@@ -554,7 +647,8 @@ namespace CRAB
             gridShader.setMat4("projection", projection);
             gridShader.setMat4("view", view);
             gridShader.setMat4("model", model);
-            grid_Mesh.Draw(gridShader);
+            if (grid_on)
+                grid_Mesh.Draw(gridShader);
 
             // draw skybox as last
             glDepthFunc(GL_LEQUAL);  // change depth function so depth test passes when values are equal to depth buffer's content
@@ -566,11 +660,28 @@ namespace CRAB
             skybox.Draw(ourShader);
             glDepthFunc(GL_LESS); // set depth function back to default
 
+            /* ================================= ImGui ================================= */
+#if DEBUG == 1
+            // Render dear imgui into screen
+            // -----------------------------
+            ImGui::Render();
+            ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+#endif
+            /* ========================================================================= */
+
             // glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
             // -------------------------------------------------------------------------------
             glfwSwapBuffers(window);
             glfwPollEvents();
         }
+
+        /* ================================= ImGui ================================= */
+#if DEBUG == 1
+        ImGui_ImplOpenGL3_Shutdown();
+        ImGui_ImplGlfw_Shutdown();
+        ImGui::DestroyContext();
+#endif
+        /* ========================================================================= */
 
         // glfw: terminate, clearing all previously allocated GLFW resources.
         // ------------------------------------------------------------------

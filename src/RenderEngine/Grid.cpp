@@ -5,7 +5,7 @@ Grid::Grid()
 {
     Grid::Vertex p;
     glm::vec3 color;
-    int gridSize = 50;
+    int gridSize = 100;
     // XZ-axis
     for (int i = -gridSize; i <= gridSize; i += 5)
         for (int k = -gridSize; k <= gridSize; k += 5)
