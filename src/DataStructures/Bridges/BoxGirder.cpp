@@ -9,8 +9,8 @@ BoxGirder::BoxGirder()
 
 // OVERLOAD CONSTRUCTOR (Viaduct)
 // ------------------------------
-BoxGirder::BoxGirder(const std::string& _name, Road* _road, const float& cross_station, const float& vertical_clearance, const float& horizontal_clearance)
-	: Bridge(_name, _road, cross_station, vertical_clearance, horizontal_clearance)
+BoxGirder::BoxGirder(const std::string& _name, Road* _road, const float& cross_station, const float& vertical_clearance, const float& horizontal_clearance, const float& main_span)
+	: Bridge(_name, _road, cross_station, vertical_clearance, horizontal_clearance, main_span)
 {
 	// Preliminary calculations
 	this->SetupBoxGirder();
@@ -20,8 +20,8 @@ BoxGirder::BoxGirder(const std::string& _name, Road* _road, const float& cross_s
 
 // OVERLOAD CONSTRUCTOR (Overpass)
 // -------------------------------
-BoxGirder::BoxGirder(const std::string& _name, Road* _road, const float& cross_station, const float& vertical_clearance, const float& horizontal_clearance, const float& elevation_level)
-	: Bridge(_name, _road, cross_station, vertical_clearance, horizontal_clearance, elevation_level)
+BoxGirder::BoxGirder(const std::string& _name, Road* _road, const float& cross_station, const float& vertical_clearance, const float& horizontal_clearance, const float& main_span, const float& elevation_level)
+	: Bridge(_name, _road, cross_station, vertical_clearance, horizontal_clearance, main_span, elevation_level)
 {
 	// Preliminary calculations
 	this->SetupBoxGirder();
@@ -31,8 +31,8 @@ BoxGirder::BoxGirder(const std::string& _name, Road* _road, const float& cross_s
 
 // OVERLOAD CONSTRUCTOR (Bridge)
 // -----------------------------
-BoxGirder::BoxGirder(const std::string& _name, Road* _road, const float& cross_station, const float& vertical_clearance, const float& horizontal_clearance, const float& elevation_level, const float& water_surface)
-	: Bridge(_name, _road, cross_station, vertical_clearance, horizontal_clearance, elevation_level, water_surface)
+BoxGirder::BoxGirder(const std::string& _name, Road* _road, const float& cross_station, const float& vertical_clearance, const float& horizontal_clearance, const float& main_span, const float& elevation_level, const float& water_surface)
+	: Bridge(_name, _road, cross_station, vertical_clearance, horizontal_clearance, main_span, elevation_level, water_surface)
 {
 	// Preliminary calculations
 	this->SetupBoxGirder();

@@ -18,20 +18,13 @@
 #define STB_IMAGE_IMPLEMENTATION
 //#include "stb_image.h"
 
-#include <imgui/imgui.h>
-#include <imgui/imgui_impl_glfw.h>
-#include <imgui/imgui_impl_opengl3.h>
-//#include <imgui/imgui_stdlib.h>
-
+#include "DearImGui.h"
+#include "Controller.h"
+#include "GlobalVariables.h"
 #include "Shader.h"
-#include "Camera.h"
 #include "DirectionalLight.h"
-#include "Mesh.h"
 #include "Grid.h"
-#include "ObjFile.h"
 #include "Skybox.h"
-#include "Alignment.h"
-#include "BoxGirder.h"
 
 #define EXAMPLE 5
 #define DEBUG 1
@@ -44,11 +37,11 @@ namespace CRAB
     void processInput(GLFWwindow* window);
 
     // settings
-    const unsigned int SCR_WIDTH = 800;
-    const unsigned int SCR_HEIGHT = 600;
+    const unsigned int SCR_WIDTH = 1280;
+    const unsigned int SCR_HEIGHT = 720;
 
     // camera
-    Camera camera;
+    //Camera camera;
     float lastX = SCR_WIDTH / 2.0f;
     float lastY = SCR_HEIGHT / 2.0f;
     bool firstMouse = true;
@@ -68,26 +61,6 @@ namespace CRAB
     // mouse event handlers
     int TheKeyState = GLFW_KEY_LEFT_CONTROL;
 
-    // drafting settings
-    static bool grid_on = true;
-
-    //List of Solids (to load .obj file)
-    std::vector<HED::solid*> solids;
-
-    /* ================== BRIDGE DESIGN ================== */
-
-    //List of Bridge models
-    std::vector<Bridge*> bridges;
-    //List of Roadways
-    std::vector<Road*> roadways;
-    //List of Alignments
-    std::vector<Alignment*> alignments;
-
-    /* ====================== END ====================== */
-
-    // List of Meshes
-    std::vector<Mesh> ourMesh_List;
-
     static void glfw_error_callback(int error, const char* description)
     {
         fprintf(stderr, "Glfw Error %d: %s\n", error, description);
@@ -101,19 +74,16 @@ namespace CRAB
         glfwSetErrorCallback(glfw_error_callback);
         if (!glfwInit())
             return 1;
-        const char* glsl_version = "#version 130";
         glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
         glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 0);
         glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
-        // Decide GL+GLSL versions
 #ifdef __APPLE__
-        const char* glsl_version = "#version 150";
         glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE); // uncomment this statement to fix compilation on OS X
 #endif
 
-    // glfw window creation
-    // --------------------
+        // glfw window creation
+        // --------------------
         GLFWwindow* window = glfwCreateWindow(SCR_WIDTH, SCR_HEIGHT, "CRAB::BRIDGE", NULL, NULL);
         if (window == NULL)
         {
@@ -141,22 +111,9 @@ namespace CRAB
         // -----------------------------
         glEnable(GL_DEPTH_TEST);
 
-        /* ================================= ImGui ================================= */
-#if DEBUG == 1
-        // Setup Dear ImGui context
-        // ------------------------
-        IMGUI_CHECKVERSION();
-        ImGui::CreateContext();
-        ImGuiIO& io = ImGui::GetIO(); (void)io;
-        // Setup Platform/Renderer bindings
-        // --------------------------------
-        ImGui_ImplGlfw_InitForOpenGL(window, true);
-        ImGui_ImplOpenGL3_Init(glsl_version);
-        // Setup Dear ImGui style
-        // ----------------------
-        ImGui::StyleColorsDark();
-#endif
-        /* ========================================================================= */
+        // Setup Dear ImGui
+        // ----------------
+        DearImGui::Setup(window);
 
         // build and compile our shader zprogram
         // -------------------------------------
@@ -344,9 +301,9 @@ namespace CRAB
         // alignment
         alignments.push_back(new Alignment("Pista_1", road_plan, road_profile));
         // road
-        roadways.push_back(new Road("Rodovia_1", 8.00f, 40.0f, alignments.back()));
+        //roadways.push_back(new Road("Rodovia_1", 8.00f, 40.0f, alignments.back()));
         // bridge
-        bridges.push_back(new BoxGirder("Viaduto_1", roadways.back(), 250.0f, 5.5f, 60.0f));
+        //bridges.push_back(new BoxGirder("Viaduto_1", roadways.back(), 250.0f, 5.5f, 60.0f));
 #endif
 
         /* CASO 2: Overpass */
@@ -511,13 +468,13 @@ namespace CRAB
 
         // mesh
         // ----
-        std::cout << std::endl;
+        /*std::cout << std::endl;
         std::cout << "\tPROCESS MESH" << std::endl;
         std::cout << "\t------------" << std::endl;
         std::cout << "\t* Bridges" << std::endl;
         for (int i = 0; i < bridges.size(); i++)
             for (int j = 0; j < bridges[i]->model.size(); j++)
-                ourMesh_List.push_back(Mesh(bridges[i]->model[j])); 
+                ourMesh_List.push_back(Mesh(bridges[i]->model[j])); */
        /* std::cout << "\t* Roads" << std::endl;
         for (int i = 0; i < roadways.size(); i++)
             for (int j = 0; j < roadways[i]->model.size(); j++)
@@ -532,72 +489,38 @@ namespace CRAB
         auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(t2 - t1).count();
         std::cout << "\tExecution time:............... " << duration << " ms" << std::endl;
 
-        // draw in wireframe
-        // -----------------
-        //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-
         // pass projection matrix to shader (as projection matrix rarely changes there's no need to do this per frame)
         // -----------------------------------------------------------------------------------------------------------
         projection = glm::perspective(glm::radians(camera.FieldOfView), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.10f, 5000.0f);
         //projection = glm::ortho(-100.0f, 100.0f, -100.0f, 100.0f, 0.10f, 1000.0f);
 
-#if DEBUG == 1
-        // Our state
-        bool show_demo_window = true;
-        bool show_another_window = true;
-        ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
-#endif
-
         // render loop
         // -----------
         while (!glfwWindowShouldClose(window))
         {
-            /* ================================= ImGui ================================= */
-#if DEBUG == 1
             // Start the Dear ImGui frame
             // --------------------------
-            ImGui_ImplOpenGL3_NewFrame();
-            ImGui_ImplGlfw_NewFrame();
-            ImGui::NewFrame();
+            DearImGui::StartFrame();
 
-            // 1. Show the big demo window (Most of the sample code is in ImGui::ShowDemoWindow()! You can browse its code to learn more about Dear ImGui!).
-            if (show_demo_window)
-                ImGui::ShowDemoWindow(&show_demo_window);
+            // Show menu
+            // ---------
+            Controller::ShowDemo();
+            Controller::MainMenu(window);
 
-            // 2. Show a simple window that we create ourselves. We use a Begin/End pair to created a named window.
-            {
-                static float f = 0.0f;
-                static int counter = 0;
-
-                ImGui::Begin("Hello, world!");                          // Create a window called "Hello, world!" and append into it.
-
-                ImGui::Text("This is some useful text.");               // Display some text (you can use a format strings too)
-                ImGui::Checkbox("Demo Window", &show_demo_window);      // Edit bools storing our window open/close state
-                ImGui::Checkbox("Another Window", &show_another_window);
-
-                ImGui::SliderFloat("float", &f, 0.0f, 1.0f);            // Edit 1 float using a slider from 0.0f to 1.0f
-                ImGui::ColorEdit3("clear color", (float*)&clear_color); // Edit 3 floats representing a color
-
-                if (ImGui::Button("Button"))                            // Buttons return true when clicked (most widgets return true when edited/activated)
-                    counter++;
-                ImGui::SameLine();
-                ImGui::Text("counter = %d", counter);
-
-                ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
-                ImGui::End();
+            // polygon mode
+            // ------------
+            switch (Controller::polygon_mode) {
+            case 0: // wireframe
+                glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+                break;
+            case 1: // solid
+                glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+                break;
+            //case 2: // textured
+            //    break;
+            default:
+                break;
             }
-
-            // 3. Show another simple window.
-            if (show_another_window)
-            {
-                ImGui::Begin("Another Window", &show_another_window);   // Pass a pointer to our bool variable (the window will have a closing button that will clear the bool when clicked)
-                ImGui::Text("Hello from another window!");
-                if (ImGui::Button("Close Me"))
-                    show_another_window = false;
-                ImGui::End();
-            }
-#endif
-            /* ========================================================================= */
 
             // init
             // ----
@@ -638,16 +561,14 @@ namespace CRAB
 
             // render
             for (int i = 0; i < ourMesh_List.size(); i++)
-            {
                 ourMesh_List[i].Draw(ourShader);
-            }
 
             // draw grid
             gridShader.use();
             gridShader.setMat4("projection", projection);
             gridShader.setMat4("view", view);
             gridShader.setMat4("model", model);
-            if (grid_on)
+            if (Controller::grid_on)
                 grid_Mesh.Draw(gridShader);
 
             // draw skybox as last
@@ -660,14 +581,9 @@ namespace CRAB
             skybox.Draw(ourShader);
             glDepthFunc(GL_LESS); // set depth function back to default
 
-            /* ================================= ImGui ================================= */
-#if DEBUG == 1
             // Render dear imgui into screen
             // -----------------------------
-            ImGui::Render();
-            ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
-#endif
-            /* ========================================================================= */
+            DearImGui::Rendering();
 
             // glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
             // -------------------------------------------------------------------------------
@@ -675,13 +591,9 @@ namespace CRAB
             glfwPollEvents();
         }
 
-        /* ================================= ImGui ================================= */
-#if DEBUG == 1
-        ImGui_ImplOpenGL3_Shutdown();
-        ImGui_ImplGlfw_Shutdown();
-        ImGui::DestroyContext();
-#endif
-        /* ========================================================================= */
+        // Cleanup Dear ImGui
+        // ------------------
+        DearImGui::Cleanup();
 
         // glfw: terminate, clearing all previously allocated GLFW resources.
         // ------------------------------------------------------------------
@@ -719,6 +631,7 @@ namespace CRAB
         {
             solids.clear();
             ourMesh_List.clear();
+            bridges.clear();
         }
         if (glfwGetKey(window, GLFW_KEY_L) == GLFW_PRESS)
         {

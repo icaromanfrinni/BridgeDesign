@@ -21,11 +21,11 @@ public:
 	//DEFAULT CONSTRUCTOR
 	BoxGirder();
 	// OVERLOAD CONSTRUCTOR (Viaduct)
-	BoxGirder(const std::string& _name, Road* _road, const float& cross_station, const float& vertical_clearance, const float& horizontal_clearance);
+	BoxGirder(const std::string& _name, Road* _road, const float& cross_station, const float& vertical_clearance, const float& horizontal_clearance, const float& main_span);
 	// OVERLOAD CONSTRUCTOR (Overpass)
-	BoxGirder(const std::string& _name, Road* _road, const float& cross_station, const float& vertical_clearance, const float& horizontal_clearance, const float& elevation_level);
+	BoxGirder(const std::string& _name, Road* _road, const float& cross_station, const float& vertical_clearance, const float& horizontal_clearance, const float& main_span, const float& elevation_level);
 	// OVERLOAD CONSTRUCTOR (Bridge)
-	BoxGirder(const std::string& _name, Road* _road, const float& cross_station, const float& vertical_clearance, const float& horizontal_clearance, const float& elevation_level, const float& water_surface);
+	BoxGirder(const std::string& _name, Road* _road, const float& cross_station, const float& vertical_clearance, const float& horizontal_clearance, const float& main_span, const float& elevation_level, const float& water_surface);
 	// DESTRUCTOR
 	~BoxGirder();
 

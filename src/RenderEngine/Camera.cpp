@@ -76,6 +76,15 @@ void Camera::ProcessMouseScroll(float yoffset)
    // View += front * yoffset * MouseSensitivity;
 }
 
+//// Update the parameters from new camera's position
+//void Camera::update3DView()
+//{
+//    LookAt = glm::normalize(View - Position);
+//    Right = glm::normalize(glm::cross(LookAt, Up));
+//    // Yaw
+//    // Pitch
+//}
+
 // Calculates the front vector from the Camera's (updated) Euler Angles
 void Camera::updateCameraVectors()
 {

@@ -71,28 +71,28 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>C:\opengl\Includes;C:\opengl\Includes\glm;$(SolutionDir)stb;$(SolutionDir)src\RenderEngine;$(SolutionDir)src\DataIO;$(SolutionDir)src\DataStructures\Segments;$(SolutionDir)src\DataStructures\Geometry;$(SolutionDir)src\DataStructures\Texture;$(SolutionDir)src\DataStructures\Light;$(SolutionDir)src\DataStructures\Material;$(SolutionDir)src\DataStructures\Road;$(SolutionDir)src\DataStructures\Bridges;$(SolutionDir)src\DataStructures\Alignment;$(SolutionDir)src\DataStructures;$(IncludePath)</IncludePath>
+    <IncludePath>C:\opengl\Includes;C:\opengl\Includes\glm;$(SolutionDir)stb;$(SolutionDir)src\RenderEngine;$(SolutionDir)src\WindowController;$(SolutionDir)src\DataIO;$(SolutionDir)src\DataStructures\Segments;$(SolutionDir)src\DataStructures\Geometry;$(SolutionDir)src\DataStructures\Texture;$(SolutionDir)src\DataStructures\Light;$(SolutionDir)src\DataStructures\Material;$(SolutionDir)src\DataStructures\Road;$(SolutionDir)src\DataStructures\Bridges;$(SolutionDir)src\DataStructures\Alignment;$(SolutionDir)src\DataStructures;$(IncludePath)</IncludePath>
     <LibraryPath>C:\opengl\Lib;$(LibraryPath)</LibraryPath>
     <ReferencePath>$(ReferencePath)</ReferencePath>
     <SourcePath>$(SourcePath)</SourcePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>C:\opengl\Includes;C:\opengl\Includes\glm;$(SolutionDir)stb;$(SolutionDir)src\RenderEngine;$(SolutionDir)src\DataIO;$(SolutionDir)src\DataStructures\Segments;$(SolutionDir)src\DataStructures\Geometry;$(SolutionDir)src\DataStructures\Texture;$(SolutionDir)src\DataStructures\Light;$(SolutionDir)src\DataStructures\Material;$(SolutionDir)src\DataStructures\Road;$(SolutionDir)src\DataStructures\Bridges;$(SolutionDir)src\DataStructures\Alignment;$(SolutionDir)src\DataStructures;$(IncludePath)</IncludePath>
+    <IncludePath>C:\opengl\Includes;C:\opengl\Includes\glm;$(SolutionDir)stb;$(SolutionDir)src\RenderEngine;$(SolutionDir)src\WindowController;$(SolutionDir)src\DataIO;$(SolutionDir)src\DataStructures\Segments;$(SolutionDir)src\DataStructures\Geometry;$(SolutionDir)src\DataStructures\Texture;$(SolutionDir)src\DataStructures\Light;$(SolutionDir)src\DataStructures\Material;$(SolutionDir)src\DataStructures\Road;$(SolutionDir)src\DataStructures\Bridges;$(SolutionDir)src\DataStructures\Alignment;$(SolutionDir)src\DataStructures;$(IncludePath)</IncludePath>
     <LibraryPath>C:\opengl\Lib;$(LibraryPath)</LibraryPath>
     <ReferencePath>$(ReferencePath)</ReferencePath>
     <SourcePath>$(SourcePath)</SourcePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
-    <IncludePath>C:\opengl\Includes;C:\opengl\Includes\glm;$(SolutionDir)stb;$(SolutionDir)src\RenderEngine;$(SolutionDir)src\DataIO;$(SolutionDir)src\DataStructures\Segments;$(SolutionDir)src\DataStructures\Geometry;$(SolutionDir)src\DataStructures\Texture;$(SolutionDir)src\DataStructures\Light;$(SolutionDir)src\DataStructures\Material;$(SolutionDir)src\DataStructures\Road;$(SolutionDir)src\DataStructures\Bridges;$(SolutionDir)src\DataStructures\Alignment;$(SolutionDir)src\DataStructures;$(IncludePath)</IncludePath>
+    <IncludePath>C:\opengl\Includes;C:\opengl\Includes\glm;$(SolutionDir)stb;$(SolutionDir)src\RenderEngine;$(SolutionDir)src\WindowController;$(SolutionDir)src\DataIO;$(SolutionDir)src\DataStructures\Segments;$(SolutionDir)src\DataStructures\Geometry;$(SolutionDir)src\DataStructures\Texture;$(SolutionDir)src\DataStructures\Light;$(SolutionDir)src\DataStructures\Material;$(SolutionDir)src\DataStructures\Road;$(SolutionDir)src\DataStructures\Bridges;$(SolutionDir)src\DataStructures\Alignment;$(SolutionDir)src\DataStructures;$(IncludePath)</IncludePath>
     <LibraryPath>C:\opengl\Lib;$(LibraryPath)</LibraryPath>
     <ReferencePath>$(ReferencePath)</ReferencePath>
     <SourcePath>$(SourcePath)</SourcePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
-    <IncludePath>C:\opengl\Includes;C:\opengl\Includes\glm;$(SolutionDir)stb;$(SolutionDir)src\RenderEngine;$(SolutionDir)src\DataIO;$(SolutionDir)src\DataStructures\Segments;$(SolutionDir)src\DataStructures\Geometry;$(SolutionDir)src\DataStructures\Texture;$(SolutionDir)src\DataStructures\Light;$(SolutionDir)src\DataStructures\Material;$(SolutionDir)src\DataStructures\Road;$(SolutionDir)src\DataStructures\Bridges;$(SolutionDir)src\DataStructures\Alignment;$(SolutionDir)src\DataStructures;$(IncludePath)</IncludePath>
+    <IncludePath>C:\opengl\Includes;C:\opengl\Includes\glm;$(SolutionDir)stb;$(SolutionDir)src\RenderEngine;$(SolutionDir)src\WindowController;$(SolutionDir)src\DataIO;$(SolutionDir)src\DataStructures\Segments;$(SolutionDir)src\DataStructures\Geometry;$(SolutionDir)src\DataStructures\Texture;$(SolutionDir)src\DataStructures\Light;$(SolutionDir)src\DataStructures\Material;$(SolutionDir)src\DataStructures\Road;$(SolutionDir)src\DataStructures\Bridges;$(SolutionDir)src\DataStructures\Alignment;$(SolutionDir)src\DataStructures;$(IncludePath)</IncludePath>
     <LibraryPath>C:\opengl\Lib;$(LibraryPath)</LibraryPath>
     <ReferencePath>$(ReferencePath)</ReferencePath>
     <SourcePath>$(SourcePath)</SourcePath>
@@ -185,7 +185,6 @@
     <ClInclude Include="src\DataStructures\Light\Light.h" />
     <ClInclude Include="src\DataStructures\Linear_Algebra.h" />
     <ClInclude Include="src\DataStructures\Material\Material.h" />
-    <ClInclude Include="src\DataStructures\Model.h" />
     <ClInclude Include="src\DataStructures\Road\Road.h" />
     <ClInclude Include="src\DataStructures\Segments\HorSegment.h" />
     <ClInclude Include="src\DataStructures\Segments\VerSegment.h" />
@@ -196,6 +195,9 @@
     <ClInclude Include="src\RenderEngine\RenderAPI.h" />
     <ClInclude Include="src\RenderEngine\Shader.h" />
     <ClInclude Include="src\RenderEngine\Skybox.h" />
+    <ClInclude Include="src\WindowController\Controller.h" />
+    <ClInclude Include="src\WindowController\DearImGui.h" />
+    <ClInclude Include="src\WindowController\GlobalVariables.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Includes\imgui\imgui.cpp" />
@@ -216,7 +218,6 @@
     <ClCompile Include="src\DataStructures\Light\DirectionalLight.cpp" />
     <ClCompile Include="src\DataStructures\Light\Light.cpp" />
     <ClCompile Include="src\DataStructures\Material\Material.cpp" />
-    <ClCompile Include="src\DataStructures\Model.cpp" />
     <ClCompile Include="src\DataStructures\Road\Road.cpp" />
     <ClCompile Include="src\DataStructures\Segments\HorSegment.cpp" />
     <ClCompile Include="src\DataStructures\Segments\VerSegment.cpp" />
@@ -228,6 +229,7 @@
     <ClCompile Include="src\RenderEngine\Mesh.cpp" />
     <ClCompile Include="src\RenderEngine\Shader.cpp" />
     <ClCompile Include="src\RenderEngine\Skybox.cpp" />
+    <ClCompile Include="src\WindowController\GlobalVariables.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="shaders\grid.fs" />

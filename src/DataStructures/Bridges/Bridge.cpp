@@ -8,8 +8,8 @@ Bridge::Bridge()
 
 // OVERLOAD CONSTRUCTOR (Viaduct)
 // ------------------------------
-Bridge::Bridge(const std::string& _name, Road* _road, const float& cross_station, const float& vertical_clearance, const float& horizontal_clearance)
-	: name(_name), road(_road), CS(cross_station), VC(vertical_clearance), HC(horizontal_clearance)
+Bridge::Bridge(const std::string& _name, Road* _road, const float& cross_station, const float& vertical_clearance, const float& horizontal_clearance, const float& main_span)
+	: name(_name), road(_road), CS(cross_station), VC(vertical_clearance), HC(horizontal_clearance), mainSpan(main_span)
 {
 	std::cout << std::endl;
 	std::cout << "\tNEW MODEL (Viaduct) ...................... " << name << std::endl;	
@@ -23,8 +23,8 @@ Bridge::Bridge(const std::string& _name, Road* _road, const float& cross_station
 }
 // OVERLOAD CONSTRUCTOR (Overpass)
 // -------------------------------
-Bridge::Bridge(const std::string& _name, Road* _road, const float& cross_station, const float& vertical_clearance, const float& horizontal_clearance, const float& elevation_level)
-	: name(_name), road(_road), CS(cross_station), VC(vertical_clearance), HC(horizontal_clearance), EL(elevation_level)
+Bridge::Bridge(const std::string& _name, Road* _road, const float& cross_station, const float& vertical_clearance, const float& horizontal_clearance, const float& main_span, const float& elevation_level)
+	: name(_name), road(_road), CS(cross_station), VC(vertical_clearance), HC(horizontal_clearance), mainSpan(main_span), EL(elevation_level)
 {
 	std::cout << std::endl;
 	std::cout << "\tNEW MODEL (Overpass) ..................... " << name << std::endl;
@@ -36,8 +36,8 @@ Bridge::Bridge(const std::string& _name, Road* _road, const float& cross_station
 }
 // OVERLOAD CONSTRUCTOR (Bridge)
 // -----------------------------
-Bridge::Bridge(const std::string& _name, Road* _road, const float& cross_station, const float& vertical_clearance, const float& horizontal_clearance, const float& elevation_level, const float& water_surface)
-	: name(_name), road(_road), CS(cross_station), VC(vertical_clearance), HC(horizontal_clearance), EL(elevation_level), WS(water_surface)
+Bridge::Bridge(const std::string& _name, Road* _road, const float& cross_station, const float& vertical_clearance, const float& horizontal_clearance, const float& main_span, const float& elevation_level, const float& water_surface)
+	: name(_name), road(_road), CS(cross_station), VC(vertical_clearance), HC(horizontal_clearance), mainSpan(main_span), EL(elevation_level), WS(water_surface)
 {
 	std::cout << std::endl;
 	std::cout << "\tNEW MODEL (Bridge) ....................... " << name << std::endl;
@@ -57,7 +57,7 @@ Bridge::~Bridge()
 void Bridge::SetupBridge()
 {
 	// Bridge attributes
-	this->mainSpan = 35.0f;
+	//this->mainSpan = 35.0f;
 	this->B = this->road->width + 2 * GUARD_RAIL;
 	this->H = int((100.0f * this->mainSpan / 16.0f) / 5.0f) * 0.05f;
 
