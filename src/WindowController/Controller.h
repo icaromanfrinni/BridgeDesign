@@ -11,6 +11,8 @@ namespace Controller
     static bool show_another_window = false;
 	static bool show_add_bridge_window = false;
 	static bool show_edit_bridge_parameters = false;
+	static bool show_edit_bridge_section = false;
+	static bool show_edit_bridge_columns = false;
 	static bool show_add_road_window = false;
     ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
 
@@ -126,7 +128,12 @@ namespace Controller
 				if (ImGui::MenuItem("Add Road"))
 				{
 					if (!show_add_road_window)
+					{
 						show_add_road_window = true;
+						roadName = "Untitled";
+						roadWidth = 8.0f;
+						dSpeed = 40.0f;
+					}
 				}
 				if (ImGui::MenuItem("Edit Road"))
 				{
@@ -141,17 +148,42 @@ namespace Controller
 				if (ImGui::MenuItem("Add Bridge"))
 				{
 					if (!show_add_bridge_window)
+					{
 						show_add_bridge_window = true;
+						bridgeName = "Untitled";
+						cross_station = 250.0f;
+						h_clearance = 60.0f;
+						v_clearance = 5.5f;
+						main_span = 35.0f;
+					}
 				}
 				if (ImGui::BeginMenu("Edit Bridge"))
 				{
 					if (ImGui::MenuItem("General parameters"))
 					{
 						if (!show_edit_bridge_parameters)
+						{
 							show_edit_bridge_parameters = true;
+							cross_station = 0.0f;
+							h_clearance = 0.0f;
+							v_clearance = 0.0f;
+							main_span = 0.0f;
+						}
 					}
-					if (ImGui::MenuItem("Cross-section", NULL, false, false)) {}
-					if (ImGui::MenuItem("Columns", NULL, false, false)) {}
+					if (ImGui::MenuItem("Cross-section"))
+					{
+						if (!show_edit_bridge_section)
+						{
+							show_edit_bridge_section = true;
+						}
+					}
+					if (ImGui::MenuItem("Columns"))
+					{
+						if (!show_edit_bridge_columns)
+						{
+							show_edit_bridge_columns = true;
+						}
+					}
 					ImGui::EndMenu();
 				}
 				ImGui::EndMenu();
@@ -166,7 +198,7 @@ namespace Controller
 			ImGui::SetNextWindowSize(ImVec2(275, 220), ImGuiCond_Once);
 			ImGui::Begin("New Bridge", &show_add_bridge_window, ImGuiWindowFlags_NoResize);   // Pass a pointer to our bool variable (the window will have a closing button that will clear the bool when clicked)
 			
-			ImGui::Columns(2);
+			ImGui::Columns(2, NULL, false);
 			ImGui::SetColumnWidth(0, 160.0f);
 
 			// BRIDGE NAME
@@ -281,8 +313,8 @@ namespace Controller
 					bridges.push_back(new BoxGirder(bridgeName, roadways[CurrentRoad], cross_station, v_clearance, h_clearance, main_span));
 					for (int i = 0; i < bridges.back()->model.size(); i++)
 						ourMesh_List.push_back(Mesh(bridges.back()->model[i]));
-					show_add_bridge_window = false;
 				}
+				show_add_bridge_window = false;
 			}
 			ImGui::SameLine(205);
 			if (ImGui::Button(" Cancel "))
@@ -300,7 +332,7 @@ namespace Controller
 			ImGui::SetNextWindowSize(ImVec2(235, 150), ImGuiCond_Once);
 			ImGui::Begin("New Road", &show_add_road_window, ImGuiWindowFlags_NoResize);   // Pass a pointer to our bool variable (the window will have a closing button that will clear the bool when clicked)
 
-			ImGui::Columns(2);
+			ImGui::Columns(2, NULL, false);
 			ImGui::SetColumnWidth(0, 120.0f);
 
 			// ROAD NAME
@@ -381,46 +413,60 @@ namespace Controller
 		if (show_edit_bridge_parameters)
 		{
 			ImGui::SetNextWindowPos(ImVec2(100, 100), ImGuiCond_Once);
-			ImGui::SetNextWindowSize(ImVec2(275, 220), ImGuiCond_Once);
+			ImGui::SetNextWindowSize(ImVec2(275, 225), ImGuiCond_Once);
 			ImGui::Begin("General parameters", &show_edit_bridge_parameters, ImGuiWindowFlags_NoResize);
 
-			ImGui::Columns(2);
-			ImGui::SetColumnWidth(0, 160.0f);
+			/*ImGui::Columns(2);
+			ImGui::SetColumnWidth(0, 160.0f);*/
 
 			// BRIDGE
 
 			ImGui::PushID(901);
 			ImGui::AlignTextToFramePadding();
-			ImGui::Text("Bridge");
-			ImGui::NextColumn();
+			//ImGui::Text("Bridge name");
+			//ImGui::NextColumn();
 
-			static bool* selected = new bool[bridges.size()];
+			static bool* bridgeSelected = new bool[bridges.size()];
 			static std::string CurrentBridgeName = " ";
+			static std::string CurrentTypeName = " ";
+			static std::string CurrentRoadName = " ";
 			static int CurrentBridge;
 			
-			ImGui::SetNextItemWidth(100);
-			if (ImGui::BeginCombo("", CurrentBridgeName.c_str())) {
+			ImGui::SetNextItemWidth(210);
+			if (ImGui::BeginCombo("Bridge", CurrentBridgeName.c_str())) {
 				for (int i = 0; i < bridges.size(); i++) {
-					if (ImGui::Selectable(bridges[i]->name.c_str(), &selected[i], ImGuiSelectableFlags_::ImGuiSelectableFlags_None)) {
+					if (ImGui::Selectable(bridges[i]->name.c_str(), &bridgeSelected[i], ImGuiSelectableFlags_::ImGuiSelectableFlags_None)) {
 						CurrentBridgeName = bridges[i]->name.c_str();
 						CurrentBridge = i;
+						// update fields
+						cross_station = bridges[i]->CS;
+						h_clearance = bridges[i]->HC;
+						v_clearance = bridges[i]->VC;
+						main_span = bridges[i]->mainSpan;
+						CurrentTypeName = typeid(*bridges[i]).name();
+						CurrentRoadName = bridges[i]->road->name;
 					}
 				}
 				ImGui::EndCombo();
 			}
-			ImGui::NextColumn();
+			//ImGui::NextColumn();
 			ImGui::PopID();
 
 			// BRIDGE TYPE
 
-			/*ImGui::PushID(902);
+			ImGui::Separator();
+			ImGui::Columns(2, NULL, false);
+			ImGui::SetColumnWidth(0, 160.0f);
+
+			ImGui::PushID(902);
 			ImGui::AlignTextToFramePadding();
 			ImGui::Text("Bridge type");
 			ImGui::NextColumn();
 
 			static bool* typeSelected = new bool[bridgeTypes.size()];
-			static std::string CurrentTypeName = bridges[CurrentBridge].
 			static int CurrentType;
+			if (CurrentTypeName == "class BoxGirder")
+				CurrentTypeName = "Box Girder";
 
 			ImGui::SetNextItemWidth(100);
 			if (ImGui::BeginCombo("", CurrentTypeName.c_str())) {
@@ -433,21 +479,274 @@ namespace Controller
 				ImGui::EndCombo();
 			}
 			ImGui::NextColumn();
-			ImGui::PopID();*/
+			ImGui::PopID();
+
+			// ROADWAY
+
+			ImGui::PushID(903);
+			ImGui::AlignTextToFramePadding();
+			ImGui::Text("Roadway");
+			ImGui::NextColumn();
+
+			static bool* selected = new bool[roadways.size()];
+			static int CurrentRoad;
+
+			ImGui::SetNextItemWidth(100);
+			if (ImGui::BeginCombo("", CurrentRoadName.c_str())) {
+				for (int i = 0; i < roadways.size(); i++) {
+					if (ImGui::Selectable(roadways[i]->name.c_str(), &selected[i], ImGuiSelectableFlags_::ImGuiSelectableFlags_None)) {
+						CurrentRoadName = roadways[i]->name.c_str();
+						CurrentRoad = i;
+					}
+				}
+				ImGui::EndCombo();
+			}
+			ImGui::NextColumn();
+			ImGui::PopID();
+
+			// CROSS STATION
+
+			ImGui::PushID(904);
+			ImGui::AlignTextToFramePadding();
+			ImGui::Text("Cross station");
+			ImGui::NextColumn();
+			ImGui::SetNextItemWidth(80);
+			ImGui::DragFloat("m", &cross_station, 0.01f, 0.00f, 1000.00f, "%.2f");
+			ImGui::NextColumn();
+			ImGui::PopID();
+
+			// HORIZONTAL CLEARANCE
+
+			ImGui::PushID(905);
+			ImGui::AlignTextToFramePadding();
+			ImGui::Text("Horizontal clearance");
+			ImGui::NextColumn();
+			ImGui::SetNextItemWidth(80);
+			ImGui::DragFloat("m", &h_clearance, 0.01f, 0.00f, 1000.00f, "%.2f");
+			ImGui::NextColumn();
+			ImGui::PopID();
+
+			// VERTICAL CLEARANCE
+
+			ImGui::PushID(906);
+			ImGui::AlignTextToFramePadding();
+			ImGui::Text("Vertical clearance");
+			ImGui::NextColumn();
+			ImGui::SetNextItemWidth(80);
+			ImGui::DragFloat("m", &v_clearance, 0.01f, 0.00f, 1000.00f, "%.2f");
+			ImGui::NextColumn();
+			ImGui::PopID();
+
+			// MAIN SPAN
+
+			ImGui::PushID(907);
+			ImGui::AlignTextToFramePadding();
+			ImGui::Text("Main span");
+			ImGui::NextColumn();
+			ImGui::SetNextItemWidth(80);
+			ImGui::DragFloat("m", &main_span, 0.01f, 0.00f, 1000.00f, "%.2f");
+			ImGui::NextColumn();
+			ImGui::PopID();
 
 			// BUTTONS
 
 			ImGui::Separator();
 			ImGui::Columns(1);
-			if (ImGui::Button(" Update ")) {
-				/*bridges.push_back(new BoxGirder(bridgeName, roadways[CurrentRoad], cross_station, v_clearance, h_clearance, main_span));
-				for (int i = 0; i < bridges.back()->model.size(); i++)
-					ourMesh_List.push_back(Mesh(bridges.back()->model[i]));*/
+			if (ImGui::Button(" UPDATE ")) {
+				std::vector<Bridge*>::iterator it = bridges.begin() + CurrentBridge;
+				bridges.erase(it);
+				ourMesh_List.clear(); //TODO: apagar apenas os modelos da ponte corrente
+				if (CurrentType == 0) {
+					bridges.push_back(new BoxGirder(CurrentBridgeName, roadways[CurrentRoad], cross_station, v_clearance, h_clearance, main_span));
+					for (int i = 0; i < bridges.back()->model.size(); i++)
+						ourMesh_List.push_back(Mesh(bridges.back()->model[i]));
+				}
 				show_edit_bridge_parameters = false;
 			}
 			ImGui::SameLine(205);
 			if (ImGui::Button(" Cancel "))
 				show_edit_bridge_parameters = false;
+
+			// END
+
+			ImGui::End();
+		}
+
+		// Show edit bridge section
+		if (show_edit_bridge_section)
+		{
+			ImGui::SetNextWindowPos(ImVec2(100, 100), ImGuiCond_Once);
+			ImGui::SetNextWindowSize(ImVec2(275, 295), ImGuiCond_Once);
+			ImGui::Begin("Cross-section", &show_edit_bridge_section, ImGuiWindowFlags_NoResize);
+
+			/*ImGui::Columns(2);
+			ImGui::SetColumnWidth(0, 160.0f);*/
+
+			// DATA
+
+			float* float_data;
+
+			// BRIDGE
+
+			ImGui::PushID(901);
+			ImGui::AlignTextToFramePadding();
+			//ImGui::Text("Bridge name");
+			//ImGui::NextColumn();
+
+			static bool* bridgeSelected = new bool[bridges.size()];
+			static std::string CurrentBridgeName = " ";
+			static int CurrentBridge;
+
+			ImGui::SetNextItemWidth(210);
+			if (ImGui::BeginCombo("Bridge", CurrentBridgeName.c_str())) {
+				for (int i = 0; i < bridges.size(); i++) {
+					if (ImGui::Selectable(bridges[i]->name.c_str(), &bridgeSelected[i], ImGuiSelectableFlags_::ImGuiSelectableFlags_None)) {
+						CurrentBridgeName = bridges[i]->name.c_str();
+						CurrentBridge = i;
+						// update fields
+						main_span = bridges[i]->mainSpan;
+					}
+				}
+				ImGui::EndCombo();
+			}
+			//ImGui::NextColumn();
+			ImGui::PopID();
+
+			//TODO: não alterar parâmetros de forma dinâmica (caso queira cancelar)
+
+			// DECK HEIGHT
+
+			ImGui::Separator();
+			ImGui::Columns(2, NULL, false);
+			ImGui::SetColumnWidth(0, 160.0f);
+
+			ImGui::PushID(902);
+			ImGui::AlignTextToFramePadding();
+			ImGui::Text("Deck height");
+			ImGui::NextColumn();
+			ImGui::SetNextItemWidth(80);
+			ImGui::DragFloat("m", &bridges[CurrentBridge]->H, 0.01f, 0.00f, 1000.00f, "%.2f");
+			ImGui::NextColumn();
+			ImGui::PopID();
+
+			// TOTAL WIDTH
+
+			ImGui::PushID(903);
+			ImGui::AlignTextToFramePadding();
+			ImGui::Text("Total width");
+			ImGui::NextColumn();
+			ImGui::SetNextItemWidth(80);
+			ImGui::DragFloat("m", &bridges[CurrentBridge]->B, 0.01f, 0.00f, 1000.00f, "%.2f");
+			ImGui::NextColumn();
+			ImGui::PopID();
+
+			// Calculation Results BUTTON
+
+			ImGui::Columns(1);
+			if (ImGui::Button("      Show Calculation Results      "))
+				bridges[CurrentBridge]->Setup();
+
+			// CANTILEVER LENGTH
+
+			ImGui::Columns(2, NULL, false);
+			ImGui::SetColumnWidth(0, 160.0f);
+
+			ImGui::PushID(904);
+			ImGui::AlignTextToFramePadding();
+			ImGui::Text("Cantilever length");
+			ImGui::NextColumn();
+			float_data = new float(bridges[CurrentBridge]->get_CantileverLength());
+			ImGui::SetNextItemWidth(80);
+			ImGui::DragFloat("m", float_data, 0.01f, 0.00f, 1000.00f, "%.2f");
+			bridges[CurrentBridge]->set_CantileverLength(*float_data);
+			delete float_data;
+			ImGui::NextColumn();
+			ImGui::PopID();
+
+			// DECK THICKNESS
+
+			ImGui::PushID(905);
+			ImGui::AlignTextToFramePadding();
+			ImGui::Text("Deck thickness");
+			ImGui::NextColumn();
+			float_data = new float(bridges[CurrentBridge]->get_DeckThickness());
+			ImGui::SetNextItemWidth(80);
+			ImGui::DragFloat("m", float_data, 0.01f, 0.00f, 1000.00f, "%.2f");
+			bridges[CurrentBridge]->set_DeckThickness(*float_data);
+			delete float_data;
+			ImGui::NextColumn();
+			ImGui::PopID();
+
+			// WEB THICKNESS
+
+			ImGui::PushID(906);
+			ImGui::AlignTextToFramePadding();
+			ImGui::Text("Web thickness");
+			ImGui::NextColumn();
+			float_data = new float(bridges[CurrentBridge]->get_WebThickness());
+			ImGui::SetNextItemWidth(80);
+			ImGui::DragFloat("m", float_data, 0.01f, 0.00f, 1000.00f, "%.2f");
+			bridges[CurrentBridge]->set_WebThickness(*float_data);
+			delete float_data;
+			ImGui::NextColumn();
+			ImGui::PopID();
+
+			// HAUNCH HEIGHT
+
+			ImGui::PushID(907);
+			ImGui::AlignTextToFramePadding();
+			ImGui::Text("Haunch height");
+			ImGui::NextColumn();
+			float_data = new float(bridges[CurrentBridge]->get_HaunchHeight());
+			ImGui::SetNextItemWidth(80);
+			ImGui::DragFloat("m", float_data, 0.01f, 0.00f, 1000.00f, "%.2f");
+			bridges[CurrentBridge]->set_HaunchHeight(*float_data);
+			delete float_data;
+			ImGui::NextColumn();
+			ImGui::PopID();
+
+			// BOTTOM WIDTH
+
+			ImGui::PushID(908);
+			ImGui::AlignTextToFramePadding();
+			ImGui::Text("Bottom width");
+			ImGui::NextColumn();
+			float_data = new float(bridges[CurrentBridge]->get_BottomWidth());
+			ImGui::SetNextItemWidth(80);
+			ImGui::DragFloat("m", float_data, 0.01f, 0.00f, 1000.00f, "%.2f");
+			bridges[CurrentBridge]->set_BottomWidth(*float_data);
+			delete float_data;
+			ImGui::NextColumn();
+			ImGui::PopID();
+
+			// HAUNCH WIDTH	
+
+			ImGui::PushID(909);
+			ImGui::AlignTextToFramePadding();
+			ImGui::Text("Haunch width");
+			ImGui::NextColumn();
+			float_data = new float(bridges[CurrentBridge]->get_HaunchWidth());
+			ImGui::SetNextItemWidth(80);
+			ImGui::DragFloat("m", float_data, 0.01f, 0.00f, 1000.00f, "%.2f");
+			bridges[CurrentBridge]->set_HaunchWidth(*float_data);
+			delete float_data;
+			ImGui::NextColumn();
+			ImGui::PopID();
+
+			// BUTTONS
+
+			ImGui::Separator();
+			ImGui::Columns(1);
+			if (ImGui::Button(" UPDATE ")) {
+				bridges[CurrentBridge]->Update();
+				ourMesh_List.clear(); //TODO: apagar apenas os modelos da ponte corrente
+				for (int i = 0; i < bridges[CurrentBridge]->model.size(); i++)
+					ourMesh_List.push_back(Mesh(bridges[CurrentBridge]->model[i]));
+				show_edit_bridge_section = false;
+			}
+			ImGui::SameLine(205);
+			if (ImGui::Button(" Cancel "))
+				show_edit_bridge_section = false;
 
 			// END
 

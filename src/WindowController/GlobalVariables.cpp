@@ -2,15 +2,10 @@
 
 // Initialize input data
 // ---------------------
-std::string bridgeName = "Bridge_1";
-std::string roadName = "Road_1";
+std::string bridgeName, roadName;
 std::vector<std::string> bridgeTypes = { "Box Girder", "Beam" };
-float cross_station = 250.0f;
-float h_clearance = 60.0f;
-float v_clearance = 5.5f;
-float main_span = 35.0f;
-float roadWidth = 8.0f;
-float dSpeed = 40.0f;
+float cross_station, h_clearance, v_clearance, main_span;
+float roadWidth, dSpeed;
 
 Camera camera;
 

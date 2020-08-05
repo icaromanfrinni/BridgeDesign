@@ -249,11 +249,11 @@ std::vector<VerSegment*> Bridge::Vertical_Alignment()
 
 	//// ********************************** RETURN **********************************
 	
-	profile.push_back(new VerSegment(VPC1, VPI1, VPT1));
+	//profile.push_back(new VerSegment(VPC1, VPI1, VPT1));
 	profile.push_back(new VerSegment(VPT1, VPC2));
 	profile.push_back(new VerSegment(VPC2, VPI2, VPT2));
 	profile.push_back(new VerSegment(VPT2, VPC3));
-	profile.push_back(new VerSegment(VPC3, VPI3, VPT3));
+	//profile.push_back(new VerSegment(VPC3, VPI3, VPT3));
 
 	// ********************************** DEBUG **********************************
 

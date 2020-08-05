@@ -7,8 +7,6 @@
 class BoxGirder
 	: public Bridge
 {
-	// INITIALIZES ALL THE PARAMETERS
-	void SetupBoxGirder();
 public:
 	// Box-Girder Bridge Attributes
 	float Lb;   // slab cantilever
@@ -30,7 +28,24 @@ public:
 	~BoxGirder();
 
 	// MODEL CONSTRUCTOR
-	void update();
+	void Setup();
+	void Update();
+
+	// RETURN SECTION PARAMETERS
+	float get_CantileverLength() const;
+	float get_DeckThickness() const;
+	float get_WebThickness() const;
+	float get_HaunchHeight() const;
+	float get_BottomWidth() const;
+	float get_HaunchWidth() const;
+
+	// ALLOCATION SECTION PARAMETERS
+	void set_CantileverLength(const float& _Lb);
+	void set_DeckThickness(const float& _h);
+	void set_WebThickness(const float& _tw);
+	void set_HaunchHeight(const float& _hc);
+	void set_BottomWidth(const float& _b);
+	void set_HaunchWidth(const float& _bc);
 };
 
 #endif // BOXGIRDER_H

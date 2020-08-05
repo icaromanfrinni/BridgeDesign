@@ -13,9 +13,9 @@ BoxGirder::BoxGirder(const std::string& _name, Road* _road, const float& cross_s
 	: Bridge(_name, _road, cross_station, vertical_clearance, horizontal_clearance, main_span)
 {
 	// Preliminary calculations
-	this->SetupBoxGirder();
+	this->Setup();
 	// Model
-	this->update();
+	this->Update();
 }
 
 // OVERLOAD CONSTRUCTOR (Overpass)
@@ -24,9 +24,9 @@ BoxGirder::BoxGirder(const std::string& _name, Road* _road, const float& cross_s
 	: Bridge(_name, _road, cross_station, vertical_clearance, horizontal_clearance, main_span, elevation_level)
 {
 	// Preliminary calculations
-	this->SetupBoxGirder();
+	this->Setup();
 	// Model
-	this->update();
+	this->Update();
 }
 
 // OVERLOAD CONSTRUCTOR (Bridge)
@@ -35,9 +35,9 @@ BoxGirder::BoxGirder(const std::string& _name, Road* _road, const float& cross_s
 	: Bridge(_name, _road, cross_station, vertical_clearance, horizontal_clearance, main_span, elevation_level, water_surface)
 {
 	// Preliminary calculations
-	this->SetupBoxGirder();
+	this->Setup();
 	// Model
-	this->update();
+	this->Update();
 }
 
 // DESTRUCTOR
@@ -48,7 +48,7 @@ BoxGirder::~BoxGirder()
 
 // INITIALIZES ALL THE PARAMETERS
 // ------------------------------
-void BoxGirder::SetupBoxGirder()
+void BoxGirder::Setup()
 {
 	// Box-Girder Bridge Attributes
 	Lb = int((100.0f * B / 4.3f) / 5.0f) * 0.05f;
@@ -92,7 +92,7 @@ void BoxGirder::SetupBoxGirder()
 
 // UPDATE THE MODEL
 // ----------------
-void BoxGirder::update()
+void BoxGirder::Update()
 {
 	// Initialize
 	model.clear();
@@ -310,3 +310,56 @@ void BoxGirder::update()
 #pragma endregion 
 }
 
+// RETURN SECTION PARAMETERS
+// -------------------------
+float BoxGirder::get_CantileverLength() const
+{
+	return Lb;
+}
+float BoxGirder::get_DeckThickness() const
+{
+	return h;
+}
+float BoxGirder::get_WebThickness() const
+{
+	return bw;
+}
+float BoxGirder::get_HaunchHeight() const
+{
+	return tv;
+}
+float BoxGirder::get_BottomWidth() const
+{
+	return b;
+}
+float BoxGirder::get_HaunchWidth() const
+{
+	return th;
+}
+
+// ALLOCATION SECTION PARAMETERS
+// -----------------------------
+void BoxGirder::set_CantileverLength(const float& _Lb)
+{
+	Lb = _Lb;
+}
+void BoxGirder::set_DeckThickness(const float& _h)
+{
+	h = _h;
+}
+void BoxGirder::set_WebThickness(const float& _tw)
+{
+	bw = _tw;
+}
+void BoxGirder::set_HaunchHeight(const float& _hc)
+{
+	tv = _hc;
+}
+void BoxGirder::set_BottomWidth(const float& _b)
+{
+	b = _b;
+}
+void BoxGirder::set_HaunchWidth(const float& _bc)
+{
+	th = _bc;
+}

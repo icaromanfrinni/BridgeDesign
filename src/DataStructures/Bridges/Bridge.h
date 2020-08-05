@@ -60,8 +60,24 @@ public:
 	virtual ~Bridge() = 0;
 
 	// MODEL CONSTRUCTOR
-	// -----------------
-	virtual void update() = 0;
+	virtual void Setup() = 0;
+	virtual void Update() = 0;
+
+	// RETURN SECTION PARAMETERS
+	virtual float get_CantileverLength() const = 0;
+	virtual float get_DeckThickness() const = 0;
+	virtual float get_WebThickness() const = 0;
+	virtual float get_HaunchHeight() const = 0;
+	virtual float get_BottomWidth() const = 0;
+	virtual float get_HaunchWidth() const = 0;
+
+	// ALLOCATION SECTION PARAMETERS
+	virtual void set_CantileverLength(const float& _Lb) = 0;
+	virtual void set_DeckThickness(const float& _h) = 0;
+	virtual void set_WebThickness(const float& _tw) = 0;
+	virtual void set_HaunchHeight(const float& _hc) = 0;
+	virtual void set_BottomWidth(const float& _b) = 0;
+	virtual void set_HaunchWidth(const float& _bc) = 0;
 };
 
 #endif // BRIDGE_H
