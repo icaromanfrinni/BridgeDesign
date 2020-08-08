@@ -9,8 +9,8 @@ BoxGirder::BoxGirder()
 
 // OVERLOAD CONSTRUCTOR (Viaduct)
 // ------------------------------
-BoxGirder::BoxGirder(const std::string& _name, Road* _road, const float& cross_station, const float& vertical_clearance, const float& horizontal_clearance, const float& main_span)
-	: Bridge(_name, _road, cross_station, vertical_clearance, horizontal_clearance, main_span)
+BoxGirder::BoxGirder(const std::string& _name, Road* _road, const float& cross_station/*, const float& vertical_clearance*/, const float& horizontal_clearance/*, const float& main_span*/)
+	: Bridge(_name, _road, cross_station/*, vertical_clearance*/, horizontal_clearance/*, main_span*/)
 {
 	// Preliminary calculations
 	this->Setup();
@@ -20,8 +20,8 @@ BoxGirder::BoxGirder(const std::string& _name, Road* _road, const float& cross_s
 
 // OVERLOAD CONSTRUCTOR (Overpass)
 // -------------------------------
-BoxGirder::BoxGirder(const std::string& _name, Road* _road, const float& cross_station, const float& vertical_clearance, const float& horizontal_clearance, const float& main_span, const float& elevation_level)
-	: Bridge(_name, _road, cross_station, vertical_clearance, horizontal_clearance, main_span, elevation_level)
+BoxGirder::BoxGirder(const std::string& _name, Road* _road, const float& cross_station/*, const float& vertical_clearance*/, const float& horizontal_clearance/*, const float& main_span*/, const float& elevation_level)
+	: Bridge(_name, _road, cross_station/*, vertical_clearance*/, horizontal_clearance/*, main_span*/, elevation_level)
 {
 	// Preliminary calculations
 	this->Setup();
@@ -31,8 +31,8 @@ BoxGirder::BoxGirder(const std::string& _name, Road* _road, const float& cross_s
 
 // OVERLOAD CONSTRUCTOR (Bridge)
 // -----------------------------
-BoxGirder::BoxGirder(const std::string& _name, Road* _road, const float& cross_station, const float& vertical_clearance, const float& horizontal_clearance, const float& main_span, const float& elevation_level, const float& water_surface)
-	: Bridge(_name, _road, cross_station, vertical_clearance, horizontal_clearance, main_span, elevation_level, water_surface)
+BoxGirder::BoxGirder(const std::string& _name, Road* _road, const float& cross_station/*, const float& vertical_clearance*/, const float& horizontal_clearance/*, const float& main_span*/, const float& elevation_level, const float& water_surface)
+	: Bridge(_name, _road, cross_station/*, vertical_clearance*/, horizontal_clearance/*, main_span*/, elevation_level, water_surface)
 {
 	// Preliminary calculations
 	this->Setup();
@@ -73,6 +73,7 @@ void BoxGirder::Setup()
 	// first pier
 	float station = this->alignment->profile.front()->getStart4DPoint().x + end_length;
 
+	piers.clear();
 	for (int i = 0; i < nPiers; i++)
 	{
 		Pier P;

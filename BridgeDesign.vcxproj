@@ -197,6 +197,7 @@
     <ClInclude Include="src\RenderEngine\Skybox.h" />
     <ClInclude Include="src\WindowController\Controller.h" />
     <ClInclude Include="src\WindowController\DearImGui.h" />
+    <ClInclude Include="src\WindowController\GlobalLists.h" />
     <ClInclude Include="src\WindowController\GlobalVariables.h" />
   </ItemGroup>
   <ItemGroup>
@@ -229,6 +230,7 @@
     <ClCompile Include="src\RenderEngine\Mesh.cpp" />
     <ClCompile Include="src\RenderEngine\Shader.cpp" />
     <ClCompile Include="src\RenderEngine\Skybox.cpp" />
+    <ClCompile Include="src\WindowController\GlobalLists.cpp" />
     <ClCompile Include="src\WindowController\GlobalVariables.cpp" />
   </ItemGroup>
   <ItemGroup>

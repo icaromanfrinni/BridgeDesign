@@ -20,7 +20,6 @@
 
 #include "DearImGui.h"
 #include "Controller.h"
-#include "GlobalVariables.h"
 #include "Shader.h"
 #include "DirectionalLight.h"
 #include "Grid.h"
@@ -327,7 +326,7 @@ namespace CRAB
         std::vector<HorSegment*> road_plan;
         std::vector<VerSegment*> road_profile;
         // road_plan
-        road_plan.push_back(new HorSegment(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(500.0f, 0.0f, 0.0f)));
+        road_plan.push_back(new HorSegment(glm::vec3(-250.0f, 0.0f, 0.0f), glm::vec3(250.0f, 0.0f, 0.0f)));
         // road_profile
         road_profile.push_back(new VerSegment(glm::vec3(0.0f, 10.0f, 0.0f), glm::vec3(500.0f, 10.0f, 0.0f)));
         // alignment
@@ -335,7 +334,7 @@ namespace CRAB
         // road
         roadways.push_back(new Road("Rodovia_1", 8.00f, 40.0f, alignments.back()));
         // bridge
-        bridges.push_back(new BoxGirder("Viaduto_1", roadways.back(), 250.0f, 1.0f, 60.0f, 0.0f, 9.50f));
+        bridges.push_back(new BoxGirder("Viaduto_1", roadways.back(), 250.0f, 1.0f, 60.0f, 0.0f, 9.5f));
 #endif
 
         /* Bridge with Terrain */

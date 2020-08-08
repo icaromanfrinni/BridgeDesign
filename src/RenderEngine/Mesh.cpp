@@ -1,6 +1,8 @@
 #include "Mesh.h"
 #include "Geometry.h"
 
+#define PRINT 0
+
 // constructor
 Mesh::Mesh(std::vector<Mesh::Vertex> vertices)
 {
@@ -48,8 +50,11 @@ Mesh::Mesh(const obj& object)
 // constructor (from HalfEdge struct)
 Mesh::Mesh(const HED::solid* solid)
 {
-    material.hasTexture = false;
+#if PRINT == 1
+    std::cout << "solid " << solid->name << ".....................";
+#endif
 
+    material.hasTexture = false;
     if (solid->name == "TOP_LAYER")
     {
         material.textures.push_back(new Texture("textures/pavement_diffuse.jpg", "diffuse"));
@@ -87,14 +92,20 @@ Mesh::Mesh(const HED::solid* solid)
         HED::halfEdge* he = solid->faces[i]->hEdge;
         p.v.push_back(he->vStart->point);
         for (he = solid->faces[i]->hEdge->next; he != solid->faces[i]->hEdge; he = he->next)
-        {
             p.v.push_back(he->vStart->point);
-        }
-
-        // Triangulate
+        
+        // Triangulate (apenas as faces com mais de 4 vértices)
         std::vector<CRAB::Triangle> t;
-        p.triangulate(t);
-
+        if (p.v.size() > 4)
+            p.triangulate(t);
+        else if (p.v.size() == 4)
+        {
+            t.push_back(CRAB::Triangle(p.v[0], p.v[1], p.v[2]));
+            t.push_back(CRAB::Triangle(p.v[2], p.v[3], p.v[0]));
+        }
+        else
+            t.push_back(CRAB::Triangle(p.v[0], p.v[1], p.v[2]));
+        
         // MESH
         CRAB::Vector4Df normal_plane = solid->faces[i]->normal();
         for (int j = 0; j < t.size(); j++)
@@ -136,6 +147,10 @@ Mesh::Mesh(const HED::solid* solid)
 
     // now that we have all the required data, set the vertex buffers and its attribute pointers.
     setupMesh();
+
+#if PRINT == 1
+    std::cout << "OK" << std::endl;;
+#endif
 }
 
 // destructor

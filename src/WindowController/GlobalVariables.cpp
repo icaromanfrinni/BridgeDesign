@@ -1,21 +1,13 @@
 #include "GlobalVariables.h"
 
+Camera camera;
+
 // Initialize input data
 // ---------------------
 std::string bridgeName, roadName;
 std::vector<std::string> bridgeTypes = { "Box Girder", "Beam" };
-float cross_station, h_clearance, v_clearance, main_span;
+float v_clearance = 6.0f;
+float main_span = 35.0f;
+float cross_station, h_clearance;
 float roadWidth, dSpeed;
-
-Camera camera;
-
-// List of Meshes
-std::vector<Mesh> ourMesh_List;
-// List of Solids (to load .obj file)
-std::vector<HED::solid*> solids;
-// List of Bridge models
-std::vector<Bridge*> bridges;
-// List of Roadways
-std::vector<Road*> roadways;
-// List of Alignments
-std::vector<Alignment*> alignments;
+float cantilever_length, deck_thickness, web_thickness, haunch_height, bottom_width, haunch_width;

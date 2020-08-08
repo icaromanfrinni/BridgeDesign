@@ -12,8 +12,6 @@ Road::Road()
 Road::Road(const std::string& _name, const float& _width, const float& _speed, Alignment* _alignment)
 	: name(_name), width(_width), speed(_speed), alignment(_alignment)
 {
-	std::cout << std::endl;
-	std::cout << "\tNEW Road ................................. " << name << std::endl;
 	// Stopping Sight Distance (S)
 	// ---------------------------
 	float d1 = 0.278 * speed * t;				// brake reaction distance
@@ -22,6 +20,8 @@ Road::Road(const std::string& _name, const float& _width, const float& _speed, A
 
 	// Model
 	update();
+
+	std::cout << "\n\tNEW Road ................................. " << name << std::endl;
 }
 
 // DESTRUCTOR
