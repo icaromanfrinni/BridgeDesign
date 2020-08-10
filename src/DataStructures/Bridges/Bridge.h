@@ -20,14 +20,12 @@ const float INCLINATION_RATIO = 0.25f;
 
 struct Pier
 {
-	float b, h, L;
+	float b, h, L, station;
 	CRAB::Vector4Df base, dir;
 };
 
 class Bridge
 {
-	// INITIALIZES ALL THE PARAMETERS
-	void SetupBridge();
 	// ALIGNMENTS
 	std::vector<HorSegment*> Horizontal_Alignment();
 	std::vector<VerSegment*> Vertical_Alignment();
@@ -52,16 +50,21 @@ public:
 	// DEFAULT CONSTRUCTOR
 	Bridge();
 	// OVERLOAD CONSTRUCTOR (Viaduct)
-	Bridge(const std::string& _name, Road* _road, const float& cross_station/*, const float& vertical_clearance*/, const float& horizontal_clearance/*, const float& main_span*/);
+	Bridge(const std::string& _name, Road* _road, const float& cross_station, const float& horizontal_clearance);
 	// OVERLOAD CONSTRUCTOR (Overpass)
-	Bridge(const std::string& _name, Road* _road, const float& cross_station/*, const float& vertical_clearance*/, const float& horizontal_clearance/*, const float& main_span*/, const float& elevation_level);
+	Bridge(const std::string& _name, Road* _road, const float& cross_station, const float& horizontal_clearance, const float& elevation_level);
 	// OVERLOAD CONSTRUCTOR (Bridge)
-	Bridge(const std::string& _name, Road* _road, const float& cross_station/*, const float& vertical_clearance*/, const float& horizontal_clearance/*, const float& main_span*/, const float& elevation_level, const float& water_surface);
+	Bridge(const std::string& _name, Road* _road, const float& cross_station, const float& horizontal_clearance, const float& elevation_level, const float& water_surface);
 	// DESTRUCTOR
 	virtual ~Bridge() = 0;
 
+	// UPDATE ALL THE PARAMETERS
+	void SetupBridge();
+
 	// MODEL CONSTRUCTOR
-	virtual void Setup() = 0;
+	virtual void SetupSection() = 0;
+	virtual void SetupPiers(const int& nPiers) = 0;
+	virtual void UpdatePiers() = 0;
 	virtual void Update() = 0;
 
 	// RETURN SECTION PARAMETERS

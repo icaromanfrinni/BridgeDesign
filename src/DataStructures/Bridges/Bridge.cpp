@@ -8,9 +8,13 @@ Bridge::Bridge()
 
 // OVERLOAD CONSTRUCTOR (Viaduct)
 // ------------------------------
-Bridge::Bridge(const std::string& _name, Road* _road, const float& cross_station/*, const float& vertical_clearance*/, const float& horizontal_clearance/*, const float& main_span*/)
-	: name(_name), road(_road), CS(cross_station)/*, VC(vertical_clearance)*/, HC(horizontal_clearance)/*, mainSpan(main_span)*/
+Bridge::Bridge(const std::string& _name, Road* _road, const float& cross_station, const float& horizontal_clearance)
+	: name(_name), road(_road), CS(cross_station), HC(horizontal_clearance)
 {
+	// General attributes
+	this->mainSpan = main_span;
+	this->VC = v_clearance;
+
 	// Viaduct
 	int index = this->road->alignment->findSegment(this->CS);
 	this->EL = this->road->alignment->profile[index]->getY(this->CS);
@@ -23,9 +27,13 @@ Bridge::Bridge(const std::string& _name, Road* _road, const float& cross_station
 }
 // OVERLOAD CONSTRUCTOR (Overpass)
 // -------------------------------
-Bridge::Bridge(const std::string& _name, Road* _road, const float& cross_station/*, const float& vertical_clearance*/, const float& horizontal_clearance/*, const float& main_span*/, const float& elevation_level)
-	: name(_name), road(_road), CS(cross_station)/*, VC(vertical_clearance)*/, HC(horizontal_clearance)/*, mainSpan(main_span)*/, EL(elevation_level)
+Bridge::Bridge(const std::string& _name, Road* _road, const float& cross_station, const float& horizontal_clearance, const float& elevation_level)
+	: name(_name), road(_road), CS(cross_station), HC(horizontal_clearance), EL(elevation_level)
 {
+	// General attributes
+	this->mainSpan = main_span;
+	this->VC = v_clearance;
+
 	// Overpass
 	this->WS = this->EL;
 
@@ -36,9 +44,13 @@ Bridge::Bridge(const std::string& _name, Road* _road, const float& cross_station
 }
 // OVERLOAD CONSTRUCTOR (Bridge)
 // -----------------------------
-Bridge::Bridge(const std::string& _name, Road* _road, const float& cross_station/*, const float& vertical_clearance*/, const float& horizontal_clearance/*, const float& main_span*/, const float& elevation_level, const float& water_surface)
-	: name(_name), road(_road), CS(cross_station)/*, VC(vertical_clearance)*/, HC(horizontal_clearance)/*, mainSpan(main_span)*/, EL(elevation_level), WS(water_surface)
+Bridge::Bridge(const std::string& _name, Road* _road, const float& cross_station, const float& horizontal_clearance, const float& elevation_level, const float& water_surface)
+	: name(_name), road(_road), CS(cross_station), HC(horizontal_clearance), EL(elevation_level), WS(water_surface)
 {
+	// General attributes
+	this->mainSpan = main_span;
+	this->VC = v_clearance;
+
 	// Preliminary calculations
 	this->SetupBridge();
 
@@ -56,12 +68,10 @@ Bridge::~Bridge()
 void Bridge::SetupBridge()
 {
 	// Bridge attributes
-	this->mainSpan = main_span;
 	this->B = this->road->width + 2 * GUARD_RAIL;
 	this->H = int((100.0f * this->mainSpan / 16.0f) / 5.0f) * 0.05f;
 
 	// Alignment
-	this->VC = v_clearance;
 	//this->alignment = this->road->alignment;
 	this->alignment = new Alignment(this->name, this->Horizontal_Alignment(), this->Vertical_Alignment());
 }
