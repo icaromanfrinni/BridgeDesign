@@ -552,7 +552,6 @@ namespace Controller
 		}
 
 		// Show edit bridge section
-		// TODO: atualizar altura dos pilares
 		if (show_edit_bridge_section)
 		{
 			ImGui::SetNextWindowPos(ImVec2(100, 100), ImGuiCond_Once);
@@ -713,6 +712,7 @@ namespace Controller
 				ImGui::Separator();
 				ImGui::Columns(1);
 				if (ImGui::Button(" UPDATE ")) {
+					bridges[CurrentBridge]->UpdatePiers();
 					bridges[CurrentBridge]->Update();
 					ourMesh_List.clear(); //TODO: apagar apenas os modelos da ponte corrente
 					for (int i = 0; i < bridges[CurrentBridge]->model.size(); i++)

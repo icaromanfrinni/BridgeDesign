@@ -54,18 +54,30 @@ Mesh::Mesh(const HED::solid* solid)
     std::cout << "solid " << solid->name << ".....................";
 #endif
 
-    material.hasTexture = false;
+    material.hasTexture = true;
     if (solid->name == "TOP_LAYER")
     {
-        material.textures.push_back(new Texture("textures/pavement_diffuse.jpg", "diffuse"));
+        /*material.textures.push_back(new Texture("textures/pavement_diffuse.jpg", "diffuse"));
         material.textures.push_back(new Texture("textures/pavement_roughness.jpg", "specular"));
-        material.textures.push_back(new Texture("textures/pavement_normal.jpg", "normal"));
+        material.textures.push_back(new Texture("textures/pavement_normal.jpg", "normal"));*/
+        material.textures.push_back(new Texture("textures/half_pavement_diffuse.jpg", "diffuse"));
+        material.textures.push_back(new Texture("textures/half_pavement_roughness.jpg", "specular"));
+        material.textures.push_back(new Texture("textures/half_pavement_normal.jpg", "normal"));
+        /*material.textures.push_back(new Texture("textures/Asphalt_DIFFUSE.jpg", "diffuse"));
+        material.textures.push_back(new Texture("textures/Asphalt_SPECULAR.jpg", "specular"));
+        material.textures.push_back(new Texture("textures/Asphalt_NORMAL.jpg", "normal"));*/
+        /*material.textures.push_back(new Texture("textures/container.jpg", "diffuse"));
+        material.textures.push_back(new Texture("textures/container.jpg", "specular"));
+        material.textures.push_back(new Texture("textures/container.jpg", "normal"));*/
     }
     else
     {
-        material.textures.push_back(new Texture("textures/concrete_diffuse.png", "diffuse"));
+        /*material.textures.push_back(new Texture("textures/concrete_diffuse.png", "diffuse"));
         material.textures.push_back(new Texture("textures/concrete_specular.jpg", "specular"));
-        material.textures.push_back(new Texture("textures/concrete_normal.jpg", "normal"));
+        material.textures.push_back(new Texture("textures/concrete_normal.jpg", "normal"));*/
+        material.textures.push_back(new Texture("textures/Concrete_Wall_002_height.png", "diffuse"));
+        material.textures.push_back(new Texture("textures/Concrete_Wall_002_ambient_occlusion.jpg", "specular"));
+        material.textures.push_back(new Texture("textures/Concrete_Wall_002_normal.jpg", "normal"));
     }
 
     // DEBUG
@@ -100,8 +112,8 @@ Mesh::Mesh(const HED::solid* solid)
             p.triangulate(t);
         else if (p.v.size() == 4)
         {
-            t.push_back(CRAB::Triangle(p.v[0], p.v[1], p.v[2]));
-            t.push_back(CRAB::Triangle(p.v[2], p.v[3], p.v[0]));
+            t.push_back(CRAB::Triangle(p.v[3], p.v[0], p.v[1]));
+            t.push_back(CRAB::Triangle(p.v[3], p.v[1], p.v[2]));
         }
         else
             t.push_back(CRAB::Triangle(p.v[0], p.v[1], p.v[2]));
@@ -122,15 +134,26 @@ Mesh::Mesh(const HED::solid* solid)
             vertex2.Position = glm::vec3(t[j].v[1].x, t[j].v[1].y, t[j].v[1].z);            
             vertex3.Position = glm::vec3(t[j].v[2].x, t[j].v[2].y, t[j].v[2].z);
             // ------------------------------------
-            vertex1.TexCoords = { 1.0f, 0.0f };
             if (j % 2 == 0)
             {
-                vertex2.TexCoords = { 1.0f, 0.5f };
-                vertex3.TexCoords = { 0.0f, 0.5f };
+                float y = glm::distance(vertex1.Position, vertex2.Position);
+                float x = glm::distance(vertex2.Position, vertex3.Position);
+                /*vertex1.TexCoords = { 1.0f, 0.0f };
+                vertex2.TexCoords = { 1.0f, 1.0f };
+                vertex3.TexCoords = { 0.0f, 1.0f };*/
+                vertex1.TexCoords = { x/y, 0.0f };
+                vertex2.TexCoords = { x/y, 1.0f };
+                vertex3.TexCoords = { 0.0f, 1.0f };
             }
             else
             {
-                vertex2.TexCoords = { 1.0f, 0.5f };
+                float y = glm::distance(vertex2.Position, vertex3.Position);
+                float x = glm::distance(vertex1.Position, vertex3.Position);
+                /*vertex1.TexCoords = { 1.0f, 0.0f };
+                vertex2.TexCoords = { 0.0f, 1.0f };
+                vertex3.TexCoords = { 0.0f, 0.0f };*/
+                vertex1.TexCoords = { x/y, 0.0f };
+                vertex2.TexCoords = { 0.0f, 1.0f };
                 vertex3.TexCoords = { 0.0f, 0.0f };
             }
             // ------------------------------------

@@ -54,8 +54,8 @@ namespace CRAB
     float lastFrame = 0.0f;
 
     // lighting
-    DirectionalLight mainLight({ 0.9f, 0.9f, 0.9f }, camera.LookAt);
-    //DirectionalLight mainLight({ 0.9f, 0.9f, 0.9f }, { -1.0f, -1.0f, -1.0f });
+    //DirectionalLight mainLight({ 0.9f, 0.9f, 0.9f }, camera.LookAt);
+    DirectionalLight mainLight({ 1.0f, 1.0f, 1.0f }, { -1.0f, -1.0f, -1.0f });
 
     // mouse event handlers
     int TheKeyState = GLFW_KEY_LEFT_CONTROL;
@@ -545,7 +545,7 @@ namespace CRAB
             // light properties
             // ----------------
             // directional light
-            mainLight.direction = camera.LookAt;
+            //mainLight.direction = camera.LookAt;
             ourShader.setDirLight(mainLight);
 
             // view/projection transformations
