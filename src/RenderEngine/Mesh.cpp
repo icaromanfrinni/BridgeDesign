@@ -56,29 +56,9 @@ Mesh::Mesh(const HED::solid* solid)
 
     material.hasTexture = true;
     if (solid->name == "TOP_LAYER")
-    {
-        /*material.textures.push_back(new Texture("textures/pavement_diffuse.jpg", "diffuse"));
-        material.textures.push_back(new Texture("textures/pavement_roughness.jpg", "specular"));
-        material.textures.push_back(new Texture("textures/pavement_normal.jpg", "normal"));*/
-        material.textures.push_back(new Texture("textures/half_pavement_diffuse.jpg", "diffuse"));
-        material.textures.push_back(new Texture("textures/half_pavement_roughness.jpg", "specular"));
-        material.textures.push_back(new Texture("textures/half_pavement_normal.jpg", "normal"));
-        /*material.textures.push_back(new Texture("textures/Asphalt_DIFFUSE.jpg", "diffuse"));
-        material.textures.push_back(new Texture("textures/Asphalt_SPECULAR.jpg", "specular"));
-        material.textures.push_back(new Texture("textures/Asphalt_NORMAL.jpg", "normal"));*/
-        /*material.textures.push_back(new Texture("textures/container.jpg", "diffuse"));
-        material.textures.push_back(new Texture("textures/container.jpg", "specular"));
-        material.textures.push_back(new Texture("textures/container.jpg", "normal"));*/
-    }
+        material.textures = texPavement;
     else
-    {
-        /*material.textures.push_back(new Texture("textures/concrete_diffuse.png", "diffuse"));
-        material.textures.push_back(new Texture("textures/concrete_specular.jpg", "specular"));
-        material.textures.push_back(new Texture("textures/concrete_normal.jpg", "normal"));*/
-        material.textures.push_back(new Texture("textures/Concrete_Wall_002_height.png", "diffuse"));
-        material.textures.push_back(new Texture("textures/Concrete_Wall_002_ambient_occlusion.jpg", "specular"));
-        material.textures.push_back(new Texture("textures/Concrete_Wall_002_normal.jpg", "normal"));
-    }
+        material.textures = texConcrete;
 
     // DEBUG
     /*if (solid->name == "TOP_LAYER")
@@ -108,7 +88,14 @@ Mesh::Mesh(const HED::solid* solid)
         
         // Triangulate (apenas as faces com mais de 4 vértices)
         std::vector<CRAB::Triangle> t;
-        if (p.v.size() > 4)
+        if (p.v.size() == 4)
+        {
+            t.push_back(CRAB::Triangle(p.v[3], p.v[0], p.v[1]));
+            t.push_back(CRAB::Triangle(p.v[3], p.v[1], p.v[2]));
+        }
+        else
+            p.triangulate(t);
+        /*if (p.v.size() > 4)
             p.triangulate(t);
         else if (p.v.size() == 4)
         {
@@ -116,7 +103,7 @@ Mesh::Mesh(const HED::solid* solid)
             t.push_back(CRAB::Triangle(p.v[3], p.v[1], p.v[2]));
         }
         else
-            t.push_back(CRAB::Triangle(p.v[0], p.v[1], p.v[2]));
+            t.push_back(CRAB::Triangle(p.v[0], p.v[1], p.v[2]));*/
         
         // MESH
         CRAB::Vector4Df normal_plane = solid->faces[i]->normal();

@@ -12,6 +12,7 @@
 #include "ObjFile.h"
 #include "HalfEdge.h"
 #include "Material.h"
+#include "GlobalTextures.h"
 
 #include <string>
 #include <fstream>

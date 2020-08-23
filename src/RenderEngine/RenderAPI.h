@@ -24,6 +24,7 @@
 #include "DirectionalLight.h"
 #include "Grid.h"
 #include "Skybox.h"
+#include "GlobalTextures.h"
 
 #define EXAMPLE 5
 #define DEBUG 1
@@ -49,13 +50,13 @@ namespace CRAB
     // projection matrix
     glm::mat4 projection = glm::mat4(1.0f);
 
+    // lighting
+    DirectionalLight mainLight({ 0.9f, 0.9f, 0.9f }, camera.LookAt);
+    //DirectionalLight mainLight({ 1.0f, 1.0f, 1.0f }, { -1.0f, -1.0f, -1.0f });
+    
     // timing
     float deltaTime = 0.0f;
     float lastFrame = 0.0f;
-
-    // lighting
-    //DirectionalLight mainLight({ 0.9f, 0.9f, 0.9f }, camera.LookAt);
-    DirectionalLight mainLight({ 1.0f, 1.0f, 1.0f }, { -1.0f, -1.0f, -1.0f });
 
     // mouse event handlers
     int TheKeyState = GLFW_KEY_LEFT_CONTROL;
@@ -151,6 +152,15 @@ namespace CRAB
            "skybox/clouds/back.jpg"         // back
         };
         Skybox skybox(faces2);
+
+        // load textures
+        // -------------
+        texPavement.push_back(new Texture("textures/half_pavement_diffuse.jpg", "diffuse"));
+        texPavement.push_back(new Texture("textures/half_pavement_roughness.jpg", "specular"));
+        texPavement.push_back(new Texture("textures/half_pavement_normal.jpg", "normal"));
+        texConcrete.push_back(new Texture("textures/concrete_diffuse.png", "diffuse"));
+        texConcrete.push_back(new Texture("textures/concrete_specular.png", "specular"));
+        texConcrete.push_back(new Texture("textures/concrete_normal.png", "normal"));
 
         // shader configuration
         // --------------------
@@ -298,11 +308,11 @@ namespace CRAB
         // road_profile
         road_profile.push_back(new VerSegment(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(500.0f, 0.0f, 0.0f)));
         // alignment
-        alignments.push_back(new Alignment("Pista_1", road_plan, road_profile));
+        alignments.push_back(new Alignment("Pista", road_plan, road_profile));
         // road
-        //roadways.push_back(new Road("Rodovia_1", 8.00f, 40.0f, alignments.back()));
+        roadways.push_back(new Road("Rodovia", 8.00f, 40.0f, alignments.back()));
         // bridge
-        //bridges.push_back(new BoxGirder("Viaduto_1", roadways.back(), 250.0f, 5.5f, 60.0f));
+        bridges.push_back(new BoxGirder("Viaduto_1", roadways.back(), 250.0f/*, 5.5f*/, 60.0f));
 #endif
 
         /* CASO 2: Overpass */
@@ -458,22 +468,18 @@ namespace CRAB
         // road_profile
         road_profile.push_back(new VerSegment(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(556.44f, 0.0f, 0.0f)));
         // alignment
-        alignments.push_back(new Alignment("Pista_1", road_plan, road_profile));
+        alignments.push_back(new Alignment("Pista", road_plan, road_profile));
         // road
         roadways.push_back(new Road("INDIANA", 8.00f, 50.0f, alignments.back()));
         // bridge
-        bridges.push_back(new BoxGirder("Viaduto_1", roadways.back(), 370.0, 5.0f, 75.0f));
+        bridges.push_back(new BoxGirder("Interchange", roadways.back(), 370.0/*, 5.0f*/, 75.0f));
 #endif
 
         // mesh
         // ----
-        /*std::cout << std::endl;
-        std::cout << "\tPROCESS MESH" << std::endl;
-        std::cout << "\t------------" << std::endl;
-        std::cout << "\t* Bridges" << std::endl;
         for (int i = 0; i < bridges.size(); i++)
             for (int j = 0; j < bridges[i]->model.size(); j++)
-                ourMesh_List.push_back(Mesh(bridges[i]->model[j])); */
+                ourMesh_List.push_back(Mesh(bridges[i]->model[j]));
        /* std::cout << "\t* Roads" << std::endl;
         for (int i = 0; i < roadways.size(); i++)
             for (int j = 0; j < roadways[i]->model.size(); j++)
@@ -545,7 +551,7 @@ namespace CRAB
             // light properties
             // ----------------
             // directional light
-            //mainLight.direction = camera.LookAt;
+            mainLight.direction = camera.LookAt;
             ourShader.setDirLight(mainLight);
 
             // view/projection transformations
