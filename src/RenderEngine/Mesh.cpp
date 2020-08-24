@@ -59,6 +59,18 @@ Mesh::Mesh(const HED::solid* solid)
         material.textures = texPavement;
     else
         material.textures = texConcrete;
+    /*if (solid->name == "TOP_LAYER")
+    {
+        material.textures.push_back(new Texture("textures/half_pavement_diffuse.jpg", "diffuse"));
+        material.textures.push_back(new Texture("textures/half_pavement_roughness.jpg", "specular"));
+        material.textures.push_back(new Texture("textures/half_pavement_normal.jpg", "normal"));
+    }
+    else
+    {
+        material.textures.push_back(new Texture("textures/Concrete_Wall_002_height.png", "diffuse"));
+        material.textures.push_back(new Texture("textures/Concrete_Wall_002_ambient_occlusion.jpg", "specular"));
+        material.textures.push_back(new Texture("textures/Concrete_Wall_002_normal.jpg", "normal"));
+    }*/
 
     // DEBUG
     /*if (solid->name == "TOP_LAYER")

@@ -20,7 +20,7 @@ const float INCLINATION_RATIO = 0.25f;
 
 struct Pier
 {
-	float b, h, L, station;
+	float b, h, L, station, ang, depth;
 	CRAB::Vector4Df base, dir;
 };
 
@@ -65,6 +65,7 @@ public:
 	virtual void SetupSection() = 0;
 	virtual void SetupPiers(const int& nPiers) = 0;
 	virtual void UpdatePiers() = 0;
+	virtual void AddPier() = 0;
 	virtual void Update() = 0;
 
 	// RETURN SECTION PARAMETERS

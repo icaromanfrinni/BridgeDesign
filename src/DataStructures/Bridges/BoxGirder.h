@@ -31,6 +31,7 @@ public:
 	void SetupSection();
 	void SetupPiers(const int& nPiers);
 	void UpdatePiers();
+	void AddPier();
 	void Update();
 
 	// RETURN SECTION PARAMETERS

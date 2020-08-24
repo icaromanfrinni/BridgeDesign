@@ -112,16 +112,35 @@ void BoxGirder::SetupPiers(const int& nPiers)
 		P.b = b_Pier;
 		P.h = h_Pier;
 		P.station = station;
+		P.ang = 0.0f;
 		P.dir = this->alignment->getTangentFromStation(P.station);
 		P.base = this->road->alignment->getPositionFromStation(P.station);
 		if (P.base.y > this->EL)
 			P.base.y = this->EL;
-		P.base.y -= 0.50f; // topo do bloco
+		P.depth = 0.50f;
+		P.base.y -= P.depth; // topo do bloco
 		CRAB::Vector4Df top = this->alignment->getPositionFromStation(P.station);
 		P.L = (top - P.base).length() - this->H;
 		piers.push_back(P);
 		station += span;
 	}
+}
+void BoxGirder::AddPier()
+{
+	Pier P;
+	P.b = 0.6f * this->b;
+	P.h = 0.5f * P.b;
+	P.station = this->alignment->profile.front()->getStart4DPoint().x + this->alignment->getProfileLength() / 2.0f;
+	P.ang = 0.0f;
+	P.dir = this->alignment->getTangentFromStation(P.station);
+	P.base = this->road->alignment->getPositionFromStation(P.station);
+	if (P.base.y > this->EL)
+		P.base.y = this->EL;
+	P.depth = 0.50f;
+	P.base.y -= P.depth; // topo do bloco
+	CRAB::Vector4Df top = this->alignment->getPositionFromStation(P.station);
+	P.L = (top - P.base).length() - this->H;
+	piers.push_back(P);
 }
 
 // UPDATE THE MODEL
@@ -130,12 +149,12 @@ void BoxGirder::UpdatePiers()
 {
 	for (int i = 0; i < this->piers.size(); i++)
 	{
-		this->piers[i].dir = this->alignment->getTangentFromStation(this->piers[i].station);
+		this->piers[i].dir = CRAB::rotateY(this->piers[i].ang) * this->alignment->getTangentFromStation(this->piers[i].station);
 		this->piers[i].base = this->alignment->getPositionFromStation(this->piers[i].station);
 
 		if (this->piers[i].base.y > this->EL)
 			this->piers[i].base.y = this->EL;
-		this->piers[i].base.y -= 0.50f; // topo do bloco
+		this->piers[i].base.y -= this->piers[i].depth; // topo do bloco
 		CRAB::Vector4Df top = this->alignment->getPositionFromStation(this->piers[i].station);
 		this->piers[i].L = (top - this->piers[i].base).length() - this->H;
 	}

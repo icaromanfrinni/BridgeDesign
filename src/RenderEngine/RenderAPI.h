@@ -51,8 +51,8 @@ namespace CRAB
     glm::mat4 projection = glm::mat4(1.0f);
 
     // lighting
-    DirectionalLight mainLight({ 0.9f, 0.9f, 0.9f }, camera.LookAt);
-    //DirectionalLight mainLight({ 1.0f, 1.0f, 1.0f }, { -1.0f, -1.0f, -1.0f });
+    //DirectionalLight mainLight({ 0.9f, 0.9f, 0.9f }, camera.LookAt);
+    DirectionalLight mainLight({ 1.0f, 1.0f, 1.0f }, { -1.0f, -1.0f, -1.0f });
     
     // timing
     float deltaTime = 0.0f;
@@ -158,9 +158,10 @@ namespace CRAB
         texPavement.push_back(new Texture("textures/half_pavement_diffuse.jpg", "diffuse"));
         texPavement.push_back(new Texture("textures/half_pavement_roughness.jpg", "specular"));
         texPavement.push_back(new Texture("textures/half_pavement_normal.jpg", "normal"));
-        texConcrete.push_back(new Texture("textures/concrete_diffuse.png", "diffuse"));
-        texConcrete.push_back(new Texture("textures/concrete_specular.png", "specular"));
-        texConcrete.push_back(new Texture("textures/concrete_normal.png", "normal"));
+        
+        texConcrete.push_back(new Texture("textures/Concrete_009_COLOR.jpg", "diffuse"));
+        texConcrete.push_back(new Texture("textures/Concrete_009_OCC.jpg", "specular"));
+        texConcrete.push_back(new Texture("textures/Concrete_009_NORM.jpg", "normal"));
 
         // shader configuration
         // --------------------
@@ -551,7 +552,7 @@ namespace CRAB
             // light properties
             // ----------------
             // directional light
-            mainLight.direction = camera.LookAt;
+            //mainLight.direction = camera.LookAt;
             ourShader.setDirLight(mainLight);
 
             // view/projection transformations

@@ -775,7 +775,7 @@ namespace Controller
 				static std::string CurrentPierName = " ";
 				static int CurrentPier = -1;
 
-				ImGui::SetNextItemWidth(210);
+				ImGui::SetNextItemWidth(125); //210
 				if (ImGui::BeginCombo("Pier", CurrentPierName.c_str())) {
 					for (int i = 0; i < bridges[CurrentBridge]->piers.size(); i++) {
 						std::string pierLabel = "P" + std::to_string(i + 1);
@@ -788,8 +788,21 @@ namespace Controller
 				}
 				ImGui::PopID();
 
+				ImGui::SameLine();
+				if (ImGui::Button(" Add ")) {
+					// apenas aumentando o tamanho do vetor
+					//bridges[CurrentBridge]->piers.resize(bridges[CurrentBridge]->piers.size() + 1);
+					// ou adicionando um pilar novo no meio
+					bridges[CurrentBridge]->AddPier();
+				}
+				ImGui::SameLine();
+				if (ImGui::Button(" Del ")) {
+					std::vector<Pier>::iterator it = bridges[CurrentBridge]->piers.begin() + CurrentPier;
+					bridges[CurrentBridge]->piers.erase(it);
+				}
+
 				ImGui::Columns(2, NULL, false);
-				ImGui::SetColumnWidth(0, 160.0f);
+				ImGui::SetColumnWidth(0, 130.0f); //160.0f
 
 				if (CurrentPier >= 0)
 				{
@@ -815,14 +828,36 @@ namespace Controller
 					ImGui::NextColumn();
 					ImGui::PopID();
 
-					// PIER STATION
+					// PIER DIRECTION
 
 					ImGui::PushID(905);
+					ImGui::AlignTextToFramePadding();
+					ImGui::Text("Direction");
+					ImGui::NextColumn();
+					ImGui::SetNextItemWidth(80);
+					ImGui::DragFloat("degrees", &bridges[CurrentBridge]->piers[CurrentPier].ang, 0.01f, 0.0f, 360.0f, "%.2f");
+					ImGui::NextColumn();
+					ImGui::PopID();
+
+					// PIER STATION
+
+					ImGui::PushID(906);
 					ImGui::AlignTextToFramePadding();
 					ImGui::Text("Station");
 					ImGui::NextColumn();
 					ImGui::SetNextItemWidth(80);
 					ImGui::DragFloat("m", &bridges[CurrentBridge]->piers[CurrentPier].station, 0.01f, -1000.0f, 1000.0f, "%.2f");
+					ImGui::NextColumn();
+					ImGui::PopID();
+
+					// PIER DEPTH
+
+					ImGui::PushID(907);
+					ImGui::AlignTextToFramePadding();
+					ImGui::Text("Depth");
+					ImGui::NextColumn();
+					ImGui::SetNextItemWidth(80);
+					ImGui::DragFloat("m", &bridges[CurrentBridge]->piers[CurrentPier].depth, 0.01f, -100.0f, 100.0f, "%.2f");
 					ImGui::NextColumn();
 					ImGui::PopID();
 				}
@@ -837,7 +872,7 @@ namespace Controller
 					ourMesh_List.clear(); //TODO: apagar apenas os modelos da ponte corrente
 					for (int i = 0; i < bridges[CurrentBridge]->model.size(); i++)
 						ourMesh_List.push_back(Mesh(bridges[CurrentBridge]->model[i]));
-					show_edit_bridge_columns = false;
+					//show_edit_bridge_columns = false;
 				}
 				ImGui::SameLine(205);
 				if (ImGui::Button(" Cancel "))
