@@ -1,5 +1,4 @@
 #pragma once
-
 #ifndef ALIGNMENT_H
 #define ALIGNMENT_H
 
@@ -35,7 +34,10 @@ public:
 	// RETURN
 	CRAB::Vector4Df getPosition(const float& t) const;
 	CRAB::Vector4Df getTangent(const float& t) const;
-	CRAB::Vector4Df getNormalUp(const float& t, const float& V) const;
+	CRAB::Vector4Df getNormalUp(const float& t/*, const float& V*/) const;
+	bool isClockwise(const float& t) const;
+	float getCurvature(const float& t) const;
+	float getRadius(const float& t) const;
 
 	// RETURNS THE LENGTH OF VERTICAL ALIGNMENT
 	float getProfileLength() const;

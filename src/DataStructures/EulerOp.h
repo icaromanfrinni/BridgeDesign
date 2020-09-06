@@ -1,6 +1,7 @@
 #pragma once
 #include "HalfEdge.h"
 #include "Linear_Algebra.h"
+#include "BoxGirder.h"
 
 namespace EulerOp
 {
@@ -449,7 +450,8 @@ namespace EulerOp
 	// SWEEP
 	// f = face q sofre a varredura
 	// path = curva parametrizada
-	inline void SWEEP(HED::face* f, Alignment* path, const float& V)
+	//inline void SWEEP(HED::face* f, Alignment* path, Road* roadway)
+	inline void SWEEP(HED::face* f, BoxGirder* bridge)
 	{
 		// Get Solid
 		HED::solid* currentSolid = f->HedSolid;
@@ -461,12 +463,12 @@ namespace EulerOp
 			// CURRENT POSITION
 			float t = float(i) / ELEMENTS;
 			// Local View
-			CRAB::Matrix4 ViewMatrix = toLocal(path->getPosition(t), path->getTangent(t), path->getNormalUp(t, V));
+			CRAB::Matrix4 ViewMatrix = toLocal(bridge->alignment->getPosition(t), bridge->alignment->getTangent(t), bridge->getNormal(t));
 
 			// NEXT POSITION
 			t = float(i + 1) / ELEMENTS;
 			// Next View
-			CRAB::Matrix4 ModelMatrix = toWorld(path->getPosition(t), path->getTangent(t), path->getNormalUp(t, V));
+			CRAB::Matrix4 ModelMatrix = toWorld(bridge->alignment->getPosition(t), bridge->alignment->getTangent(t), bridge->getNormal(t));
 
 			/* ---------------- EXTRUDE ---------------- */
 

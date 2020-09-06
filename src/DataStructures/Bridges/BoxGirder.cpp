@@ -166,16 +166,13 @@ void BoxGirder::Update()
 	CRAB::Vector4Df newVertex, next_position, start_point;
 	float offset; // displacement
 	float segment_L; // the length of the line segment
-	float t = 0.0f; // [0, 1]
 
 	// POLYGON FACE (GL_TRIANGLE_FAN)
 	// ------------------------------
 
 	// Local axis
-	//CRAB::Vector4Df vRight = cross(alignment.getTangent(t), { 0.0f, 1.0f, 0.0f, 0.0f }).to_unitary();
-	//CRAB::Vector4Df vUp = cross(vRight, alignment.getTangent(t)).to_unitary();
-	CRAB::Vector4Df vUp = alignment->getNormalUp(t, road->speed);
-	CRAB::Vector4Df vRight = cross(alignment->getTangent(t), vUp).to_unitary();
+	CRAB::Vector4Df vUp = this->getNormal(0.0f);
+	CRAB::Vector4Df vRight = cross(this->alignment->getTangent(0.0f), vUp).to_unitary();
 
 #pragma region TOP_LAYER
 	// v0
@@ -199,7 +196,7 @@ void BoxGirder::Update()
 	EulerOp::mef(model.back()->halfEdges[0], model.back()->halfEdges[7], 0);
 
 	// SWEEP
-	EulerOp::SWEEP(model.back()->faces.front(), alignment, road->speed);
+	EulerOp::SWEEP(model.back()->faces.front(), this);
 #pragma endregion TOP_LAYER
 
 #pragma region DECK
@@ -290,17 +287,11 @@ void BoxGirder::Update()
 	EulerOp::mef(model.back()->halfEdges[0], model.back()->halfEdges[43], 0);
 
 	// SWEEP
-	EulerOp::SWEEP(model.back()->faces.front(), alignment, road->speed);
+	EulerOp::SWEEP(model.back()->faces.front(), this);
 
 #pragma endregion DECK
 
 #pragma region U_SECTION
-	// UPDATE Local axis
-	t = 0.0f;
-	//vRight = cross(alignment.getTangent(t), { 0.0f, 1.0f, 0.0f, 0.0f }).to_unitary();
-	//vUp = cross(vRight, alignment.getTangent(t)).to_unitary();
-	vUp = alignment->getNormalUp(t, road->speed);
-	vRight = cross(alignment->getTangent(t), vUp).to_unitary();
 	// OFFSET
 	offset = (B / 2.0f - GUARD_RAIL) * SLOPE + H + TOP_LAYER;
 	// v0
@@ -343,7 +334,7 @@ void BoxGirder::Update()
 	EulerOp::mef(model.back()->halfEdges[0], model.back()->halfEdges[19], 0);
 
 	// SWEEP
-	EulerOp::SWEEP(model.back()->faces.front(), alignment, road->speed);
+	EulerOp::SWEEP(model.back()->faces.front(), this);
 
 #pragma endregion U_SECTION
 

@@ -124,8 +124,11 @@ CRAB::Vector4Df Alignment::getTangent(const float& t) const
 	glm::vec3 tan = this->path3D.getTangent(t);
 	return CRAB::Vector4Df{ tan.x, tan.y, tan.z, 0.0f };
 }
-CRAB::Vector4Df Alignment::getNormalUp(const float& t, const float& V) const
+CRAB::Vector4Df Alignment::getNormalUp(const float& t/*, const float& V*/) const
 {
+	glm::vec3 glm_n = this->path3D.getNormalUp(t);
+	return CRAB::Vector4Df{ glm_n.x, glm_n.y, glm_n.z, 0.0f };
+	/*
 	// if R = inf
 	glm::vec3 glm_n = this->path3D.getNormalUp(t);
 	CRAB::Vector4Df n = { glm_n.x, glm_n.y, glm_n.z, 0.0f };
@@ -146,7 +149,22 @@ CRAB::Vector4Df Alignment::getNormalUp(const float& t, const float& V) const
 		alfa = alfa * (-1.0f);
 	CRAB::Matrix4 R = CRAB::rotateArbitrary(alfa, this->getTangent(t));
 	return (R * n).to_unitary();
-	
+	*/
+}
+bool Alignment::isClockwise(const float& t) const
+{
+	return this->path2Dh.isClockwise(t);
+}
+float Alignment::getCurvature(const float& t) const
+{
+	return this->path2Dh.getCurvature(t);
+}
+float Alignment::getRadius(const float& t) const
+{
+	float k = this->getCurvature(t);
+	if (k < SMALL_NUMBER)
+		return INFINITY;
+	return 1 / k;
 }
 
 // RETURNS THE LENGTH OF VERTICAL ALIGNMENT

@@ -16,7 +16,7 @@ const float a = 3.4f;	// deceleration rate
 
 class Road
 {
-	//Alignment path3D;
+	// Alignment path3D;
 public:
 	std::string name;
 	Alignment* alignment;
@@ -32,8 +32,8 @@ public:
 	// DESTRUCTOR
 	~Road();
 
-	//MODEL CONSTRUCTOR
-	void update();
+	//// MODEL CONSTRUCTOR
+	//void update();
 };
 
 #endif // ROAD_H

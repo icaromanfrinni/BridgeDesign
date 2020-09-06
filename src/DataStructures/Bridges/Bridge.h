@@ -29,6 +29,8 @@ class Bridge
 	// ALIGNMENTS
 	std::vector<HorSegment*> Horizontal_Alignment();
 	std::vector<VerSegment*> Vertical_Alignment();
+	// SUPERELEVATION
+	float Superelevation(const float& t) const;
 
 public:
 	std::string name;
@@ -60,6 +62,11 @@ public:
 
 	// UPDATE ALL THE PARAMETERS
 	void SetupBridge();
+
+	// GET NORMAL VECTOR WITH SUPERELEVATION
+	CRAB::Vector4Df getNormal(const float& t) const;
+	// WIDENING
+	float Widening(const float& t) const;
 
 	// MODEL CONSTRUCTOR
 	virtual void SetupSection() = 0;

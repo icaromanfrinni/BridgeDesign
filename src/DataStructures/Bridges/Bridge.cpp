@@ -76,6 +76,35 @@ void Bridge::SetupBridge()
 	this->alignment = new Alignment(this->name, this->Horizontal_Alignment(), this->Vertical_Alignment());
 }
 
+// SUPERELEVATION
+// --------------
+float Bridge::Superelevation(const float& t) const
+{
+	float r = this->alignment->getRadius(t);
+	if (isinf(r))
+		return 0.0f;
+	float slope = powf(this->road->speed, 2.0f) / (r * 127.0f); // AASHTO
+	if (slope > SLOPE_MAX)
+		slope = SLOPE_MAX;
+	float alpha = atanf(slope) * 180.0f / M_PI;
+	if (this->alignment->isClockwise(t))
+		alpha = alpha * (-1.0f);
+	return alpha;
+}
+// GET NORMAL VECTOR WITH SUPERELEVATION
+// -------------------------------------
+CRAB::Vector4Df Bridge::getNormal(const float& t) const
+{
+	CRAB::Matrix4 R = CRAB::rotateArbitrary(this->Superelevation(t), this->alignment->getTangent(t));
+	return (R * this->alignment->getNormalUp(t)).to_unitary();
+}
+// WIDENING
+// --------
+float Bridge::Widening(const float& t) const
+{
+
+}
+
 // HORIZONTAL ALIGNMENT
 // --------------------
 std::vector<HorSegment*> Bridge::Horizontal_Alignment()

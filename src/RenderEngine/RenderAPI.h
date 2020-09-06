@@ -26,7 +26,7 @@
 #include "Skybox.h"
 #include "GlobalTextures.h"
 
-#define EXAMPLE 5
+#define EXAMPLE 2
 #define DEBUG 1
 
 namespace CRAB
@@ -52,7 +52,7 @@ namespace CRAB
 
     // lighting
     //DirectionalLight mainLight({ 0.9f, 0.9f, 0.9f }, camera.LookAt);
-    DirectionalLight mainLight({ 1.0f, 1.0f, 1.0f }, { -1.0f, -1.0f, -1.0f });
+    DirectionalLight mainLight({ 0.9f, 0.9f, 0.9f }, { -1.0f, -1.0f, -1.0f });
     
     // timing
     float deltaTime = 0.0f;
@@ -160,7 +160,7 @@ namespace CRAB
         texPavement.push_back(new Texture("textures/half_pavement_normal.jpg", "normal"));
         
         texConcrete.push_back(new Texture("textures/Concrete_009_COLOR.jpg", "diffuse"));
-        texConcrete.push_back(new Texture("textures/Concrete_009_OCC.jpg", "specular"));
+        texConcrete.push_back(new Texture("textures/Concrete_009_DISP.jpg", "specular"));
         texConcrete.push_back(new Texture("textures/Concrete_009_NORM.jpg", "normal"));
 
         // shader configuration
@@ -212,9 +212,9 @@ namespace CRAB
         // alignment
         alignments.push_back(new Alignment("Pista_01", road_plan, profile));
         // road
-        roadways.push_back(new Road("Rodovia_001", 8.00f, 60.0f, alignments.back()));
+        roadways.push_back(new Road("Rodovia_001", 8.00f, 40.0f, alignments.back()));
         // bridge
-        bridges.push_back(new BoxGirder("Rio_Pacoti", roadways.back(), 180.0f, 6.0f, 90.0f));
+        bridges.push_back(new BoxGirder("Rio_Pacoti", roadways.back(), 180.0f/*, 6.0f*/, 90.0f));
 #endif
        
         /* EXEMPLO: Superelevação */
@@ -231,9 +231,9 @@ namespace CRAB
         // alignment
         alignments.push_back(new Alignment("Pista_01", road_plan, profile));
         // road
-        roadways.push_back(new Road("Rodovia_001", 8.00f, 60.0f, alignments.back()));
+        roadways.push_back(new Road("Rodovia_001", 8.00f, 40.0f, alignments.back()));
         // bridge
-        bridges.push_back(new BoxGirder("Rio_Pacoti", roadways.back(), 100.0f, 6.0f, 50.0f));
+        bridges.push_back(new BoxGirder("Rio_Pacoti", roadways.back(), 100.0f/*, 6.0f*/, 50.0f));
 #endif
 
         /* EXEMPLO: Reunião 13 (com cálculo automático do alinhamento vertical) */
@@ -671,7 +671,7 @@ namespace CRAB
             if (walkAround > 1.0f)
                 walkAround = 0.0f;
 
-            CRAB::Vector4Df up = bridges.back()->alignment->getNormalUp(walkAround, bridges.back()->road->speed);
+            CRAB::Vector4Df up = bridges.back()->getNormal(walkAround);
             CRAB::Vector4Df head = bridges.back()->alignment->getPosition(walkAround) + up * 1.50f;
             CRAB::Vector4Df view = head + bridges.back()->alignment->getTangent(walkAround);
             
@@ -686,7 +686,7 @@ namespace CRAB
             if (walkAround < 0.0f)
                 walkAround = 1.0f;
 
-            CRAB::Vector4Df up = bridges.back()->alignment->getNormalUp(walkAround, bridges.back()->road->speed);
+            CRAB::Vector4Df up = bridges.back()->getNormal(walkAround);
             CRAB::Vector4Df head = bridges.back()->alignment->getPosition(walkAround) + up * 1.50f;
             CRAB::Vector4Df view = head + bridges.back()->alignment->getTangent(walkAround);
             camera.Position = glm::vec3(head.x, head.y, head.z);

@@ -304,12 +304,10 @@ float NURBS::getCurvature(const float& t) const
 // -------------------------------
 float NURBS::getRadius(const float& t) const
 {
-	float c = this->getCurvature(t);
-	if (c < SMALL_NUMBER)
-		return 0.0f;
-
-	float r = 1.0f / this->getCurvature(t);
-	return r;
+	float k = this->getCurvature(t);
+	if (k < SMALL_NUMBER)
+		return INFINITY;
+	return 1 / k;
 }
 
 // RETURNS THE LENGTH OF CURVE
