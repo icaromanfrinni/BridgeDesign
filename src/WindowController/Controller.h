@@ -323,7 +323,7 @@ namespace Controller
 		if (show_add_bridge_window)
 		{
 			ImGui::SetNextWindowPos(ImVec2(100, 100), ImGuiCond_Once);
-			ImGui::SetNextWindowSize(ImVec2(275, 150), ImGuiCond_Once);
+			ImGui::SetNextWindowSize(ImVec2(275, 175), ImGuiCond_Once);
 			ImGui::Begin("New Bridge", &show_add_bridge_window, ImGuiWindowFlags_NoResize);   // Pass a pointer to our bool variable (the window will have a closing button that will clear the bool when clicked)
 			
 			ImGui::Columns(2, NULL, false);
@@ -375,9 +375,20 @@ namespace Controller
 			ImGui::NextColumn();
 			ImGui::PopID();
 
-			// HORIZONTAL CLEARANCE
+			// VERTICAL CLEARANCE
 
 			ImGui::PushID(904);
+			ImGui::AlignTextToFramePadding();
+			ImGui::Text("Vertical clearance");
+			ImGui::NextColumn();
+			ImGui::SetNextItemWidth(80);
+			ImGui::DragFloat("m", &v_clearance, 0.01f, 0.00f, 1000.00f, "%.2f");
+			ImGui::NextColumn();
+			ImGui::PopID();
+
+			// HORIZONTAL CLEARANCE
+
+			ImGui::PushID(905);
 			ImGui::AlignTextToFramePadding();
 			ImGui::Text("Horizontal clearance");
 			ImGui::NextColumn();
@@ -391,7 +402,7 @@ namespace Controller
 			ImGui::Separator();
 			ImGui::Columns(1);
 			if (ImGui::Button("   OK   ")) {
-				bridges.push_back(new BoxGirder(bridgeName, roadways[CurrentRoad], cross_station, h_clearance));
+				bridges.push_back(new BoxGirder(bridgeName, roadways[CurrentRoad], cross_station, h_clearance, v_clearance));
 				for (int i = 0; i < bridges.back()->model.size(); i++)
 					ourMesh_List.push_back(Mesh(bridges.back()->model[i]));
 				show_add_bridge_window = false;
@@ -537,8 +548,9 @@ namespace Controller
 					bridges.erase(it);*/
 					ourMesh_List.clear(); //TODO: apagar apenas os modelos da ponte corrente
 					//bridges.push_back(new BoxGirder(CurrentBridgeName, roadways[CurrentRoad], cross_station, h_clearance));
-					for (int i = 0; i < bridges[CurrentBridge]->model.size(); i++)
-						ourMesh_List.push_back(Mesh(bridges.back()->model[i]));
+					for (int i = 0; i < bridges.size(); i++)
+						for (int j = 0; j < bridges[i]->model.size(); j++)
+							ourMesh_List.push_back(Mesh(bridges[i]->model[j]));
 					show_edit_bridge_parameters = false;
 				}
 				ImGui::SameLine(205);

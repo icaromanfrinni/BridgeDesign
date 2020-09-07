@@ -456,6 +456,9 @@ namespace EulerOp
 		// Get Solid
 		HED::solid* currentSolid = f->HedSolid;
 
+		// Init widening
+		float last_w = 0.0f;
+
 		for (int i = 0; i < ELEMENTS; i++)
 		{
 			/* ---------- TRANSFORMATION MATRIX ---------- */
@@ -469,6 +472,12 @@ namespace EulerOp
 			t = float(i + 1) / ELEMENTS;
 			// Next View
 			CRAB::Matrix4 ModelMatrix = toWorld(bridge->alignment->getPosition(t), bridge->alignment->getTangent(t), bridge->getNormal(t));
+			// Widening of Next Position (dW)
+			float next_w = bridge->Widening(t);
+			float dW = next_w - last_w;
+			last_w = next_w;
+			std::cout << "t = " << t << ";\tR = " << bridge->alignment->getRadius(t) << " m;\tw = " << next_w << " m" << std::endl;
+			//dW = 0.0f;
 
 			/* ---------------- EXTRUDE ---------------- */
 
@@ -485,7 +494,13 @@ namespace EulerOp
 				for (he = backFace->hEdge->prev; he != backFace->hEdge; he = he->prev)
 				{
 					// new vertex
-					newVertex = ModelMatrix * (ViewMatrix * he->vStart->point);
+					//newVertex = ModelMatrix * (ViewMatrix * he->vStart->point);
+					newVertex = ViewMatrix * he->vStart->point;
+					if (fabs(newVertex.x) >= bridge->road->width / 2.0f)
+						if (newVertex.x < 0.0f)
+							newVertex.x -= dW;
+						else newVertex.x += dW;
+					newVertex = ModelMatrix * newVertex;
 					// new edge
 					mev(currentSolid->halfEdges.back()->prev, NULL, currentSolid->vertices.back()->id, newVertex);
 					// new face
@@ -507,7 +522,13 @@ namespace EulerOp
 				for (he = f->hEdge->next; he != f->hEdge; he = he->next)
 				{
 					// new vertex
-					newVertex = ModelMatrix * (ViewMatrix * he->vStart->point);
+					//newVertex = ModelMatrix * (ViewMatrix * he->vStart->point);
+					newVertex = ViewMatrix * he->vStart->point;
+					if (fabs(newVertex.x) >= bridge->road->width / 2.0f)
+						if (newVertex.x < 0.0f)
+							newVertex.x -= dW;
+						else newVertex.x += dW;
+					newVertex = ModelMatrix * newVertex;
 					// new edge
 					mev(he->prev->opp, he->opp->next, he->vStart->id, newVertex);
 				}

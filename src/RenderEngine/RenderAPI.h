@@ -26,7 +26,7 @@
 #include "Skybox.h"
 #include "GlobalTextures.h"
 
-#define EXAMPLE 2
+#define EXAMPLE 4
 #define DEBUG 1
 
 namespace CRAB
@@ -160,7 +160,7 @@ namespace CRAB
         texPavement.push_back(new Texture("textures/half_pavement_normal.jpg", "normal"));
         
         texConcrete.push_back(new Texture("textures/Concrete_009_COLOR.jpg", "diffuse"));
-        texConcrete.push_back(new Texture("textures/Concrete_009_DISP.jpg", "specular"));
+        texConcrete.push_back(new Texture("textures/Concrete_009_DISP.png", "specular"));
         texConcrete.push_back(new Texture("textures/Concrete_009_NORM.jpg", "normal"));
 
         // shader configuration
@@ -278,7 +278,7 @@ namespace CRAB
         // road
         roadways.push_back(new Road("Av_Eng_Santana_Jr", 7.00f, 60.0f, alignments.back()));
         // bridge
-        bridges.push_back(new BoxGirder("Viaduto_1", roadways.back(), 330.0f, 5.5f, 56.0f));
+        bridges.push_back(new BoxGirder("Viaduto_1", roadways.back(), 330.0f, 5.50f, 56.0f));
 
         /* ----------------- Viaduto 2 ----------------- */
         road_plan.clear();
@@ -474,6 +474,26 @@ namespace CRAB
         roadways.push_back(new Road("INDIANA", 8.00f, 50.0f, alignments.back()));
         // bridge
         bridges.push_back(new BoxGirder("Interchange", roadways.back(), 370.0/*, 5.0f*/, 75.0f));
+#endif
+
+        /* WIDENING */
+#if EXAMPLE == 13
+        std::vector<HorSegment*> road_plan;
+        std::vector<VerSegment*> road_profile;
+        // road_plan
+        road_plan.push_back(new HorSegment(glm::vec3(0.0f, 0.0f, -100.0f), glm::vec3(0.0f, 0.0f, 0.0f)));
+        road_plan.push_back(new HorSegment(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 10.0f)));
+        road_plan.push_back(new HorSegment(glm::vec3(0.0f, 0.0f, 10.0f), glm::vec3(0.0f, 0.0f, 24.47f), glm::vec3(7.24f, 0.0f, 37.0f)));
+        road_plan.push_back(new HorSegment(glm::vec3(7.24f, 0.0f, 37.0f), glm::vec3(12.24f, 0.0f, 45.66f)));
+        road_plan.push_back(new HorSegment(glm::vec3(12.24f, 0.0f, 45.66f), glm::vec3(62.24f, 0.0f, 132.26f)));
+        // road_profile
+        road_profile.push_back(new VerSegment(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(50.0f, 0.0f, 0.0f)));
+        // alignment
+        alignments.push_back(new Alignment("eixo", road_plan, road_profile));
+        // road
+        roadways.push_back(new Road("rodovia", 8.00f, 40.0f, alignments.back()));
+        // bridge
+        bridges.push_back(new BoxGirder("ponte", roadways.back(), 124.14f, 50.0f));
 #endif
 
         // mesh
