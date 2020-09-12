@@ -15,3 +15,5 @@ extern std::vector<Bridge*> bridges;
 extern std::vector<Road*> roadways;
 // List of Alignments
 extern std::vector<Alignment*> alignments;
+// List of Vehicles
+extern std::vector<Vehicle*> vehicles;

@@ -26,7 +26,7 @@
 #include "Skybox.h"
 #include "GlobalTextures.h"
 
-#define EXAMPLE 4
+#define EXAMPLE 5
 #define DEBUG 1
 
 namespace CRAB
@@ -177,6 +177,10 @@ namespace CRAB
         // -----------
         auto t1 = std::chrono::high_resolution_clock::now();
 
+        // load vehicles
+        // -------------
+        vehicles.push_back(new Vehicle("Default", 1.5f, 2.5f));
+
         // load models
         // -----------
         std::cout << std::endl;
@@ -311,7 +315,7 @@ namespace CRAB
         // alignment
         alignments.push_back(new Alignment("Pista", road_plan, road_profile));
         // road
-        roadways.push_back(new Road("Rodovia", 8.00f, 40.0f, alignments.back()));
+        roadways.push_back(new Road("Rodovia", 8.00f, 40.0f, alignments.back(), vehicles.back()));
         // bridge
         bridges.push_back(new BoxGirder("Viaduto_1", roadways.back(), 250.0f/*, 5.5f*/, 60.0f));
 #endif

@@ -50,11 +50,11 @@ public:
 	// DEFAULT CONSTRUCTOR
 	Bridge();
 	// OVERLOAD CONSTRUCTOR (Viaduct)
-	Bridge(const std::string& _name, Road* _road, const float& cross_station, const float& vertical_clearance, const float& horizontal_clearance);
+	Bridge(const std::string& _name, Road* _road, const float& cross_station/*, const float& vertical_clearance*/, const float& horizontal_clearance);
 	// OVERLOAD CONSTRUCTOR (Overpass)
-	Bridge(const std::string& _name, Road* _road, const float& cross_station, const float& vertical_clearance, const float& horizontal_clearance, const float& elevation_level);
+	Bridge(const std::string& _name, Road* _road, const float& cross_station/*, const float& vertical_clearance*/, const float& horizontal_clearance, const float& elevation_level);
 	// OVERLOAD CONSTRUCTOR (Bridge)
-	Bridge(const std::string& _name, Road* _road, const float& cross_station, const float& vertical_clearance, const float& horizontal_clearance, const float& elevation_level, const float& water_surface);
+	Bridge(const std::string& _name, Road* _road, const float& cross_station/*, const float& vertical_clearance*/, const float& horizontal_clearance, const float& elevation_level, const float& water_surface);
 	// DESTRUCTOR
 	virtual ~Bridge() = 0;
 

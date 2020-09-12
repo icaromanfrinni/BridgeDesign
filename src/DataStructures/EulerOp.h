@@ -476,7 +476,7 @@ namespace EulerOp
 			float next_w = bridge->Widening(t);
 			float dW = next_w - last_w;
 			last_w = next_w;
-			std::cout << "t = " << t << ";\tR = " << bridge->alignment->getRadius(t) << " m;\tw = " << next_w << " m" << std::endl;
+			//std::cout << "t = " << t << ";\tR = " << bridge->alignment->getRadius(t) << " m;\tw = " << next_w << " m" << std::endl;
 			//dW = 0.0f;
 
 			/* ---------------- EXTRUDE ---------------- */

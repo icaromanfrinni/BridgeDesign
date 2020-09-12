@@ -129,6 +129,9 @@
     <ClInclude Include="src\WindowController\GlobalTextures.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\DataStructures\Vehicle\Vehicle.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\RenderEngine\Camera.cpp">
@@ -225,6 +228,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\WindowController\GlobalTextures.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\DataStructures\Vehicle\Vehicle.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

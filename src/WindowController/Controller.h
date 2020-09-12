@@ -126,7 +126,7 @@ namespace Controller
 			}
 			if (ImGui::BeginMenu("Road"))
 			{
-				if (ImGui::MenuItem("Alignment"))
+				if (ImGui::MenuItem("Alignment", NULL, false, false))
 				{
 					/*if (show_alignment_editor)
 						show_alignment_editor = false;
@@ -142,7 +142,7 @@ namespace Controller
 						dSpeed = 40.0f;
 					}
 				}
-				if (ImGui::MenuItem("Edit Road"))
+				if (ImGui::MenuItem("Edit Road", NULL, false, false))
 				{
 					/*if (show_section_data_window)
 						show_section_data_window = false;
@@ -239,7 +239,7 @@ namespace Controller
 		if (show_add_road_window)
 		{
 			ImGui::SetNextWindowPos(ImVec2(100, 100), ImGuiCond_Once);
-			ImGui::SetNextWindowSize(ImVec2(235, 150), ImGuiCond_Once);
+			ImGui::SetNextWindowSize(ImVec2(235, 175), ImGuiCond_Once);
 			ImGui::Begin("New Road", &show_add_road_window, ImGuiWindowFlags_NoResize);   // Pass a pointer to our bool variable (the window will have a closing button that will clear the bool when clicked)
 
 			ImGui::Columns(2, NULL, false);
@@ -302,12 +302,36 @@ namespace Controller
 			ImGui::NextColumn();
 			ImGui::PopID();
 
+			// VEHICLE
+
+			ImGui::PushID(905);
+			ImGui::AlignTextToFramePadding();
+			ImGui::Text("Default vehicle");
+			ImGui::NextColumn();
+
+			static bool* selectedVehicle = new bool[vehicles.size()];
+			static std::string CurrentVehicleName = " ";
+			static int CurrentVehicle;
+
+			ImGui::SetNextItemWidth(100);
+			if (ImGui::BeginCombo("", CurrentVehicleName.c_str())) {
+				for (int i = 0; i < vehicles.size(); i++) {
+					if (ImGui::Selectable(vehicles[i]->name.c_str(), &selectedVehicle[i], ImGuiSelectableFlags_::ImGuiSelectableFlags_None)) {
+						CurrentVehicleName = vehicles[i]->name.c_str();
+						CurrentVehicle = i;
+					}
+				}
+				ImGui::EndCombo();
+			}
+			ImGui::NextColumn();
+			ImGui::PopID();
+
 			// BUTTONS
 
 			ImGui::Separator();
 			ImGui::Columns(1);
 			if (ImGui::Button("   OK   ")) {
-				roadways.push_back(new Road(roadName, roadWidth, dSpeed, alignments[CurrentAlignment]));
+				roadways.push_back(new Road(roadName, roadWidth, dSpeed, alignments[CurrentAlignment], vehicles[CurrentVehicle]));
 				show_add_road_window = false;
 			}
 			ImGui::SameLine(165);
@@ -323,7 +347,7 @@ namespace Controller
 		if (show_add_bridge_window)
 		{
 			ImGui::SetNextWindowPos(ImVec2(100, 100), ImGuiCond_Once);
-			ImGui::SetNextWindowSize(ImVec2(275, 175), ImGuiCond_Once);
+			ImGui::SetNextWindowSize(ImVec2(275, 150), ImGuiCond_Once);
 			ImGui::Begin("New Bridge", &show_add_bridge_window, ImGuiWindowFlags_NoResize);   // Pass a pointer to our bool variable (the window will have a closing button that will clear the bool when clicked)
 			
 			ImGui::Columns(2, NULL, false);
@@ -375,20 +399,9 @@ namespace Controller
 			ImGui::NextColumn();
 			ImGui::PopID();
 
-			// VERTICAL CLEARANCE
-
-			ImGui::PushID(904);
-			ImGui::AlignTextToFramePadding();
-			ImGui::Text("Vertical clearance");
-			ImGui::NextColumn();
-			ImGui::SetNextItemWidth(80);
-			ImGui::DragFloat("m", &v_clearance, 0.01f, 0.00f, 1000.00f, "%.2f");
-			ImGui::NextColumn();
-			ImGui::PopID();
-
 			// HORIZONTAL CLEARANCE
 
-			ImGui::PushID(905);
+			ImGui::PushID(904);
 			ImGui::AlignTextToFramePadding();
 			ImGui::Text("Horizontal clearance");
 			ImGui::NextColumn();
@@ -402,7 +415,7 @@ namespace Controller
 			ImGui::Separator();
 			ImGui::Columns(1);
 			if (ImGui::Button("   OK   ")) {
-				bridges.push_back(new BoxGirder(bridgeName, roadways[CurrentRoad], cross_station, h_clearance, v_clearance));
+				bridges.push_back(new BoxGirder(bridgeName, roadways[CurrentRoad], cross_station, h_clearance));
 				for (int i = 0; i < bridges.back()->model.size(); i++)
 					ourMesh_List.push_back(Mesh(bridges.back()->model[i]));
 				show_add_bridge_window = false;

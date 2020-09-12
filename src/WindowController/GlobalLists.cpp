@@ -10,3 +10,5 @@ std::vector<Bridge*> bridges;
 std::vector<Road*> roadways;
 // List of Alignments
 std::vector<Alignment*> alignments;
+// List of Vehicles
+std::vector<Vehicle*> vehicles;

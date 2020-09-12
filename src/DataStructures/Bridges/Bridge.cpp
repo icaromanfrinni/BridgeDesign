@@ -8,12 +8,12 @@ Bridge::Bridge()
 
 // OVERLOAD CONSTRUCTOR (Viaduct)
 // ------------------------------
-Bridge::Bridge(const std::string& _name, Road* _road, const float& cross_station, const float& vertical_clearance, const float& horizontal_clearance)
-	: name(_name), road(_road), CS(cross_station), VC(vertical_clearance), HC(horizontal_clearance)
+Bridge::Bridge(const std::string& _name, Road* _road, const float& cross_station/*, const float& vertical_clearance*/, const float& horizontal_clearance)
+	: name(_name), road(_road), CS(cross_station)/*, VC(vertical_clearance)*/, HC(horizontal_clearance)
 {
 	// General attributes
 	this->mainSpan = main_span;
-	//this->VC = v_clearance;
+	this->VC = v_clearance;
 
 	// Viaduct
 	int index = this->road->alignment->findSegment(this->CS);
@@ -27,12 +27,12 @@ Bridge::Bridge(const std::string& _name, Road* _road, const float& cross_station
 }
 // OVERLOAD CONSTRUCTOR (Overpass)
 // -------------------------------
-Bridge::Bridge(const std::string& _name, Road* _road, const float& cross_station, const float& vertical_clearance, const float& horizontal_clearance, const float& elevation_level)
-	: name(_name), road(_road), CS(cross_station), VC(vertical_clearance), HC(horizontal_clearance), EL(elevation_level)
+Bridge::Bridge(const std::string& _name, Road* _road, const float& cross_station/*, const float& vertical_clearance*/, const float& horizontal_clearance, const float& elevation_level)
+	: name(_name), road(_road), CS(cross_station)/*, VC(vertical_clearance)*/, HC(horizontal_clearance), EL(elevation_level)
 {
 	// General attributes
 	this->mainSpan = main_span;
-	//this->VC = v_clearance;
+	this->VC = v_clearance;
 
 	// Overpass
 	this->WS = this->EL;
@@ -44,12 +44,12 @@ Bridge::Bridge(const std::string& _name, Road* _road, const float& cross_station
 }
 // OVERLOAD CONSTRUCTOR (Bridge)
 // -----------------------------
-Bridge::Bridge(const std::string& _name, Road* _road, const float& cross_station, const float& vertical_clearance, const float& horizontal_clearance, const float& elevation_level, const float& water_surface)
-	: name(_name), road(_road), CS(cross_station), VC(vertical_clearance), HC(horizontal_clearance), EL(elevation_level), WS(water_surface)
+Bridge::Bridge(const std::string& _name, Road* _road, const float& cross_station/*, const float& vertical_clearance*/, const float& horizontal_clearance, const float& elevation_level, const float& water_surface)
+	: name(_name), road(_road), CS(cross_station)/*, VC(vertical_clearance)*/, HC(horizontal_clearance), EL(elevation_level), WS(water_surface)
 {
 	// General attributes
 	this->mainSpan = main_span;
-	//this->VC = v_clearance;
+	this->VC = v_clearance;
 
 	// Preliminary calculations
 	this->SetupBridge();
@@ -108,9 +108,9 @@ float Bridge::Widening(const float& t) const
 		return 0.0f;
 	/* TRAVELED WAY ON CURVE */
 	// Track width on curve (U)
-	float U = radius - sqrtf(powf(radius, 2.0f) - powf(wheelbase, 2.0f));
+	float U = radius - sqrtf(powf(radius, 2.0f) - powf(this->road->vehicle->wheelbase, 2.0f));
 	// Width of the front overhang (Fa)
-	float Fa = sqrtf(powf(radius, 2.0f) + front_overhang * (2.0f * wheelbase + front_overhang)) - radius;
+	float Fa = sqrtf(powf(radius, 2.0f) + this->road->vehicle->front_overhang * (2.0f * this->road->vehicle->wheelbase + this->road->vehicle->front_overhang)) - radius;
 	// Extra width (Z)
 	float Z = 0.1f * this->road->speed / sqrtf(radius);
 	// Widening of traveled way on curve (w)
@@ -161,10 +161,10 @@ std::vector<VerSegment*> Bridge::Vertical_Alignment()
 
 	// Algebraic difference in grades (%)
 	float A;
-	if (this->road->S < Lc)
-		A = Lc * 100 * (powf(sqrtf(2 * h1) + sqrtf(2 * h2), 2.0f)) / powf(this->road->S, 2.0f);
+	if (this->road->StoppingSightDistance() < Lc)
+		A = Lc * 100 * (powf(sqrtf(2 * h1) + sqrtf(2 * h2), 2.0f)) / powf(this->road->StoppingSightDistance(), 2.0f);
 	else
-		A = (200 * powf(sqrtf(h1) + sqrtf(h2), 2.0f)) / (2.0f * this->road->S - Lc);
+		A = (200 * powf(sqrtf(h1) + sqrtf(h2), 2.0f)) / (2.0f * this->road->StoppingSightDistance() - Lc);
 	
 	// Round up
 	A = ceilf(A);
@@ -200,7 +200,7 @@ std::vector<VerSegment*> Bridge::Vertical_Alignment()
 	//// ********************************** SAG VERTICAL CURVE **********************************
 
 	// Length of sag vertical curve (S > L)
-	float Ls = 2 * this->road->S - ((120 + 3.5 * this->road->S) / (A / 2));
+	float Ls = 2 * this->road->StoppingSightDistance() - ((120 + 3.5 * this->road->StoppingSightDistance()) / (A / 2));
 	Ls = int(round(Ls / 5)) * 5;
 	// Minimun length of vertical curve (0.6 Vp)
 	float Lmin = 0.60f * this->road->speed;
