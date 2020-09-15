@@ -107,10 +107,13 @@ float Bridge::Widening(const float& t) const
 	if (isinf(radius))
 		return 0.0f;
 	/* TRAVELED WAY ON CURVE */
+	float sumL = 0.0f;
+	for (int i = 0; i < this->road->vehicle->L.size(); i++)
+		sumL += this->road->vehicle->L[i];
 	// Track width on curve (U)
-	float U = radius - sqrtf(powf(radius, 2.0f) - powf(this->road->vehicle->wheelbase, 2.0f));
+	float U = radius - sqrtf(powf(radius, 2.0f) - powf(sumL, 2.0f));
 	// Width of the front overhang (Fa)
-	float Fa = sqrtf(powf(radius, 2.0f) + this->road->vehicle->front_overhang * (2.0f * this->road->vehicle->wheelbase + this->road->vehicle->front_overhang)) - radius;
+	float Fa = sqrtf(powf(radius, 2.0f) + this->road->vehicle->A * (2.0f * this->road->vehicle->L.front() + this->road->vehicle->A)) - radius;
 	// Extra width (Z)
 	float Z = 0.1f * this->road->speed / sqrtf(radius);
 	// Widening of traveled way on curve (w)

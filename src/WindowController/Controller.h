@@ -16,6 +16,7 @@ namespace Controller
 	static bool show_edit_bridge_section = false;
 	static bool show_edit_bridge_columns = false;
 	static bool show_add_road_window = false;
+	static bool show_edit_road_parameters = false;
     ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
 
     inline void ShowDemo()
@@ -142,11 +143,11 @@ namespace Controller
 						dSpeed = 40.0f;
 					}
 				}
-				if (ImGui::MenuItem("Edit Road", NULL, false, false))
+				if (ImGui::MenuItem("Edit Road"))
 				{
-					/*if (show_section_data_window)
-						show_section_data_window = false;
-					else show_section_data_window = true;*/
+					if (show_edit_road_parameters)
+						show_edit_road_parameters = false;
+					else show_edit_road_parameters = true;
 				}
 				ImGui::EndMenu();
 			}
@@ -239,7 +240,7 @@ namespace Controller
 		if (show_add_road_window)
 		{
 			ImGui::SetNextWindowPos(ImVec2(100, 100), ImGuiCond_Once);
-			ImGui::SetNextWindowSize(ImVec2(235, 175), ImGuiCond_Once);
+			ImGui::SetNextWindowSize(ImVec2(255, 175), ImGuiCond_Once);
 			ImGui::Begin("New Road", &show_add_road_window, ImGuiWindowFlags_NoResize);   // Pass a pointer to our bool variable (the window will have a closing button that will clear the bool when clicked)
 
 			ImGui::Columns(2, NULL, false);
@@ -251,7 +252,7 @@ namespace Controller
 			ImGui::AlignTextToFramePadding();
 			ImGui::Text("Road name");
 			ImGui::NextColumn();
-			ImGui::SetNextItemWidth(100);
+			ImGui::SetNextItemWidth(120);
 			ImGui::InputText("", &roadName, 0, NULL, NULL);
 			ImGui::NextColumn();
 			ImGui::PopID();
@@ -267,7 +268,7 @@ namespace Controller
 			static std::string CurrentAlignmentName = " ";
 			static int CurrentAlignment;
 
-			ImGui::SetNextItemWidth(100);
+			ImGui::SetNextItemWidth(120);
 			if (ImGui::BeginCombo("", CurrentAlignmentName.c_str())) {
 				for (int i = 0; i < alignments.size(); i++) {
 					if (ImGui::Selectable(alignments[i]->name.c_str(), &selected[i], ImGuiSelectableFlags_::ImGuiSelectableFlags_None)) {
@@ -306,14 +307,14 @@ namespace Controller
 
 			ImGui::PushID(905);
 			ImGui::AlignTextToFramePadding();
-			ImGui::Text("Default vehicle");
+			ImGui::Text("Design vehicle");
 			ImGui::NextColumn();
 
 			static bool* selectedVehicle = new bool[vehicles.size()];
 			static std::string CurrentVehicleName = " ";
 			static int CurrentVehicle;
 
-			ImGui::SetNextItemWidth(100);
+			ImGui::SetNextItemWidth(120);
 			if (ImGui::BeginCombo("", CurrentVehicleName.c_str())) {
 				for (int i = 0; i < vehicles.size(); i++) {
 					if (ImGui::Selectable(vehicles[i]->name.c_str(), &selectedVehicle[i], ImGuiSelectableFlags_::ImGuiSelectableFlags_None)) {
@@ -337,6 +338,146 @@ namespace Controller
 			ImGui::SameLine(165);
 			if (ImGui::Button(" Cancel "))
 				show_add_road_window = false;
+
+			// END
+
+			ImGui::End();
+		}
+
+		// Show edit road parameters
+		if (show_edit_road_parameters)
+		{
+			ImGui::SetNextWindowPos(ImVec2(100, 100), ImGuiCond_Once);
+			ImGui::SetNextWindowSize(ImVec2(255, 250), ImGuiCond_Once);
+			ImGui::Begin("Road parameters", &show_edit_road_parameters, ImGuiWindowFlags_NoResize);
+
+			// ROAD
+
+			ImGui::PushID(901);
+			ImGui::AlignTextToFramePadding();
+
+			static bool* roadSelected = new bool[roadways.size()];
+			static std::string CurrentRoadName = " ";
+			static std::string CurrentAlignmentName = " ";
+			static std::string CurrentVehicleName = " ";
+			static int CurrentRoad = -1;
+
+			ImGui::SetNextItemWidth(210);
+			if (ImGui::BeginCombo("Road", CurrentRoadName.c_str())) {
+				for (int i = 0; i < roadways.size(); i++) {
+					if (ImGui::Selectable(roadways[i]->name.c_str(), &roadSelected[i], ImGuiSelectableFlags_::ImGuiSelectableFlags_None)) {
+						CurrentRoadName = roadways[i]->name.c_str();
+						CurrentRoad = i;
+						CurrentAlignmentName = roadways[i]->alignment->name;
+						CurrentVehicleName = roadways[i]->vehicle->name;
+					}
+				}
+				ImGui::EndCombo();
+			}
+			//ImGui::NextColumn();
+			ImGui::PopID();
+
+			if (CurrentRoad >= 0)
+			{
+				ImGui::Separator();
+				ImGui::Columns(2, NULL, false);
+				ImGui::SetColumnWidth(0, 120.0f);
+
+				// ALIGNMENT
+
+				ImGui::PushID(902);
+				ImGui::AlignTextToFramePadding();
+				ImGui::Text("Alignment");
+				ImGui::NextColumn();
+
+				static bool* selected = new bool[alignments.size()];
+				static int CurrentAlignment;
+
+				ImGui::SetNextItemWidth(120);
+				if (ImGui::BeginCombo("", CurrentAlignmentName.c_str())) {
+					for (int i = 0; i < alignments.size(); i++) {
+						if (ImGui::Selectable(alignments[i]->name.c_str(), &selected[i], ImGuiSelectableFlags_::ImGuiSelectableFlags_None)) {
+							CurrentAlignmentName = alignments[i]->name.c_str();
+							CurrentAlignment = i;
+							roadways[CurrentRoad]->alignment = alignments[i];
+						}
+					}
+					ImGui::EndCombo();
+				}
+				ImGui::NextColumn();
+				ImGui::PopID();
+
+				// ROAD WIDTH
+
+				ImGui::PushID(903);
+				ImGui::AlignTextToFramePadding();
+				ImGui::Text("Road width");
+				ImGui::NextColumn();
+				ImGui::SetNextItemWidth(60);
+				ImGui::DragFloat("m", &roadways[CurrentRoad]->width, 0.01f, 0.00f, 1000.00f, "%.2f");
+				ImGui::NextColumn();
+				ImGui::PopID();
+
+				// SPEED
+
+				ImGui::PushID(904);
+				ImGui::AlignTextToFramePadding();
+				ImGui::Text("Design speed");
+				ImGui::NextColumn();
+				ImGui::SetNextItemWidth(60);
+				ImGui::DragFloat("km/h", &roadways[CurrentRoad]->speed, 0.01f, 0.00f, 1000.00f, "%.2f");
+				ImGui::NextColumn();
+				ImGui::PopID();
+
+				// VEHICLE
+
+				ImGui::PushID(905);
+				ImGui::AlignTextToFramePadding();
+				ImGui::Text("Design vehicle");
+				ImGui::NextColumn();
+
+				static bool* vehicleSelected = new bool[vehicles.size()];
+				static int CurrentVehicle;
+
+				ImGui::SetNextItemWidth(120);
+				if (ImGui::BeginCombo("", CurrentVehicleName.c_str())) {
+					for (int i = 0; i < vehicles.size(); i++) {
+						if (ImGui::Selectable(vehicles[i]->name.c_str(), &vehicleSelected[i], ImGuiSelectableFlags_::ImGuiSelectableFlags_None)) {
+							CurrentVehicleName = vehicles[i]->name.c_str();
+							CurrentVehicle = i;
+							roadways[CurrentRoad]->vehicle = vehicles[i];
+						}
+					}
+					ImGui::EndCombo();
+				}
+				ImGui::NextColumn();
+				ImGui::PopID();
+
+				// BUTTONS
+
+				ImGui::Separator();
+				ImGui::Columns(1);
+				if (ImGui::Button(" UPDATE ")) {
+
+					// ATUALIZAR TODOS OS MODELOS
+					
+					//bridges[CurrentBridge]->SetupBridge();
+					//bridges[CurrentBridge]->SetupSection();
+					//bridges[CurrentBridge]->SetupPiers(nPiers);
+					//bridges[CurrentBridge]->Update();
+					///*std::vector<Bridge*>::iterator it = bridges.begin() + CurrentBridge;
+					//bridges.erase(it);*/
+					//ourMesh_List.clear(); //TODO: apagar apenas os modelos da ponte corrente
+					////bridges.push_back(new BoxGirder(CurrentBridgeName, roadways[CurrentRoad], cross_station, h_clearance));
+					//for (int i = 0; i < bridges.size(); i++)
+					//	for (int j = 0; j < bridges[i]->model.size(); j++)
+					//		ourMesh_List.push_back(Mesh(bridges[i]->model[j]));
+					show_edit_road_parameters = false;
+				}
+				ImGui::SameLine(185);
+				if (ImGui::Button(" Cancel "))
+					show_edit_road_parameters = false;
+			}
 
 			// END
 
@@ -433,7 +574,7 @@ namespace Controller
 		if (show_edit_bridge_parameters)
 		{
 			ImGui::SetNextWindowPos(ImVec2(100, 100), ImGuiCond_Once);
-			ImGui::SetNextWindowSize(ImVec2(275, 225), ImGuiCond_Once);
+			ImGui::SetNextWindowSize(ImVec2(275, 250), ImGuiCond_Once);
 			ImGui::Begin("General parameters", &show_edit_bridge_parameters, ImGuiWindowFlags_NoResize);
 
 			// BRIDGE
@@ -548,6 +689,10 @@ namespace Controller
 				ImGui::NextColumn();
 				ImGui::PopID();
 
+				// WIDENING
+				
+				ImGui::Checkbox("Widening", &bridges[CurrentBridge]->hasWidening);
+
 				// BUTTONS
 
 				ImGui::Separator();
@@ -564,7 +709,7 @@ namespace Controller
 					for (int i = 0; i < bridges.size(); i++)
 						for (int j = 0; j < bridges[i]->model.size(); j++)
 							ourMesh_List.push_back(Mesh(bridges[i]->model[j]));
-					show_edit_bridge_parameters = false;
+					//show_edit_bridge_parameters = false;
 				}
 				ImGui::SameLine(205);
 				if (ImGui::Button(" Cancel "))

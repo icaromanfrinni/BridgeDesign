@@ -26,7 +26,7 @@
 #include "Skybox.h"
 #include "GlobalTextures.h"
 
-#define EXAMPLE 5
+#define EXAMPLE 4
 #define DEBUG 1
 
 namespace CRAB
@@ -179,7 +179,9 @@ namespace CRAB
 
         // load vehicles
         // -------------
-        vehicles.push_back(new Vehicle("Default", 1.5f, 2.5f));
+        vehicles.push_back(new Vehicle("Passenger Car", 0.91f, { 3.35f }));
+        vehicles.push_back(new Vehicle("City Bus", 2.13f, { 7.62f }));
+        vehicles.push_back(new Vehicle("Truck WB-50", 0.91f, { 3.81f, 10.82f }));
 
         // load models
         // -----------
@@ -280,9 +282,9 @@ namespace CRAB
         // alignment
         alignments.push_back(new Alignment("Pista_1", road_plan, road_profile));
         // road
-        roadways.push_back(new Road("Av_Eng_Santana_Jr", 7.00f, 60.0f, alignments.back()));
+        roadways.push_back(new Road("Av_Eng_Santana_Jr", 7.00f, 40.0f, alignments.back(), vehicles.back()));
         // bridge
-        bridges.push_back(new BoxGirder("Viaduto_1", roadways.back(), 330.0f, 5.50f, 56.0f));
+        bridges.push_back(new BoxGirder("Viaduto_1", roadways.back(), 330.0f/*, 5.50f*/, 56.0f));
 
         /* ----------------- Viaduto 2 ----------------- */
         road_plan.clear();
@@ -298,9 +300,9 @@ namespace CRAB
         // alignment
         alignments.push_back(new Alignment("Pista_2", road_plan, road_profile));
         // road
-        roadways.push_back(new Road("Av_Ant_Sales", 8.50f, 40.0f, alignments.back()));
+        roadways.push_back(new Road("Av_Ant_Sales", 8.50f, 40.0f, alignments.back(), vehicles.back()));
         // bridge
-        bridges.push_back(new BoxGirder("Viaduto_2", roadways.back(), 267.0f, 11.0f, 80.0f));
+        bridges.push_back(new BoxGirder("Viaduto_2", roadways.back(), 267.0f/*, 11.0f*/, 80.0f));
 
 #endif
 
@@ -495,7 +497,7 @@ namespace CRAB
         // alignment
         alignments.push_back(new Alignment("eixo", road_plan, road_profile));
         // road
-        roadways.push_back(new Road("rodovia", 8.00f, 40.0f, alignments.back()));
+        roadways.push_back(new Road("rodovia", 8.00f, 40.0f, alignments.back(), vehicles.back()));
         // bridge
         bridges.push_back(new BoxGirder("ponte", roadways.back(), 124.14f, 50.0f));
 #endif

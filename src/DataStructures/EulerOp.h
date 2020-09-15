@@ -472,6 +472,7 @@ namespace EulerOp
 			t = float(i + 1) / ELEMENTS;
 			// Next View
 			CRAB::Matrix4 ModelMatrix = toWorld(bridge->alignment->getPosition(t), bridge->alignment->getTangent(t), bridge->getNormal(t));
+			
 			// Widening of Next Position (dW)
 			float next_w = bridge->Widening(t);
 			float dW = next_w - last_w;
@@ -496,10 +497,13 @@ namespace EulerOp
 					// new vertex
 					//newVertex = ModelMatrix * (ViewMatrix * he->vStart->point);
 					newVertex = ViewMatrix * he->vStart->point;
-					if (fabs(newVertex.x) >= bridge->road->width / 2.0f)
-						if (newVertex.x < 0.0f)
-							newVertex.x -= dW;
-						else newVertex.x += dW;
+					if (bridge->hasWidening)
+					{
+						if (fabs(newVertex.x) >= (bridge->road->width / 2.0f) - 0.1f) // 0.1 = fator de segurança, caso a coord.x seja estritamente menor q a lagura/2
+							if (newVertex.x < 0.0f)
+								newVertex.x -= dW;
+							else newVertex.x += dW;
+					}
 					newVertex = ModelMatrix * newVertex;
 					// new edge
 					mev(currentSolid->halfEdges.back()->prev, NULL, currentSolid->vertices.back()->id, newVertex);
@@ -524,10 +528,13 @@ namespace EulerOp
 					// new vertex
 					//newVertex = ModelMatrix * (ViewMatrix * he->vStart->point);
 					newVertex = ViewMatrix * he->vStart->point;
-					if (fabs(newVertex.x) >= bridge->road->width / 2.0f)
-						if (newVertex.x < 0.0f)
-							newVertex.x -= dW;
-						else newVertex.x += dW;
+					if (bridge->hasWidening)
+					{
+						if (fabs(newVertex.x) >= (bridge->road->width / 2.0f) - 0.1f)
+							if (newVertex.x < 0.0f)
+								newVertex.x -= dW;
+							else newVertex.x += dW;
+					}
 					newVertex = ModelMatrix * newVertex;
 					// new edge
 					mev(he->prev->opp, he->opp->next, he->vStart->id, newVertex);

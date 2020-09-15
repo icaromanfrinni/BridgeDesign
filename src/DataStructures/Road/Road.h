@@ -19,8 +19,8 @@ public:
 	Alignment* alignment;
 	std::vector<HED::solid*> model;
 	float width;		// Roadway width
-	float speed;		// Speed design
-	Vehicle* vehicle;	// Default vehicle
+	float speed;		// Design speed
+	Vehicle* vehicle;	// Design vehicle
 
 	// DEFAULT CONSTRUCTOR
 	Road();

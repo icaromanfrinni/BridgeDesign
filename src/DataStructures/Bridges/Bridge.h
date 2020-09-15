@@ -35,17 +35,19 @@ public:
 	Road* road;
 	Alignment* alignment;
 	std::vector<HED::solid*> model;
-	float CS; // cross station
-	float VC; // vertical clearance
-	float HC; // horizontal clearance
+	float CS;		// cross station
+	float VC;		// vertical clearance
+	float HC;		// horizontal clearance
 	float mainSpan; // Main span
-	float EL; // elevation level
-	float WS; // water surface
+	float EL;		// elevation level
+	float WS;		// water surface
 	std::vector<Pier> piers;
 
 	// Bridge attributes
 	float B;		// Width
 	float H;		// Height
+
+	bool hasWidening = true;
 
 	// DEFAULT CONSTRUCTOR
 	Bridge();
