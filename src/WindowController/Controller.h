@@ -288,7 +288,7 @@ namespace Controller
 			ImGui::Text("Road width");
 			ImGui::NextColumn();
 			ImGui::SetNextItemWidth(60);
-			ImGui::DragFloat("m", &roadWidth, 0.01f, 0.00f, 1000.00f, "%.2f");
+			ImGui::DragFloat("m", &roadWidth, 0.01f, 0.0f, 50.0f, "%.2f");
 			ImGui::NextColumn();
 			ImGui::PopID();
 
@@ -299,7 +299,7 @@ namespace Controller
 			ImGui::Text("Design speed");
 			ImGui::NextColumn();
 			ImGui::SetNextItemWidth(60);
-			ImGui::DragFloat("km/h", &dSpeed, 0.01f, 0.00f, 1000.00f, "%.2f");
+			ImGui::DragFloat("km/h", &dSpeed, 1.0f, 0.0f, 200.0f, "%.0f");
 			ImGui::NextColumn();
 			ImGui::PopID();
 
@@ -348,7 +348,7 @@ namespace Controller
 		if (show_edit_road_parameters)
 		{
 			ImGui::SetNextWindowPos(ImVec2(100, 100), ImGuiCond_Once);
-			ImGui::SetNextWindowSize(ImVec2(255, 250), ImGuiCond_Once);
+			ImGui::SetNextWindowSize(ImVec2(255, 180), ImGuiCond_Once);
 			ImGui::Begin("Road parameters", &show_edit_road_parameters, ImGuiWindowFlags_NoResize);
 
 			// ROAD
@@ -414,7 +414,7 @@ namespace Controller
 				ImGui::Text("Road width");
 				ImGui::NextColumn();
 				ImGui::SetNextItemWidth(60);
-				ImGui::DragFloat("m", &roadways[CurrentRoad]->width, 0.01f, 0.00f, 1000.00f, "%.2f");
+				ImGui::DragFloat("m", &roadways[CurrentRoad]->width, 0.01f, 0.0f, 50.0f, "%.2f");
 				ImGui::NextColumn();
 				ImGui::PopID();
 
@@ -425,7 +425,7 @@ namespace Controller
 				ImGui::Text("Design speed");
 				ImGui::NextColumn();
 				ImGui::SetNextItemWidth(60);
-				ImGui::DragFloat("km/h", &roadways[CurrentRoad]->speed, 0.01f, 0.00f, 1000.00f, "%.2f");
+				ImGui::DragFloat("km/h", &roadways[CurrentRoad]->speed, 1.0f, 0.0f, 200.00f, "%.0f");
 				ImGui::NextColumn();
 				ImGui::PopID();
 
@@ -459,20 +459,24 @@ namespace Controller
 				ImGui::Columns(1);
 				if (ImGui::Button(" UPDATE ")) {
 
-					// ATUALIZAR TODOS OS MODELOS
-					
-					//bridges[CurrentBridge]->SetupBridge();
-					//bridges[CurrentBridge]->SetupSection();
-					//bridges[CurrentBridge]->SetupPiers(nPiers);
-					//bridges[CurrentBridge]->Update();
+					// ATUALIZA TODOS OS MODELOS
+
 					///*std::vector<Bridge*>::iterator it = bridges.begin() + CurrentBridge;
 					//bridges.erase(it);*/
-					//ourMesh_List.clear(); //TODO: apagar apenas os modelos da ponte corrente
+					ourMesh_List.clear(); //TODO: apagar apenas os modelos da rodovia corrente
 					////bridges.push_back(new BoxGirder(CurrentBridgeName, roadways[CurrentRoad], cross_station, h_clearance));
-					//for (int i = 0; i < bridges.size(); i++)
-					//	for (int j = 0; j < bridges[i]->model.size(); j++)
-					//		ourMesh_List.push_back(Mesh(bridges[i]->model[j]));
-					show_edit_road_parameters = false;
+					for (int i = 0; i < bridges.size(); i++)
+					{
+						bridges[i]->SetupBridge();
+						bridges[i]->SetupSection();
+						int new_nPiers = bridges[i]->alignment->getProfileLength() / bridges[i]->mainSpan;
+						bridges[i]->SetupPiers(new_nPiers);
+						//bridges[i]->UpdatePiers();
+						bridges[i]->Update();
+						for (int j = 0; j < bridges[i]->model.size(); j++)
+							ourMesh_List.push_back(Mesh(bridges[i]->model[j]));
+					}
+					//show_edit_road_parameters = false;
 				}
 				ImGui::SameLine(185);
 				if (ImGui::Button(" Cancel "))
@@ -488,7 +492,7 @@ namespace Controller
 		if (show_add_bridge_window)
 		{
 			ImGui::SetNextWindowPos(ImVec2(100, 100), ImGuiCond_Once);
-			ImGui::SetNextWindowSize(ImVec2(275, 150), ImGuiCond_Once);
+			ImGui::SetNextWindowSize(ImVec2(295, 175), ImGuiCond_Once);
 			ImGui::Begin("New Bridge", &show_add_bridge_window, ImGuiWindowFlags_NoResize);   // Pass a pointer to our bool variable (the window will have a closing button that will clear the bool when clicked)
 			
 			ImGui::Columns(2, NULL, false);
@@ -500,7 +504,7 @@ namespace Controller
 			ImGui::AlignTextToFramePadding();
 			ImGui::Text("Bridge name");
 			ImGui::NextColumn();
-			ImGui::SetNextItemWidth(100);
+			ImGui::SetNextItemWidth(120);
 			ImGui::InputText("", &bridgeName, 0, NULL, NULL);
 			ImGui::NextColumn();
 			ImGui::PopID();
@@ -516,7 +520,7 @@ namespace Controller
 			static std::string CurrentRoadName = " ";
 			static int CurrentRoad;
 
-			ImGui::SetNextItemWidth(100);
+			ImGui::SetNextItemWidth(120);
 			if (ImGui::BeginCombo("", CurrentRoadName.c_str())) {
 				for (int i = 0; i < roadways.size(); i++) {
 					if (ImGui::Selectable(roadways[i]->name.c_str(), &selected[i], ImGuiSelectableFlags_::ImGuiSelectableFlags_None)) {
@@ -540,9 +544,20 @@ namespace Controller
 			ImGui::NextColumn();
 			ImGui::PopID();
 
-			// HORIZONTAL CLEARANCE
+			// VERTICAL CLEARANCE
 
 			ImGui::PushID(904);
+			ImGui::AlignTextToFramePadding();
+			ImGui::Text("Vertical clearance");
+			ImGui::NextColumn();
+			ImGui::SetNextItemWidth(80);
+			ImGui::DragFloat("m", &v_clearance, 0.01f, 0.00f, 1000.00f, "%.2f");
+			ImGui::NextColumn();
+			ImGui::PopID();
+
+			// HORIZONTAL CLEARANCE
+
+			ImGui::PushID(905);
 			ImGui::AlignTextToFramePadding();
 			ImGui::Text("Horizontal clearance");
 			ImGui::NextColumn();
@@ -556,12 +571,12 @@ namespace Controller
 			ImGui::Separator();
 			ImGui::Columns(1);
 			if (ImGui::Button("   OK   ")) {
-				bridges.push_back(new BoxGirder(bridgeName, roadways[CurrentRoad], cross_station, h_clearance));
+				bridges.push_back(new BoxGirder(bridgeName, roadways[CurrentRoad], cross_station, v_clearance, h_clearance));
 				for (int i = 0; i < bridges.back()->model.size(); i++)
 					ourMesh_List.push_back(Mesh(bridges.back()->model[i]));
 				show_add_bridge_window = false;
 			}
-			ImGui::SameLine(205);
+			ImGui::SameLine(225);
 			if (ImGui::Button(" Cancel "))
 				show_add_bridge_window = false;
 			

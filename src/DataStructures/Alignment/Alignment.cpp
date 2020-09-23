@@ -34,28 +34,17 @@ Alignment::Alignment(const std::string& _name, const std::vector<HorSegment*>& _
 	// --------------------
 	std::cout << "\tBuilding the 3D NURBS curve" << std::endl;
 	std::vector<glm::vec3> points3D;
-	float t = start_station;
-	while (t <= end_station)
+	for (int i = 0; i <= ELEMENTS; i++)
 	{
+		float t = start_station + (end_station - start_station) * i / ELEMENTS;
 		// coordenadas em planta (UTM)
 		points3D.push_back(this->path2Dh.getPosition(t));
 		// elevation (m)
 		float distance = this->path2Dh.getDistance(t);
 		int index = findSegment(distance);
 		points3D.back().y = profile[index]->getY(distance);
-
-		t += 1.0f / ELEMENTS;
 	}
-	//for (int i = /*start_station*/0; i <= /*end_station*/ELEMENTS; i++)
-	//{
-	//	float t = float(i) / ELEMENTS;
-	//	// coordenadas em planta (UTM)
-	//	points3D.push_back(this->path2Dh.getPosition(t));
-	//	// elevation (m)
-	//	float distance = this->path2Dh.getDistance(t);
-	//	int index = findSegment(distance);
-	//	points3D.back().y = profile[index]->getY(distance);
-	//}
+
 	this->path3D = NURBS(points3D);
 }
 

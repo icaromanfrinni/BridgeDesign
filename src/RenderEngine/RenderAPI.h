@@ -26,7 +26,7 @@
 #include "Skybox.h"
 #include "GlobalTextures.h"
 
-#define EXAMPLE 4
+#define EXAMPLE 5
 #define DEBUG 1
 
 namespace CRAB
@@ -282,9 +282,9 @@ namespace CRAB
         // alignment
         alignments.push_back(new Alignment("Pista_1", road_plan, road_profile));
         // road
-        roadways.push_back(new Road("Av_Eng_Santana_Jr", 7.00f, 40.0f, alignments.back(), vehicles.back()));
+        roadways.push_back(new Road("Av_Eng_Santana_Jr", 7.00f, 60.0f, alignments.back(), vehicles.front()));
         // bridge
-        bridges.push_back(new BoxGirder("Viaduto_1", roadways.back(), 330.0f/*, 5.50f*/, 56.0f));
+        bridges.push_back(new BoxGirder("Viaduto_1", roadways.back(), 330.0f, 5.50f, 56.0f));
 
         /* ----------------- Viaduto 2 ----------------- */
         road_plan.clear();
@@ -300,9 +300,9 @@ namespace CRAB
         // alignment
         alignments.push_back(new Alignment("Pista_2", road_plan, road_profile));
         // road
-        roadways.push_back(new Road("Av_Ant_Sales", 8.50f, 40.0f, alignments.back(), vehicles.back()));
+        roadways.push_back(new Road("Av_Ant_Sales", 8.50f, 40.0f, alignments.back(), vehicles.front()));
         // bridge
-        bridges.push_back(new BoxGirder("Viaduto_2", roadways.back(), 267.0f/*, 11.0f*/, 80.0f));
+        bridges.push_back(new BoxGirder("Viaduto_2", roadways.back(), 267.0f, 11.0f, 80.0f));
 
 #endif
 
@@ -319,7 +319,7 @@ namespace CRAB
         // road
         roadways.push_back(new Road("Rodovia", 8.00f, 40.0f, alignments.back(), vehicles.back()));
         // bridge
-        bridges.push_back(new BoxGirder("Viaduto_1", roadways.back(), 250.0f/*, 5.5f*/, 60.0f));
+        bridges.push_back(new BoxGirder("Viaduto_1", roadways.back(), 250.0f, 5.5f, 60.0f));
 #endif
 
         /* CASO 2: Overpass */

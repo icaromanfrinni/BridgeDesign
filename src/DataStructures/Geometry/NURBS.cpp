@@ -334,9 +334,9 @@ float NURBS::getDistance(const float& t) const
 	float D = 0.0f;
 
 	glm::vec3 A = this->getPosition(0.0f);
-	for (int i = 1; i <= ELEMENTS; i++)
+	for (int i = 1; i <= /*ELEMENTS*/1000; i++)
 	{
-		float u = t * float(i) / ELEMENTS;
+		float u = t * float(i) / /*ELEMENTS*/1000;
 		glm::vec3 B = this->getPosition(u);
 		D += glm::distance(A, B);
 		A = B;

@@ -9,8 +9,8 @@ BoxGirder::BoxGirder()
 
 // OVERLOAD CONSTRUCTOR (Viaduct)
 // ------------------------------
-BoxGirder::BoxGirder(const std::string& _name, Road* _road, const float& cross_station/*, const float& vertical_clearance*/, const float& horizontal_clearance)
-	: Bridge(_name, _road, cross_station/*, vertical_clearance*/, horizontal_clearance)
+BoxGirder::BoxGirder(const std::string& _name, Road* _road, const float& cross_station, const float& vertical_clearance, const float& horizontal_clearance)
+	: Bridge(_name, _road, cross_station, vertical_clearance, horizontal_clearance)
 {
 	// Preliminary calculations
 	this->SetupSection();
@@ -23,8 +23,8 @@ BoxGirder::BoxGirder(const std::string& _name, Road* _road, const float& cross_s
 
 // OVERLOAD CONSTRUCTOR (Overpass)
 // -------------------------------
-BoxGirder::BoxGirder(const std::string& _name, Road* _road, const float& cross_station/*, const float& vertical_clearance*/, const float& horizontal_clearance, const float& elevation_level)
-	: Bridge(_name, _road, cross_station/*, vertical_clearance*/, horizontal_clearance, elevation_level)
+BoxGirder::BoxGirder(const std::string& _name, Road* _road, const float& cross_station, const float& vertical_clearance, const float& horizontal_clearance, const float& elevation_level)
+	: Bridge(_name, _road, cross_station, vertical_clearance, horizontal_clearance, elevation_level)
 {
 	// Preliminary calculations
 	this->SetupSection();
@@ -37,8 +37,8 @@ BoxGirder::BoxGirder(const std::string& _name, Road* _road, const float& cross_s
 
 // OVERLOAD CONSTRUCTOR (Bridge)
 // -----------------------------
-BoxGirder::BoxGirder(const std::string& _name, Road* _road, const float& cross_station/*, const float& vertical_clearance*/, const float& horizontal_clearance, const float& elevation_level, const float& water_surface)
-	: Bridge(_name, _road, cross_station/*, vertical_clearance*/, horizontal_clearance, elevation_level, water_surface)
+BoxGirder::BoxGirder(const std::string& _name, Road* _road, const float& cross_station, const float& vertical_clearance, const float& horizontal_clearance, const float& elevation_level, const float& water_surface)
+	: Bridge(_name, _road, cross_station, vertical_clearance, horizontal_clearance, elevation_level, water_surface)
 {
 	// Preliminary calculations
 	this->SetupSection();
@@ -366,6 +366,181 @@ void BoxGirder::Update()
 		EulerOp::EXTRUDE(model.back()->faces.front(), WorldUp, piers[i].L);
 	}
 #pragma endregion 
+
+#pragma region ABUTMENTS
+	/* ================= START ABUTMENT ================= */
+
+	// UPDATE Local axis
+	vUp = this->abutments.front()->getNormalUp(0.0f);
+	vRight = cross(this->abutments.front()->getTangent(0.0f), vUp).to_unitary();
+	// v0
+	start_point = this->abutments.front()->getPosition(0.0f);// -(vUp * TOP_LAYER);
+	EulerOp::mvfs(model, start_point);
+	model.back()->name = "TOP_LAYER";
+	model.back()->material = { 0.1f, 0.1f, 0.1f, 1.0f };
+	// v1
+	newVertex = model.back()->vertices.back()->point - (vRight * (B / 2.0f - GUARD_RAIL)) - (vUp * (B / 2.0f - GUARD_RAIL) * SLOPE);
+	EulerOp::mev(model.back()->faces[0]->hEdge, NULL, 0, newVertex);
+	// v2
+	newVertex = model.back()->vertices.back()->point - (vUp * TOP_LAYER);
+	EulerOp::mev(model.back()->halfEdges[0], NULL, 1, newVertex);
+	// v3
+	newVertex = model.back()->vertices.back()->point + (vRight * (B - 2.0f * GUARD_RAIL));
+	EulerOp::mev(model.back()->halfEdges[2], NULL, 2, newVertex);
+	// v4
+	newVertex = model.back()->vertices.back()->point + (vUp * TOP_LAYER);
+	EulerOp::mev(model.back()->halfEdges[4], NULL, 3, newVertex);
+	// f1
+	EulerOp::mef(model.back()->halfEdges[0], model.back()->halfEdges[7], 0);
+	// SWEEP
+	EulerOp::SWEEP(model.back()->faces.front(), this->abutments.front());
+
+	// ROAD LEVEL
+	float start_station = this->abutments.front()->profile.front()->getStart4DPoint().x;
+	float base_level = this->road->alignment->getPositionFromStation(start_station).y - 0.5f;
+	//std::cout << "base_level = " << base_level << std::endl;
+	// OFFSET
+	offset = (B / 2.0f - GUARD_RAIL) * SLOPE + TOP_LAYER;
+	// v0
+	start_point = this->abutments.front()->getPosition(0.0f) - (vUp * offset);
+	EulerOp::mvfs(model, start_point);
+	model.back()->name = "START_ABUTMENT";
+	model.back()->material = { 0.8f, 0.8f, 0.8f, 1.0f };
+	// v1
+	newVertex = model.back()->vertices.back()->point - (vRight * (B / 2.0f - GUARD_RAIL));
+	EulerOp::mev(model.back()->faces[0]->hEdge, NULL, 0, newVertex);
+	// Left Guard-Rail
+	{
+		// V2
+		newVertex = model.back()->vertices.back()->point + (vUp * 0.15f);
+		EulerOp::mev(model.back()->halfEdges[0], NULL, 1, newVertex);
+		// V3
+		newVertex = model.back()->vertices.back()->point + (vUp * 0.25f) - (vRight * 0.175f);
+		EulerOp::mev(model.back()->halfEdges[2], NULL, 2, newVertex);
+		// V4
+		newVertex = model.back()->vertices.back()->point + (vUp * 0.47f) - (vRight * 0.05f);
+		EulerOp::mev(model.back()->halfEdges[4], NULL, 3, newVertex);
+		// V5
+		newVertex = model.back()->vertices.back()->point - (vRight * 0.175f);
+		EulerOp::mev(model.back()->halfEdges[6], NULL, 4, newVertex);
+		// V6
+		newVertex = model.back()->vertices.back()->point;
+		newVertex.y = base_level;
+		//newVertex -= vUp * 0.5f;
+		EulerOp::mev(model.back()->halfEdges[8], NULL, 5, newVertex);
+	}
+	// MIRROR
+	{
+		// v7
+		newVertex = model.back()->vertices.front()->point + reflection(model.back()->vertices[6]->point - model.back()->vertices.front()->point, vUp);
+		EulerOp::mev(model.back()->halfEdges[10], NULL, 6, newVertex);
+		// v8
+		newVertex = model.back()->vertices.front()->point + reflection(model.back()->vertices[5]->point - model.back()->vertices.front()->point, vUp);
+		EulerOp::mev(model.back()->halfEdges[12], NULL, 7, newVertex);
+		// v9
+		newVertex = model.back()->vertices.front()->point + reflection(model.back()->vertices[4]->point - model.back()->vertices.front()->point, vUp);
+		EulerOp::mev(model.back()->halfEdges[14], NULL, 8, newVertex);
+		// v10
+		newVertex = model.back()->vertices.front()->point + reflection(model.back()->vertices[3]->point - model.back()->vertices.front()->point, vUp);
+		EulerOp::mev(model.back()->halfEdges[16], NULL, 9, newVertex);
+		// v11
+		newVertex = model.back()->vertices.front()->point + reflection(model.back()->vertices[2]->point - model.back()->vertices.front()->point, vUp);
+		EulerOp::mev(model.back()->halfEdges[18], NULL, 10, newVertex);
+		// v12
+		newVertex = model.back()->vertices.front()->point + reflection(model.back()->vertices[1]->point - model.back()->vertices.front()->point, vUp);
+		EulerOp::mev(model.back()->halfEdges[20], NULL, 11, newVertex);
+	}
+	// f1
+	EulerOp::mef(model.back()->halfEdges.front(), model.back()->halfEdges[23], 0);
+	// SWEEP
+	EulerOp::SWEEP_for_Abutments(model.back()->faces.front(), this->abutments.front(), base_level);
+
+	/* ================= END ABUTMENT ================= */
+
+	// UPDATE Local axis
+	vUp = this->abutments.back()->getNormalUp(0.0f);
+	vRight = cross(this->abutments.back()->getTangent(0.0f), vUp).to_unitary();
+	// v0
+	start_point = this->abutments.back()->getPosition(0.0f);// -(vUp * TOP_LAYER);
+	EulerOp::mvfs(model, start_point);
+	model.back()->name = "TOP_LAYER";
+	model.back()->material = { 0.1f, 0.1f, 0.1f, 1.0f };
+	// v1
+	newVertex = model.back()->vertices.back()->point - (vRight * (B / 2.0f - GUARD_RAIL)) - (vUp * (B / 2.0f - GUARD_RAIL) * SLOPE);
+	EulerOp::mev(model.back()->faces[0]->hEdge, NULL, 0, newVertex);
+	// v2
+	newVertex = model.back()->vertices.back()->point - (vUp * TOP_LAYER);
+	EulerOp::mev(model.back()->halfEdges[0], NULL, 1, newVertex);
+	// v3
+	newVertex = model.back()->vertices.back()->point + (vRight * (B - 2.0f * GUARD_RAIL));
+	EulerOp::mev(model.back()->halfEdges[2], NULL, 2, newVertex);
+	// v4
+	newVertex = model.back()->vertices.back()->point + (vUp * TOP_LAYER);
+	EulerOp::mev(model.back()->halfEdges[4], NULL, 3, newVertex);
+	// f1
+	EulerOp::mef(model.back()->halfEdges[0], model.back()->halfEdges[7], 0);
+	// SWEEP
+	EulerOp::SWEEP(model.back()->faces.front(), this->abutments.back());
+
+	// ROAD LEVEL
+	start_station = this->abutments.back()->profile.front()->getStart4DPoint().x;
+	base_level = this->road->alignment->getPositionFromStation(start_station).y - 0.5f;
+	// OFFSET
+	offset = (B / 2.0f - GUARD_RAIL) * SLOPE + TOP_LAYER;
+	// v0
+	start_point = this->abutments.back()->getPosition(0.0f) - (vUp * offset);
+	EulerOp::mvfs(model, start_point);
+	model.back()->name = "END_ABUTMENT";
+	model.back()->material = { 0.8f, 0.8f, 0.8f, 1.0f };
+	// v1
+	newVertex = model.back()->vertices.back()->point - (vRight * (B / 2.0f - GUARD_RAIL));
+	EulerOp::mev(model.back()->faces[0]->hEdge, NULL, 0, newVertex);
+	// Left Guard-Rail
+	{
+		// V2
+		newVertex = model.back()->vertices.back()->point + (vUp * 0.15f);
+		EulerOp::mev(model.back()->halfEdges[0], NULL, 1, newVertex);
+		// V3
+		newVertex = model.back()->vertices.back()->point + (vUp * 0.25f) - (vRight * 0.175f);
+		EulerOp::mev(model.back()->halfEdges[2], NULL, 2, newVertex);
+		// V4
+		newVertex = model.back()->vertices.back()->point + (vUp * 0.47f) - (vRight * 0.05f);
+		EulerOp::mev(model.back()->halfEdges[4], NULL, 3, newVertex);
+		// V5
+		newVertex = model.back()->vertices.back()->point - (vRight * 0.175f);
+		EulerOp::mev(model.back()->halfEdges[6], NULL, 4, newVertex);
+		// V6
+		newVertex = model.back()->vertices.back()->point;
+		newVertex.y = base_level;
+		//newVertex -= vUp * 0.5f;
+		EulerOp::mev(model.back()->halfEdges[8], NULL, 5, newVertex);
+	}
+	// MIRROR
+	{
+		// v7
+		newVertex = model.back()->vertices.front()->point + reflection(model.back()->vertices[6]->point - model.back()->vertices.front()->point, vUp);
+		EulerOp::mev(model.back()->halfEdges[10], NULL, 6, newVertex);
+		// v8
+		newVertex = model.back()->vertices.front()->point + reflection(model.back()->vertices[5]->point - model.back()->vertices.front()->point, vUp);
+		EulerOp::mev(model.back()->halfEdges[12], NULL, 7, newVertex);
+		// v9
+		newVertex = model.back()->vertices.front()->point + reflection(model.back()->vertices[4]->point - model.back()->vertices.front()->point, vUp);
+		EulerOp::mev(model.back()->halfEdges[14], NULL, 8, newVertex);
+		// v10
+		newVertex = model.back()->vertices.front()->point + reflection(model.back()->vertices[3]->point - model.back()->vertices.front()->point, vUp);
+		EulerOp::mev(model.back()->halfEdges[16], NULL, 9, newVertex);
+		// v11
+		newVertex = model.back()->vertices.front()->point + reflection(model.back()->vertices[2]->point - model.back()->vertices.front()->point, vUp);
+		EulerOp::mev(model.back()->halfEdges[18], NULL, 10, newVertex);
+		// v12
+		newVertex = model.back()->vertices.front()->point + reflection(model.back()->vertices[1]->point - model.back()->vertices.front()->point, vUp);
+		EulerOp::mev(model.back()->halfEdges[20], NULL, 11, newVertex);
+	}
+	// f1
+	EulerOp::mef(model.back()->halfEdges.front(), model.back()->halfEdges[23], 0);
+	// SWEEP
+	EulerOp::SWEEP_for_Abutments(model.back()->faces.front(), this->abutments.back(), base_level);
+#pragma endregion ABUTMENTS
 }
 
 // RETURN SECTION PARAMETERS

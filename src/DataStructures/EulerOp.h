@@ -450,6 +450,161 @@ namespace EulerOp
 	// SWEEP
 	// f = face q sofre a varredura
 	// path = curva parametrizada
+	inline void SWEEP(HED::face* f, Alignment* path)
+	{
+		// Get Solid
+		HED::solid* currentSolid = f->HedSolid;
+
+		for (int i = 0; i < ELEMENTS; i++)
+		{
+			/* ---------- TRANSFORMATION MATRIX ---------- */
+
+			// CURRENT POSITION
+			float t = float(i) / ELEMENTS;
+			// Local View
+			CRAB::Matrix4 ViewMatrix = toLocal(path->getPosition(t), path->getTangent(t), path->getNormalUp(t));
+
+			// NEXT POSITION
+			t = float(i + 1) / ELEMENTS;
+			// Next View
+			CRAB::Matrix4 ModelMatrix = toWorld(path->getPosition(t), path->getTangent(t), path->getNormalUp(t));
+
+			/* ---------------- EXTRUDE ---------------- */
+
+			if (currentSolid->faces.size() == 2)
+			{	// use the back face
+				HED::face* backFace = currentSolid->faces.back();
+				HED::halfEdge* he = backFace->hEdge;
+
+				// new vertex
+				CRAB::Vector4Df newVertex = ModelMatrix * (ViewMatrix * he->vStart->point);
+				// first edge
+				mev(he->opp, NULL, he->vStart->id, newVertex);
+				// edges and faces
+				int id = 1;
+				for (he = backFace->hEdge->prev; he != backFace->hEdge; he = he->prev)
+				{
+					// new vertex
+					newVertex = ModelMatrix * (ViewMatrix * he->vStart->point);
+					// new edge
+					mev(currentSolid->halfEdges.back()->prev, NULL, currentSolid->vertices.back()->id, newVertex);
+					// new face
+					mef(currentSolid->halfEdges.back(), he->prev->opp, he->prev->opp->leftFace->id);
+				}
+				// last face
+				mef(currentSolid->halfEdges.back(), currentSolid->halfEdges.back()->next->next->next, 0);
+			}
+			else if (currentSolid->faces.size() > 2)
+			{	// use the current face
+				// Get HalfEdge
+				HED::halfEdge* he = f->hEdge;
+
+				// new vertex
+				CRAB::Vector4Df newVertex = ModelMatrix * (ViewMatrix * he->vStart->point);
+				// first edge
+				mev(he->prev->opp, he->opp->next, he->vStart->id, newVertex);
+				// the other edges
+				int id = 1;
+				for (he = f->hEdge->next; he != f->hEdge; he = he->next)
+				{
+					// new vertex
+					newVertex = ModelMatrix * (ViewMatrix * he->vStart->point);
+					// new edge
+					mev(he->prev->opp, he->opp->next, he->vStart->id, newVertex);
+				}
+				// close the first new_loop (new face)
+				mef(he->opp->prev, he->opp->next->next, he->opp->leftFace->id);
+				// the other loops
+				for (he = f->hEdge->next; he != f->hEdge; he = he->next)
+					mef(he->opp->prev, he->opp->next->next, he->opp->leftFace->id);
+			}
+		}
+	}
+
+	// SWEEP
+	// f = face q sofre a varredura
+	// path = curva parametrizada
+	// level = cota do terreno
+	inline void SWEEP_for_Abutments(HED::face* f, Alignment* path, const float& level)
+	{
+		// Get Solid
+		HED::solid* currentSolid = f->HedSolid;
+
+		for (int i = 0; i < ELEMENTS; i++)
+		{
+			/* ---------- TRANSFORMATION MATRIX ---------- */
+
+			// CURRENT POSITION
+			float t = float(i) / ELEMENTS;
+			// Local View
+			CRAB::Matrix4 ViewMatrix = toLocal(path->getPosition(t), path->getTangent(t), path->getNormalUp(t));
+
+			// NEXT POSITION
+			t = float(i + 1) / ELEMENTS;
+			// Next View
+			CRAB::Matrix4 ModelMatrix = toWorld(path->getPosition(t), path->getTangent(t), path->getNormalUp(t));
+
+			/* ---------------- EXTRUDE ---------------- */
+
+			if (currentSolid->faces.size() == 2)
+			{	// use the back face
+				HED::face* backFace = currentSolid->faces.back();
+				HED::halfEdge* he = backFace->hEdge;
+
+				// new vertex
+				CRAB::Vector4Df newVertex = ModelMatrix * (ViewMatrix * he->vStart->point);
+				// first edge
+				mev(he->opp, NULL, he->vStart->id, newVertex);
+				// edges and faces
+				int id = 0;
+				for (he = backFace->hEdge->prev; he != backFace->hEdge; he = he->prev)
+				{
+					id++;
+					// new vertex
+					newVertex = ModelMatrix * (ViewMatrix * he->vStart->point);
+					if (id == 6 || id == 7)
+						newVertex.y = level;
+					// new edge
+					mev(currentSolid->halfEdges.back()->prev, NULL, currentSolid->vertices.back()->id, newVertex);
+					// new face
+					mef(currentSolid->halfEdges.back(), he->prev->opp, he->prev->opp->leftFace->id);
+				}
+				// last face
+				mef(currentSolid->halfEdges.back(), currentSolid->halfEdges.back()->next->next->next, 0);
+			}
+			else if (currentSolid->faces.size() > 2)
+			{	// use the current face
+				// Get HalfEdge
+				HED::halfEdge* he = f->hEdge;
+
+				// new vertex
+				CRAB::Vector4Df newVertex = ModelMatrix * (ViewMatrix * he->vStart->point);
+				// first edge
+				mev(he->prev->opp, he->opp->next, he->vStart->id, newVertex);
+				// the other edges
+				int id = 0;
+				for (he = f->hEdge->next; he != f->hEdge; he = he->next)
+				{
+					id++;
+					// new vertex
+					newVertex = ModelMatrix * (ViewMatrix * he->vStart->point);
+					if (id == 6 || id == 7)
+						newVertex.y = level;
+					// new edge
+					mev(he->prev->opp, he->opp->next, he->vStart->id, newVertex);
+				}
+				// close the first new_loop (new face)
+				mef(he->opp->prev, he->opp->next->next, he->opp->leftFace->id);
+				// the other loops
+				for (he = f->hEdge->next; he != f->hEdge; he = he->next)
+					mef(he->opp->prev, he->opp->next->next, he->opp->leftFace->id);
+			}
+		}
+	}
+
+	// SWEEP
+	// f = face q sofre a varredura
+	// bridge = superestrutura do tipo Box-Girder
 	//inline void SWEEP(HED::face* f, Alignment* path, Road* roadway)
 	inline void SWEEP(HED::face* f, BoxGirder* bridge)
 	{

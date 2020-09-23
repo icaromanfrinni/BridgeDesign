@@ -8,12 +8,12 @@ Bridge::Bridge()
 
 // OVERLOAD CONSTRUCTOR (Viaduct)
 // ------------------------------
-Bridge::Bridge(const std::string& _name, Road* _road, const float& cross_station/*, const float& vertical_clearance*/, const float& horizontal_clearance)
-	: name(_name), road(_road), CS(cross_station)/*, VC(vertical_clearance)*/, HC(horizontal_clearance)
+Bridge::Bridge(const std::string& _name, Road* _road, const float& cross_station, const float& vertical_clearance, const float& horizontal_clearance)
+	: name(_name), road(_road), CS(cross_station), VC(vertical_clearance), HC(horizontal_clearance)
 {
 	// General attributes
 	this->mainSpan = main_span;
-	this->VC = v_clearance;
+	//this->VC = v_clearance;
 
 	// Viaduct
 	int index = this->road->alignment->findSegment(this->CS);
@@ -27,12 +27,12 @@ Bridge::Bridge(const std::string& _name, Road* _road, const float& cross_station
 }
 // OVERLOAD CONSTRUCTOR (Overpass)
 // -------------------------------
-Bridge::Bridge(const std::string& _name, Road* _road, const float& cross_station/*, const float& vertical_clearance*/, const float& horizontal_clearance, const float& elevation_level)
-	: name(_name), road(_road), CS(cross_station)/*, VC(vertical_clearance)*/, HC(horizontal_clearance), EL(elevation_level)
+Bridge::Bridge(const std::string& _name, Road* _road, const float& cross_station, const float& vertical_clearance, const float& horizontal_clearance, const float& elevation_level)
+	: name(_name), road(_road), CS(cross_station), VC(vertical_clearance), HC(horizontal_clearance), EL(elevation_level)
 {
 	// General attributes
 	this->mainSpan = main_span;
-	this->VC = v_clearance;
+	//this->VC = v_clearance;
 
 	// Overpass
 	this->WS = this->EL;
@@ -44,12 +44,12 @@ Bridge::Bridge(const std::string& _name, Road* _road, const float& cross_station
 }
 // OVERLOAD CONSTRUCTOR (Bridge)
 // -----------------------------
-Bridge::Bridge(const std::string& _name, Road* _road, const float& cross_station/*, const float& vertical_clearance*/, const float& horizontal_clearance, const float& elevation_level, const float& water_surface)
-	: name(_name), road(_road), CS(cross_station)/*, VC(vertical_clearance)*/, HC(horizontal_clearance), EL(elevation_level), WS(water_surface)
+Bridge::Bridge(const std::string& _name, Road* _road, const float& cross_station, const float& vertical_clearance, const float& horizontal_clearance, const float& elevation_level, const float& water_surface)
+	: name(_name), road(_road), CS(cross_station), VC(vertical_clearance), HC(horizontal_clearance), EL(elevation_level), WS(water_surface)
 {
 	// General attributes
 	this->mainSpan = main_span;
-	this->VC = v_clearance;
+	//this->VC = v_clearance;
 
 	// Preliminary calculations
 	this->SetupBridge();
@@ -73,7 +73,19 @@ void Bridge::SetupBridge()
 
 	// Alignment
 	//this->alignment = this->road->alignment;
-	this->alignment = new Alignment(this->name, this->Horizontal_Alignment(), this->Vertical_Alignment());
+	std::vector<VerSegment*> total_Profile, start_Abutment, end_Abutment, bridge_Profile;
+	total_Profile = this->Vertical_Alignment();
+	this->abutments.clear();
+	// encontro inicial
+	start_Abutment.push_back(total_Profile.front());
+	this->abutments.push_back(new Alignment("Start_Abutment", this->Horizontal_Alignment(), start_Abutment));
+	// encontro final
+	end_Abutment.push_back(total_Profile.back());
+	this->abutments.push_back(new Alignment("End_Abutment", this->Horizontal_Alignment(), end_Abutment));
+	// alinhamento da superestrutura (sem os encontros)
+	for (int i = 1; i < 4; i++)
+		bridge_Profile.push_back(total_Profile[i]);
+	this->alignment = new Alignment(this->name, this->Horizontal_Alignment(), bridge_Profile);
 }
 
 // SUPERELEVATION
@@ -303,11 +315,11 @@ std::vector<VerSegment*> Bridge::Vertical_Alignment()
 
 	//// ********************************** RETURN **********************************
 	
-	//profile.push_back(new VerSegment(VPC1, VPI1, VPT1));
+	profile.push_back(new VerSegment(VPC1, VPI1, VPT1));
 	profile.push_back(new VerSegment(VPT1, VPC2));
 	profile.push_back(new VerSegment(VPC2, VPI2, VPT2));
 	profile.push_back(new VerSegment(VPT2, VPC3));
-	//profile.push_back(new VerSegment(VPC3, VPI3, VPT3));
+	profile.push_back(new VerSegment(VPC3, VPI3, VPT3));
 
 	// ********************************** DEBUG **********************************
 
