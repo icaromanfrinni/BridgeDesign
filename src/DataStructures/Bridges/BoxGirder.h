@@ -3,10 +3,16 @@
 #define BOXGIRDER_H
 
 #include "Bridge.h"
+#include <algorithm>
 
 class BoxGirder
 	: public Bridge
 {
+	std::vector<CRAB::Vector4Df> TopLayer_section(const float& t) const;
+	std::vector<CRAB::Vector4Df> Deck_section(const float& t) const;
+	std::vector<CRAB::Vector4Df> U_section(const float& t) const;
+	//void OLD_Update();
+
 public:
 	// Box-Girder Bridge Attributes
 	float Lb;   // slab cantilever

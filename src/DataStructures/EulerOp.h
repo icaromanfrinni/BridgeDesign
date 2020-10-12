@@ -521,6 +521,59 @@ namespace EulerOp
 		}
 	}
 
+	// SWEEP: construção ou edição do sólido pela extrusão da face corrente para as novas coordenadas dos vértices
+	// f = face q sofre a extrusão
+	// vertices = lista com as novas coordenadas dos vértices
+	inline void SWEEP(HED::face* f, const std::vector<CRAB::Vector4Df> &vertices)
+	{
+		// Get Solid
+		HED::solid* currentSolid = f->HedSolid;
+
+		if (currentSolid->faces.size() == 2)
+		{	// use the back face
+			HED::face* backFace = currentSolid->faces.back();
+			HED::halfEdge* he = backFace->hEdge;
+
+			// first edge
+			mev(he->opp, NULL, he->vStart->id, vertices.front());
+			// edges and faces
+			int id = 1;
+			for (he = backFace->hEdge->prev; he != backFace->hEdge; he = he->prev)
+			{
+				// new edge
+				mev(currentSolid->halfEdges.back()->prev, NULL, currentSolid->vertices.back()->id, vertices[id]);
+				// new face
+				mef(currentSolid->halfEdges.back(), he->prev->opp, he->prev->opp->leftFace->id);
+				// id counter
+				id++;
+			}
+			// last face
+			mef(currentSolid->halfEdges.back(), currentSolid->halfEdges.back()->next->next->next, 0);
+		}
+		else if (currentSolid->faces.size() > 2)
+		{	// use the current face
+			// Get HalfEdge
+			HED::halfEdge* he = f->hEdge;
+
+			// first edge
+			mev(he->prev->opp, he->opp->next, he->vStart->id, vertices.front());
+			// the other edges
+			int id = 1;
+			for (he = f->hEdge->next; he != f->hEdge; he = he->next)
+			{
+				// new edge
+				mev(he->prev->opp, he->opp->next, he->vStart->id, vertices[id]);
+				// id counter
+				id++;
+			}
+			// close the first new_loop (new face)
+			mef(he->opp->prev, he->opp->next->next, he->opp->leftFace->id);
+			// the other loops
+			for (he = f->hEdge->next; he != f->hEdge; he = he->next)
+				mef(he->opp->prev, he->opp->next->next, he->opp->leftFace->id);
+		}
+	}
+
 	// SWEEP
 	// f = face q sofre a varredura
 	// path = curva parametrizada
