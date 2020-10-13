@@ -12,7 +12,6 @@ const float SLOPE_MAX = 0.10f;
 class Alignment
 {
 private:
-	float findParameter(const float& distance) const;
 	NURBS path2Dh;	// 2D horizontal curve
 	NURBS path3D;	// 3D curve
 
@@ -38,7 +37,10 @@ public:
 	bool isClockwise(const float& t) const;
 	float getCurvature(const float& t) const;
 	float getRadius(const float& t) const;
+	float getDistance(const float& t) const;
 
+	// RETURNS THE 't' PARAMETER OF NURBS CURVE
+	float findParameter(const float& distance) const;
 	// RETURNS THE LENGTH OF VERTICAL ALIGNMENT
 	float getProfileLength() const;
 	// RETURNS THE 4D POINT FROM STATION

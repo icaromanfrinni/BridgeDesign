@@ -68,8 +68,9 @@ Bridge::~Bridge()
 void Bridge::SetupBridge()
 {
 	// Bridge attributes
-	this->B = this->road->width;// +2 * GUARD_RAIL;
-	this->H = int((100.0f * this->mainSpan / 16.0f) / 5.0f) * 0.05f;
+	this->B = this->road->width;
+	//this->H = int((100.0f * this->mainSpan / 16.0f) / 5.0f) * 0.05f;
+	this->H = int((100.0f * this->mainSpan / 10.0f) / 5.0f) * 0.05f; // nos apoios
 
 	// Alignment
 	//this->alignment = this->road->alignment;

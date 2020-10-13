@@ -55,8 +55,8 @@ BoxGirder::~BoxGirder()
 {
 }
 
-// INITIALIZES ALL THE PARAMETERS
-// ------------------------------
+// SETUP ALL THE PARAMETERS
+// ------------------------
 void BoxGirder::SetupSection()
 {
 	// Box-Girder Bridge Attributes
@@ -96,6 +96,51 @@ void BoxGirder::SetupSection()
 	//	station += this->mainSpan;
 	//}
 }
+void BoxGirder::SetupSection(const float& t)
+{
+	if (t == 0.0f)
+	{
+		this->SetupSection();
+		return;
+	}
+
+	// ALTURA VARIÁVEL ENTRE APOIOS
+
+	// Distância X
+	float x = this->alignment->getDistance(t);
+	// Intervalo
+	float low = 0.0f, high = 0.0f;
+	for (int i = 0; i < this->span_vector.size(); i++)
+	{
+		if (x > this->span_vector[i])
+			low = this->span_vector[i];
+		else
+		{
+			high = this->span_vector[i];
+			break;
+		}
+	}
+	// Atualiza distância
+	x -= low;
+	// Vão do intervalo atual
+	float current_span = high - low;
+	// Altura Y
+	float C1 = -2.0f * H / powf(current_span, 2.0f);
+	float C2 = 2.0f * H / current_span;
+	float y = C1 * powf(x, 2.0f) + C2 * x;
+	// Atualiza a altura
+	this->dH = H - y;
+
+	// Box-Girder Bridge Attributes
+	Lb = int((100.0f * B / 4.3f) / 5.0f) * 0.05f;
+	h = int((100.0f * Lb / 10.0f) / 5.0f) * 0.05f;
+	bw = int((100.0f * this->dH / 5.0f) / 5.0f) * 0.05f;
+	if (bw < 0.25f) bw = 0.25f;
+	tv = int((100.0f * (this->dH - 2 * h) / 10.0f) / 5.0f) * 0.05f;
+	if (tv < 0.10f) tv = 0.10f;
+	b = int((100.0f * (B - 2.0f * (Lb + INCLINATION_RATIO * (this->dH - h - tv)))) / 5.0f) * 0.05f;
+	th = int((100.0f * (b - 2 * bw) / 5.0f) / 5.0f) * 0.05f;
+}
 void BoxGirder::SetupPiers(const int& nPiers)
 {
 	float b_Pier = 0.6f * this->b;
@@ -106,12 +151,15 @@ void BoxGirder::SetupPiers(const int& nPiers)
 	float station = this->alignment->profile.front()->getStart4DPoint().x + span / 2.0f;
 
 	this->piers.clear();
+	this->span_vector.clear();
+	this->span_vector.push_back(0.0f);
 	for (int i = 0; i < nPiers; i++)
 	{
 		Pier P;
 		P.b = b_Pier;
 		P.h = h_Pier;
 		P.station = station;
+		this->span_vector.push_back(P.station - this->alignment->profile.front()->getStart4DPoint().x);
 		P.ang = 0.0f;
 		P.dir = this->alignment->getTangentFromStation(P.station);
 		P.base = this->road->alignment->getPositionFromStation(P.station);
@@ -124,6 +172,7 @@ void BoxGirder::SetupPiers(const int& nPiers)
 		piers.push_back(P);
 		station += span;
 	}
+	this->span_vector.push_back(this->alignment->profile.back()->getEnd4DPoint().x - this->alignment->profile.front()->getStart4DPoint().x);
 }
 void BoxGirder::AddPier()
 {
@@ -151,13 +200,20 @@ std::vector<CRAB::Vector4Df> BoxGirder::TopLayer_section(const float& t) const
 	CRAB::Vector4Df vUp = { 0.0f, 1.0f, 0.0f, 0.0f };
 	CRAB::Vector4Df vRight = { 1.0f, 0.0f, 0.0f, 0.0f };
 
+	// Widening
+	float w = 0.0f;
+	if (hasWidening)
+		w = this->Widening(t);
+
 	// Local View
 	std::vector<CRAB::Vector4Df> nodes;
 	nodes.push_back(CRAB::Vector4Df{ 0.0f, 0.0f, 0.0f, 1.0f });
-	nodes.push_back(nodes.back() - (vRight * (B / 2.0f)) - (vUp * (B / 2.0f) * SLOPE));
+	// Left
+	nodes.push_back(nodes.back() - (vRight * ((B + w) / 2.0f)) - (vUp * ((B + w) / 2.0f) * SLOPE));
 	nodes.push_back(nodes.back() - (vUp * TOP_LAYER));
-	nodes.push_back(nodes.back() + (vRight * B));
-	nodes.push_back(nodes.back() + (vUp * TOP_LAYER));
+	// Right
+	nodes.push_back(nodes.front() + reflection(nodes[2] - nodes.front(), vUp));
+	nodes.push_back(nodes.front() + reflection(nodes[1] - nodes.front(), vUp));
 
 	// Space View
 	CRAB::Matrix4 ModelMatrix = toWorld(this->alignment->getPosition(t), this->alignment->getTangent(t), this->getNormal(t));
@@ -166,11 +222,19 @@ std::vector<CRAB::Vector4Df> BoxGirder::TopLayer_section(const float& t) const
 
 	return nodes;
 }
-std::vector<CRAB::Vector4Df> BoxGirder::Deck_section(const float& t) const
+std::vector<CRAB::Vector4Df> BoxGirder::Deck_section(const float& t)
 {
 	// Local axis
 	CRAB::Vector4Df vUp = { 0.0f, 1.0f, 0.0f, 0.0f };
 	CRAB::Vector4Df vRight = { 1.0f, 0.0f, 0.0f, 0.0f };
+
+	// Update Bridge Attributes
+	this->SetupSection(t);
+
+	// Widening
+	float w = 0.0f;
+	if (hasWidening)
+		w = this->Widening(t);
 
 	// Local View
 	float offset = (B / 2.0f) * SLOPE + TOP_LAYER;
@@ -178,7 +242,7 @@ std::vector<CRAB::Vector4Df> BoxGirder::Deck_section(const float& t) const
 	nodes.push_back(CRAB::Vector4Df{ 0.0f, 0.0f, 0.0f, 1.0f } - (vUp * offset));
 	// Left Guard-Rail
 	{
-		nodes.push_back(nodes.back() - (vRight * (B / 2.0f)));
+		nodes.push_back(nodes.back() - (vRight * ((B + w) / 2.0f)));
 		nodes.push_back(nodes.back() + (vUp * 0.15f));
 		nodes.push_back(nodes.back() + (vUp * 0.25f) - (vRight * 0.175f));
 		nodes.push_back(nodes.back() + (vUp * 0.47f) - (vRight * 0.05f));
@@ -187,7 +251,7 @@ std::vector<CRAB::Vector4Df> BoxGirder::Deck_section(const float& t) const
 		nodes.push_back(nodes.back() - (vUp * 0.05f) + (vRight * 0.05f));
 		nodes.push_back(nodes.back() + (vUp * 0.10f) + (vRight * 0.35f));
 	}
-	nodes.push_back(nodes.back() - (vUp * (h + tv - 0.20f)) + (vRight * (Lb/* - GUARD_RAIL*/)));
+	nodes.push_back(nodes.back() - (vUp * (h + tv - 0.20f)) + (vRight * Lb));
 	float hyp = sqrtf(powf(INCLINATION_RATIO * bw, 2.0f) + powf(bw, 2.0f)); // Hypotenuse = top width of beam
 	nodes.push_back(nodes.back() + (vRight * hyp));
 	nodes.push_back(nodes.back() + (vUp * tv) + (vRight * th));
@@ -214,21 +278,24 @@ std::vector<CRAB::Vector4Df> BoxGirder::Deck_section(const float& t) const
 
 	return nodes;
 }
-std::vector<CRAB::Vector4Df> BoxGirder::U_section(const float& t) const
+std::vector<CRAB::Vector4Df> BoxGirder::U_section(const float& t)
 {
 	// Local axis
 	CRAB::Vector4Df vUp = { 0.0f, 1.0f, 0.0f, 0.0f };
 	CRAB::Vector4Df vRight = { 1.0f, 0.0f, 0.0f, 0.0f };
 
+	// Update Bridge Attributes
+	this->SetupSection(t);
+
 	// Local View
-	float offset = (B / 2.0f) * SLOPE + H + TOP_LAYER;
+	float offset = (B / 2.0f) * SLOPE + dH + TOP_LAYER;
 	std::vector<CRAB::Vector4Df> nodes;
 	nodes.push_back(CRAB::Vector4Df{ 0.0f, 0.0f, 0.0f, 1.0f } - (vUp * offset));
 	nodes.push_back(nodes.back() + (vRight * (b / 2.0f)));
-	nodes.push_back(nodes.back() + (vRight * (B - b - 2 * Lb) / 2.0f) + (vUp * (H - h - tv)));
+	nodes.push_back(nodes.back() + (vRight * (B - b - 2 * Lb) / 2.0f) + (vUp * (dH - h - tv)));
 	float hyp = sqrtf(powf(INCLINATION_RATIO * bw, 2.0f) + powf(bw, 2.0f)); // Hypotenuse = top width of beam
 	nodes.push_back(nodes.back() - (vRight * hyp));
-	nodes.push_back(nodes.back() - (vUp * (H - 2 * (h + tv))) - (vRight * (INCLINATION_RATIO * ((H - 2 * (h + tv))))));
+	nodes.push_back(nodes.back() - (vUp * (dH - 2 * (h + tv))) - (vRight * (INCLINATION_RATIO * ((dH - 2 * (h + tv))))));
 	nodes.push_back(nodes.back() - (vUp * tv) - (vRight * th));
 	// MIRROR
 	{
@@ -261,6 +328,9 @@ void BoxGirder::UpdatePiers()
 		this->piers[i].base.y -= this->piers[i].depth; // topo do bloco
 		CRAB::Vector4Df top = this->alignment->getPositionFromStation(this->piers[i].station);
 		this->piers[i].L = (top - this->piers[i].base).length() - this->H;
+
+		// UPDATE span vector
+		span_vector[i+1] = this->piers[i].station - this->alignment->profile.front()->getStart4DPoint().x;
 	}
 }
 //void BoxGirder::OLD_Update()
@@ -716,7 +786,7 @@ void BoxGirder::Update()
 			std::vector<CRAB::Vector4Df> new_section = this->Deck_section(t);
 			// Solid
 			EulerOp::SWEEP(model.back()->faces.front(), new_section);
-		}
+		}			
 	}
 
 	// U_SECTION

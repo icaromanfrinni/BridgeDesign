@@ -155,6 +155,10 @@ float Alignment::getRadius(const float& t) const
 		return INFINITY;
 	return 1 / k;
 }
+float Alignment::getDistance(const float& t) const
+{
+	return this->path3D.getDistance(t);
+}
 
 // RETURNS THE LENGTH OF VERTICAL ALIGNMENT
 // ----------------------------------------

@@ -9,9 +9,10 @@ class BoxGirder
 	: public Bridge
 {
 	std::vector<CRAB::Vector4Df> TopLayer_section(const float& t) const;
-	std::vector<CRAB::Vector4Df> Deck_section(const float& t) const;
-	std::vector<CRAB::Vector4Df> U_section(const float& t) const;
+	std::vector<CRAB::Vector4Df> Deck_section(const float& t);
+	std::vector<CRAB::Vector4Df> U_section(const float& t);
 	//void OLD_Update();
+	std::vector<float> span_vector; // TODO: vetor de ponteiros
 
 public:
 	// Box-Girder Bridge Attributes
@@ -21,6 +22,7 @@ public:
 	float b;    // bottom slab width
 	float th;   // horizontal haunch
 	float tv;   // vertical haunch
+	float dH;	// haunched girder
 
 	//DEFAULT CONSTRUCTOR
 	BoxGirder();
@@ -35,12 +37,14 @@ public:
 
 	// MODEL CONSTRUCTOR
 	void SetupSection();
+	void SetupSection(const float& t);
 	void SetupPiers(const int& nPiers);
 	void UpdatePiers();
 	void AddPier();
 	void Update();
 
 	// RETURN SECTION PARAMETERS
+	//float get_HaunchedGirder(const float& t) const;
 	float get_CantileverLength() const;
 	float get_DeckThickness() const;
 	float get_WebThickness() const;
