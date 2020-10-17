@@ -317,7 +317,7 @@ namespace CRAB
         // alignment
         alignments.push_back(new Alignment("Pista", road_plan, road_profile));
         // road
-        roadways.push_back(new Road("Rodovia", 8.00f, 40.0f, alignments.back(), vehicles.back()));
+        roadways.push_back(new Road("Rodovia", 12.50f, 40.0f, alignments.back(), vehicles.back()));
         // bridge
         bridges.push_back(new BoxGirder("Viaduto_1", roadways.back(), 250.0f, 5.5f, 60.0f));
 #endif

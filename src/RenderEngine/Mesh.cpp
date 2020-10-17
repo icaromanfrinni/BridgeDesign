@@ -88,7 +88,6 @@ Mesh::Mesh(const HED::solid* solid)
         material.ks = { 0.5f, 0.5f, 0.5f };
     }*/
     
-        
     for (int i = 0; i < solid->faces.size(); i++)
     {
         // Initialize Polygon
@@ -166,7 +165,7 @@ Mesh::Mesh(const HED::solid* solid)
             vertices.push_back(vertex3);
         }
     }
-
+    
     // now that we have all the required data, set the vertex buffers and its attribute pointers.
     setupMesh();
 

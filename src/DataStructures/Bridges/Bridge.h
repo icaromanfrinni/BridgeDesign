@@ -16,7 +16,7 @@ const float h2 = 0.60;	// height of object above roadway surface
 const float SLOPE = 0.0f;
 const float TOP_LAYER = 0.10f;
 const float GUARD_RAIL = 0.40f;
-const float INCLINATION_RATIO = 0.25f;
+//const float INCLINATION_RATIO = 0.25f;
 
 struct Pier
 {
@@ -49,6 +49,7 @@ public:
 	float H;		// Height
 
 	bool hasWidening = true;
+	bool haunchedGirder = true;
 
 	// DEFAULT CONSTRUCTOR
 	Bridge();

@@ -589,7 +589,7 @@ namespace Controller
 		if (show_edit_bridge_parameters)
 		{
 			ImGui::SetNextWindowPos(ImVec2(100, 100), ImGuiCond_Once);
-			ImGui::SetNextWindowSize(ImVec2(275, 250), ImGuiCond_Once);
+			ImGui::SetNextWindowSize(ImVec2(275, 265), ImGuiCond_Once);
 			ImGui::Begin("General parameters", &show_edit_bridge_parameters, ImGuiWindowFlags_NoResize);
 
 			// BRIDGE
@@ -707,6 +707,10 @@ namespace Controller
 				// WIDENING
 				
 				ImGui::Checkbox("Widening", &bridges[CurrentBridge]->hasWidening);
+
+				// HAUNCHED GIRDER
+
+				ImGui::Checkbox("Haunched Girder", &bridges[CurrentBridge]->haunchedGirder);
 
 				// BUTTONS
 
