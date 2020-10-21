@@ -98,7 +98,7 @@ void BoxGirder::SetupSection()
 }
 void BoxGirder::SetupSection(const float& t)
 {
-	if (t == 0.0f || !haunchedGirder)
+	if (/*t == 0.0f || */!haunchedGirder)
 	{
 		this->SetupSection();
 		this->dH = H;
@@ -106,9 +106,10 @@ void BoxGirder::SetupSection(const float& t)
 	}
 
 	// ALTURA VARIÁVEL ENTRE APOIOS
-
+	//std::cout << "t = " << t << std::endl;
 	// Distância X
 	float x = this->alignment->getDistance(t);
+	//std::cout << "x,antes = " << x << std::endl;
 	// Intervalo
 	float low = 0.0f, high = 0.0f;
 	for (int i = 0; i < this->span_vector.size(); i++)
@@ -121,8 +122,11 @@ void BoxGirder::SetupSection(const float& t)
 			break;
 		}
 	}
+	//std::cout << "low = " << low << std::endl;
+	//std::cout << "high = " << high << std::endl;
 	// Atualiza distância
 	x -= low;
+	//std::cout << "x,depois = " << x << std::endl;
 	// Vão do intervalo atual
 	float current_span = high - low;
 	// Altura Y
@@ -145,7 +149,7 @@ void BoxGirder::SetupSection(const float& t)
 void BoxGirder::SetupPiers(const int& nPiers)
 {
 	float b_Pier = 0.6f * this->b;
-	float h_Pier = 0.5f * b_Pier;
+	float h_Pier = 0.6f * b_Pier;
 	float span = this->alignment->getProfileLength() / nPiers;
 	//float end_length = (total_length - (nPiers - 1) * span) / 2.0f;
 	// first pier
@@ -153,7 +157,8 @@ void BoxGirder::SetupPiers(const int& nPiers)
 
 	this->piers.clear();
 	this->span_vector.clear();
-	this->span_vector.push_back(0.0f);
+	//this->span_vector.push_back(0.0f);
+	this->span_vector.push_back(-span / 2.0f);
 	for (int i = 0; i < nPiers; i++)
 	{
 		Pier P;
@@ -173,7 +178,9 @@ void BoxGirder::SetupPiers(const int& nPiers)
 		piers.push_back(P);
 		station += span;
 	}
-	this->span_vector.push_back(this->alignment->profile.back()->getEnd4DPoint().x - this->alignment->profile.front()->getStart4DPoint().x);
+	//this->span_vector.push_back(this->alignment->profile.back()->getEnd4DPoint().x - this->alignment->profile.front()->getStart4DPoint().x);
+	float last_span = 2.0f * ((this->alignment->profile.back()->getEnd4DPoint().x - this->alignment->profile.front()->getStart4DPoint().x) - this->span_vector.back());
+	this->span_vector.push_back(this->span_vector.back() + last_span);
 }
 void BoxGirder::AddPier()
 {
@@ -331,7 +338,12 @@ void BoxGirder::UpdatePiers()
 		this->piers[i].L = (top - this->piers[i].base).length() - this->H;
 
 		// UPDATE span vector
-		span_vector[i+1] = this->piers[i].station - this->alignment->profile.front()->getStart4DPoint().x;
+		this->span_vector[i + 1] = this->piers[i].station - this->alignment->profile.front()->getStart4DPoint().x;
+		// configura as extremidades do vertor de vãos com valores fora da extensão total para garantir H / 2 (balanços)
+		/*if (i == 0)
+			this->span_vector.front() = -this->span_vector[i + 1];
+		else if (i == this->piers.size() - 1)
+			this->span_vector.back() = -this->span_vector[i + 1];*/
 	}
 }
 //void BoxGirder::OLD_Update()
