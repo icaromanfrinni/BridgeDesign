@@ -122,9 +122,9 @@ float Bridge::Widening(const float& t) const
 	/* TRAVELED WAY ON CURVE */
 	float sumL = 0.0f;
 	for (int i = 0; i < this->road->vehicle->L.size(); i++)
-		sumL += this->road->vehicle->L[i];
+		sumL += this->road->vehicle->L[i]; /* VERIFICAR: acumular valores de Li ao quadrado */
 	// Track width on curve (U)
-	float U = radius - sqrtf(powf(radius, 2.0f) - powf(sumL, 2.0f));
+	float U = radius - sqrtf(powf(radius, 2.0f) - powf(sumL, 2.0f)); /* VERIFICAR: somatório do quadrado, e não o quadrado do somatório */
 	// Width of the front overhang (Fa)
 	float Fa = sqrtf(powf(radius, 2.0f) + this->road->vehicle->A * (2.0f * this->road->vehicle->L.front() + this->road->vehicle->A)) - radius;
 	// Extra width (Z)

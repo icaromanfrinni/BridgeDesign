@@ -5,6 +5,12 @@
 #include "Bridge.h"
 #include <algorithm>
 
+struct Span
+{
+	float start;
+	float end;
+};
+
 class BoxGirder
 	: public Bridge
 {
@@ -12,7 +18,9 @@ class BoxGirder
 	std::vector<CRAB::Vector4Df> Deck_section(const float& t);
 	std::vector<CRAB::Vector4Df> U_section(const float& t);
 	//void OLD_Update();
-	std::vector<float> span_vector; // TODO: vetor de ponteiros
+	
+	//std::vector<float> span_vector; // TODO: vetor de ponteiros
+	std::vector<Span> span_vector;
 
 public:
 	// Box-Girder Bridge Attributes

@@ -159,6 +159,10 @@ float Alignment::getDistance(const float& t) const
 {
 	return this->path3D.getDistance(t);
 }
+float Alignment::getHorDistance(const float& t) const
+{
+	return this->path3D.getHorDistance(t);
+}
 
 // RETURNS THE LENGTH OF VERTICAL ALIGNMENT
 // ----------------------------------------

@@ -344,6 +344,25 @@ float NURBS::getDistance(const float& t) const
 	return D;
 }
 
+// RETURNS THE HORIZONTAL DISTANCE FROM START
+// ------------------------------------------
+float NURBS::getHorDistance(const float& t) const
+{
+	float D = 0.0f;
+
+	glm::vec3 A = this->getPosition(0.0f);
+	A.y = 0.0f;
+	for (int i = 1; i <= /*ELEMENTS*/1000; i++)
+	{
+		float u = t * float(i) / /*ELEMENTS*/1000;
+		glm::vec3 B = this->getPosition(u);
+		B.y = 0.0f;
+		D += glm::distance(A, B);
+		A = B;
+	}
+	return D;
+}
+
 // CLOCKWISE CHECK
 // ---------------
 bool NURBS::isClockwise(const float& t) const

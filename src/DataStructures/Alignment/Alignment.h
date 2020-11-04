@@ -38,6 +38,7 @@ public:
 	float getCurvature(const float& t) const;
 	float getRadius(const float& t) const;
 	float getDistance(const float& t) const;
+	float getHorDistance(const float& t) const;
 
 	// RETURNS THE 't' PARAMETER OF NURBS CURVE
 	float findParameter(const float& distance) const;

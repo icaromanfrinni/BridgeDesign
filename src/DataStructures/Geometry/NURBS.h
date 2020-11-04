@@ -67,6 +67,8 @@ public:
 	float getLength() const;
 	// RETURNS THE DISTANCE FROM START
 	float getDistance(const float& t) const;
+	// RETURNS THE HORIZONTAL DISTANCE FROM START
+	float getHorDistance(const float& t) const;
 	// CLOCKWISE CHECK
 	bool isClockwise(const float& t) const;
 };
