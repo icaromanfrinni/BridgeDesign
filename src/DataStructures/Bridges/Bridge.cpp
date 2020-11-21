@@ -13,6 +13,7 @@ Bridge::Bridge(const std::string& _name, Road* _road, const float& cross_station
 {
 	// General attributes
 	this->mainSpan = main_span;
+	//this->mainSpan = this->HC;
 	//this->VC = v_clearance;
 
 	// Viaduct
@@ -32,6 +33,7 @@ Bridge::Bridge(const std::string& _name, Road* _road, const float& cross_station
 {
 	// General attributes
 	this->mainSpan = main_span;
+	//this->mainSpan = this->HC;
 	//this->VC = v_clearance;
 
 	// Overpass
@@ -49,6 +51,7 @@ Bridge::Bridge(const std::string& _name, Road* _road, const float& cross_station
 {
 	// General attributes
 	this->mainSpan = main_span;
+	//this->mainSpan = this->HC;
 	//this->VC = v_clearance;
 
 	// Preliminary calculations
@@ -69,8 +72,9 @@ void Bridge::SetupBridge()
 {
 	// Bridge attributes
 	this->B = this->road->width;
+	// nos apoios
 	//this->H = int((100.0f * this->mainSpan / 16.0f) / 5.0f) * 0.05f;
-	this->H = int((100.0f * this->mainSpan / 10.0f) / 5.0f) * 0.05f; // nos apoios
+	this->H = int((100.0f * this->mainSpan / 20.0f) / 5.0f) * 0.05f;
 
 	// Alignment
 	//this->alignment = this->road->alignment;
@@ -102,6 +106,8 @@ float Bridge::Superelevation(const float& t) const
 	float alpha = atanf(slope) * 180.0f / M_PI;
 	if (this->alignment->isClockwise(t))
 		alpha = alpha * (-1.0f);
+
+	//std::cout << "t = " << t << "\tslope = " << alpha << "\tcurvature = " << this->alignment->getCurvature(t) << std::endl;
 	return alpha;
 }
 // GET NORMAL VECTOR WITH SUPERELEVATION
@@ -116,21 +122,28 @@ CRAB::Vector4Df Bridge::getNormal(const float& t) const
 float Bridge::Widening(const float& t) const
 {
 	float radius = this->alignment->getRadius(t);
+	//std::cout << "R = " << radius << std::endl;
 	/* TRAVELED WAY ON TANGENT */
 	if (isinf(radius))
 		return 0.0f;
 	/* TRAVELED WAY ON CURVE */
 	float sumL = 0.0f;
 	for (int i = 0; i < this->road->vehicle->L.size(); i++)
-		sumL += this->road->vehicle->L[i]; /* VERIFICAR: acumular valores de Li ao quadrado */
+		//sumL += this->road->vehicle->L[i]; /* VERIFICAR: acumular valores de Li ao quadrado */
+		sumL += powf(this->road->vehicle->L[i], 2.0f);
 	// Track width on curve (U)
-	float U = radius - sqrtf(powf(radius, 2.0f) - powf(sumL, 2.0f)); /* VERIFICAR: somatório do quadrado, e não o quadrado do somatório */
+	//float U = radius - sqrtf(powf(radius, 2.0f) - powf(sumL, 2.0f)); /* VERIFICAR: somatório do quadrado, e não o quadrado do somatório */
+	float U = this->road->vehicle->u + radius - sqrtf(powf(radius, 2.0f) - sumL);
 	// Width of the front overhang (Fa)
 	float Fa = sqrtf(powf(radius, 2.0f) + this->road->vehicle->A * (2.0f * this->road->vehicle->L.front() + this->road->vehicle->A)) - radius;
 	// Extra width (Z)
 	float Z = 0.1f * this->road->speed / sqrtf(radius);
+	// Lateral clearance (C)
+	float C = this->road->width / nLanes - U;
+	// Width needed on a curve (Wc)
+	float Wc = nLanes * (U + C) + (nLanes - 1) * Fa + Z;
 	// Widening of traveled way on curve (w)
-	return nLanes * U + (nLanes - 1) * Fa + Z;
+	return Wc - this->road->width;
 }
 
 // HORIZONTAL ALIGNMENT
@@ -184,6 +197,7 @@ std::vector<VerSegment*> Bridge::Vertical_Alignment()
 	
 	// Round up
 	A = ceilf(A);
+	//std::cout << "A = " << A << std::endl;
 
 	// VPC
 	/*CRAB::Vector4Df VPC2 = this->road->path2Dv.getPointFromStation(this->CS - Lc / 2);

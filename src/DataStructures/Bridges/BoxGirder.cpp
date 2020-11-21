@@ -15,7 +15,9 @@ BoxGirder::BoxGirder(const std::string& _name, Road* _road, const float& cross_s
 	// Preliminary calculations
 	this->SetupSection();
 	// Piers
-	int nPiers = this->alignment->getProfileLength() / this->mainSpan;
+	int nPiers = round(this->alignment->getProfileLength() / this->mainSpan);
+	//std::cout << "getProfileLength() = " << this->alignment->getProfileLength() << std::endl;
+	//std::cout << "nPiers = " << nPiers << std::endl;
 	SetupPiers(nPiers);
 	// Model
 	this->Update();
@@ -29,7 +31,7 @@ BoxGirder::BoxGirder(const std::string& _name, Road* _road, const float& cross_s
 	// Preliminary calculations
 	this->SetupSection();
 	// Piers
-	int nPiers = this->alignment->getProfileLength() / this->mainSpan;
+	int nPiers = round(this->alignment->getProfileLength() / this->mainSpan);
 	SetupPiers(nPiers);
 	// Model
 	this->Update();
@@ -43,7 +45,7 @@ BoxGirder::BoxGirder(const std::string& _name, Road* _road, const float& cross_s
 	// Preliminary calculations
 	this->SetupSection();
 	// Piers
-	int nPiers = this->alignment->getProfileLength() / this->mainSpan;
+	int nPiers = round(this->alignment->getProfileLength() / this->mainSpan);
 	SetupPiers(nPiers);
 	// Model
 	this->Update();
@@ -159,12 +161,22 @@ void BoxGirder::SetupSection(const float& t)
 	if (tv < 0.10f) tv = 0.10f;
 	b = int((100.0f * (B - 2.0f * (Lb + this->web_inclination * (this->dH - h - tv)))) / 5.0f) * 0.05f;
 	th = int((100.0f * (b - 2 * bw) / 5.0f) / 5.0f) * 0.05f;
+
+	/*if (this->dH < 1.80f)
+	{
+		std::cout << "\n\tdH = " << this->dH << std::endl;
+		std::cout << "webs slab thickness = " << bw << std::endl;
+		std::cout << "vertical haunch = " << tv << std::endl;
+		std::cout << "bottom slab width = " << b << std::endl;
+		std::cout << "horizontal haunch = " << th << std::endl;
+	}*/
 }
 void BoxGirder::SetupPiers(const int& nPiers)
 {
-	float b_Pier = 0.6f * this->b;
+	float b_Pier = /*0.6f * */this->b;
 	float h_Pier = 0.6f * b_Pier;
 	float span_length = this->alignment->getProfileLength() / nPiers;
+	//std::cout << "span_length = " << span_length << std::endl;
 	//float end_length = (total_length - (nPiers - 1) * span) / 2.0f;
 	// first pier
 	float station = this->alignment->profile.front()->getStart4DPoint().x + span_length / 2.0f;
@@ -196,6 +208,7 @@ void BoxGirder::SetupPiers(const int& nPiers)
 		P.base.y -= P.depth; // topo do bloco
 		CRAB::Vector4Df top = this->alignment->getPositionFromStation(P.station);
 		P.L = (top - P.base).length() - this->H;
+		//P.L = (top - P.base).length() - (this->H + (this->B / 2.0f) * SLOPE + TOP_LAYER);
 		piers.push_back(P);
 		station += span_length;
 	}
@@ -209,7 +222,7 @@ void BoxGirder::SetupPiers(const int& nPiers)
 void BoxGirder::AddPier()
 {
 	Pier P;
-	P.b = 0.6f * this->b;
+	P.b = /*0.6f * */this->b;
 	P.h = 0.5f * P.b;
 	P.station = this->alignment->profile.front()->getStart4DPoint().x + this->alignment->getProfileLength() / 2.0f;
 	P.ang = 0.0f;
@@ -221,6 +234,7 @@ void BoxGirder::AddPier()
 	P.base.y -= P.depth; // topo do bloco
 	CRAB::Vector4Df top = this->alignment->getPositionFromStation(P.station);
 	P.L = (top - P.base).length() - this->H;
+	//P.L = (top - P.base).length() - (this->H + (this->B / 2.0f) * SLOPE + TOP_LAYER);
 	piers.push_back(P);
 }
 
@@ -267,6 +281,8 @@ std::vector<CRAB::Vector4Df> BoxGirder::Deck_section(const float& t)
 	float w = 0.0f;
 	if (hasWidening)
 		w = this->Widening(t);
+
+	//std::cout << "\tt = " << t << "\tw = " << w << std::endl;
 
 	// Local View
 	float offset = (B / 2.0f) * SLOPE + TOP_LAYER;
@@ -794,7 +810,7 @@ void BoxGirder::Update()
 			EulerOp::SWEEP(model.back()->faces.front(), new_section);
 		}
 	}
-
+	
 	// DECK
 	{
 		std::vector<CRAB::Vector4Df> cross_section = this->Deck_section(0.0f);

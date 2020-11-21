@@ -32,8 +32,8 @@ public:
 	// ROAD DESIGN
 	int StoppingSightDistance() const;
 
-	//// MODEL CONSTRUCTOR
-	//void update();
+	// MODEL CONSTRUCTOR
+	void update();
 };
 
 #endif // ROAD_H

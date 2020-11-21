@@ -26,7 +26,7 @@
 #include "Skybox.h"
 #include "GlobalTextures.h"
 
-#define EXAMPLE 5
+#define EXAMPLE 14
 #define DEBUG 1
 
 namespace CRAB
@@ -51,8 +51,8 @@ namespace CRAB
     glm::mat4 projection = glm::mat4(1.0f);
 
     // lighting
-    //DirectionalLight mainLight({ 0.9f, 0.9f, 0.9f }, camera.LookAt);
-    DirectionalLight mainLight({ 0.9f, 0.9f, 0.9f }, { -1.0f, -1.0f, -1.0f });
+    DirectionalLight mainLight({ 0.8f, 0.8f, 0.8f }, camera.LookAt);
+    //DirectionalLight mainLight({ 0.9f, 0.9f, 0.9f }, { -1.0f, -1.0f, -1.0f });
     
     // timing
     float deltaTime = 0.0f;
@@ -179,9 +179,10 @@ namespace CRAB
 
         // load vehicles
         // -------------
-        vehicles.push_back(new Vehicle("Passenger Car", 0.91f, { 3.35f }));
-        vehicles.push_back(new Vehicle("City Bus", 2.13f, { 7.62f }));
-        vehicles.push_back(new Vehicle("Truck WB-50", 0.91f, { 3.81f, 10.82f }));
+        vehicles.push_back(new Vehicle("Passenger Car", 2.1f, 0.9f, { 3.4f }));
+        vehicles.push_back(new Vehicle("City Bus", 2.6f, 2.1f, { 7.6f }));
+        vehicles.push_back(new Vehicle("Truck WB-12", 2.4f, 0.9f, { 3.8f, 8.4f }));
+        vehicles.push_back(new Vehicle("Truck WB-15", 2.6f, 0.9f, { 3.8f, 10.8f }));
 
         // load models
         // -----------
@@ -232,14 +233,14 @@ namespace CRAB
         road_plan.push_back(new HorSegment(glm::vec3(200.0f, 0.0f, 100.0f), glm::vec3(200.0f, 0.0f, 200.0f)));
 
         std::vector<VerSegment*> profile;
-        profile.push_back(new VerSegment(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(50.0f, 0.0f, 0.0f)));
+        profile.push_back(new VerSegment(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(200.0f, 0.0f, 0.0f)));
 
         // alignment
         alignments.push_back(new Alignment("Pista_01", road_plan, profile));
         // road
-        roadways.push_back(new Road("Rodovia_001", 8.00f, 40.0f, alignments.back()));
+        roadways.push_back(new Road("Rodovia_001", 8.00f, 40.0f, alignments.back(), vehicles.back()));
         // bridge
-        bridges.push_back(new BoxGirder("Rio_Pacoti", roadways.back(), 100.0f/*, 6.0f*/, 50.0f));
+        bridges.push_back(new BoxGirder("Rio_Pacoti", roadways.back(), 100.0f, 6.0f, 50.0f));
 #endif
 
         /* EXEMPLO: Reunião 13 (com cálculo automático do alinhamento vertical) */
@@ -477,9 +478,9 @@ namespace CRAB
         // alignment
         alignments.push_back(new Alignment("Pista", road_plan, road_profile));
         // road
-        roadways.push_back(new Road("INDIANA", 8.00f, 50.0f, alignments.back()));
+        roadways.push_back(new Road("INDIANA", 8.00f, 50.0f, alignments.back(), vehicles.back()));
         // bridge
-        bridges.push_back(new BoxGirder("Interchange", roadways.back(), 370.0/*, 5.0f*/, 75.0f));
+        bridges.push_back(new BoxGirder("Interchange", roadways.back(), 370.0, 5.0f, 75.0f));
 #endif
 
         /* WIDENING */
@@ -502,16 +503,36 @@ namespace CRAB
         bridges.push_back(new BoxGirder("ponte", roadways.back(), 124.14f, 50.0f));
 #endif
 
+        /* Automation and Construction 2020: Viaduto do Baldo (ramo esquerdo) */
+#if EXAMPLE == 14
+        std::vector<HorSegment*> road_plan;
+        std::vector<VerSegment*> road_profile;
+        // road_plan
+        road_plan.push_back(new HorSegment(glm::vec3(0.000f, 0.0f, -187.830f), glm::vec3(150.820f, 0.0f, -153.860f)));
+        road_plan.push_back(new HorSegment(glm::vec3(150.820f, 0.0f, -153.860f), glm::vec3(220.630f, 0.0f, -138.140f), glm::vec3(290.73f, 0.0f, -152.54f)));
+        road_plan.push_back(new HorSegment(glm::vec3(290.730f, 0.0f, -152.540f), glm::vec3(349.140f, 0.0f, -164.540f), glm::vec3(408.17f, 0.0f, -172.96f)));
+        road_plan.push_back(new HorSegment(glm::vec3(408.170f, 0.0f, -172.960f), glm::vec3(461.610f, 0.0f, -180.590f)));
+        // road_profile
+        road_profile.push_back(new VerSegment(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(470.0f, 0.0f, 0.0f)));
+        // alignment
+        alignments.push_back(new Alignment("Ramo Esquerdo", road_plan, road_profile));
+        // road
+        roadways.push_back(new Road("Av. Prudente de Morais", 7.20f, 60.0f, alignments.back(), vehicles.back()));
+        // bridge
+        bridges.push_back(new BoxGirder("Viaduto Esquerdo", roadways.back(), 230.0f, 6.0f, 200.0f));
+#endif
+        
         // mesh
         // ----
         for (int i = 0; i < bridges.size(); i++)
             for (int j = 0; j < bridges[i]->model.size(); j++)
                 ourMesh_List.push_back(Mesh(bridges[i]->model[j]));
-       /* std::cout << "\t* Roads" << std::endl;
+        /*std::cout << "\t* Roads" << std::endl;
         for (int i = 0; i < roadways.size(); i++)
             for (int j = 0; j < roadways[i]->model.size(); j++)
                 ourMesh_List.push_back(Mesh(roadways[i]->model[j]));*/
 
+        //std::cout << "\n\t *** AQUI ***" << std::endl;
         // time after
         // ----------
         auto t2 = std::chrono::high_resolution_clock::now();
@@ -578,7 +599,7 @@ namespace CRAB
             // light properties
             // ----------------
             // directional light
-            //mainLight.direction = camera.LookAt;
+            mainLight.direction = camera.LookAt;
             ourShader.setDirLight(mainLight);
 
             // view/projection transformations

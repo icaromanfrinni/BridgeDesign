@@ -455,17 +455,17 @@ namespace EulerOp
 		// Get Solid
 		HED::solid* currentSolid = f->HedSolid;
 
-		for (int i = 0; i < /*ELEMENTS*/10; i++)
+		for (int i = 0; i < ELEMENTS; i++)
 		{
 			/* ---------- TRANSFORMATION MATRIX ---------- */
 
 			// CURRENT POSITION
-			float t = float(i) / /*ELEMENTS*/10;
+			float t = float(i) / ELEMENTS;
 			// Local View
 			CRAB::Matrix4 ViewMatrix = toLocal(path->getPosition(t), path->getTangent(t), path->getNormalUp(t));
 
 			// NEXT POSITION
-			t = float(i + 1) / /*ELEMENTS*/10;
+			t = float(i + 1) / ELEMENTS;
 			// Next View
 			CRAB::Matrix4 ModelMatrix = toWorld(path->getPosition(t), path->getTangent(t), path->getNormalUp(t));
 

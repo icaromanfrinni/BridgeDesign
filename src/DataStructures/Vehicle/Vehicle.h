@@ -11,6 +11,7 @@ class Vehicle
 	
 public:
 	std::string name;
+	float u;				// track width on tangent (out-to-out of tires), m
 	float A;				// front overhang of inner lane vehicle, m
 	std::vector<float> L;	// wheelbase of design vehicle between consecutive axles, m
 	//float u;				// track width on tangent (out-to-out of tires), m
@@ -18,7 +19,7 @@ public:
 	// DEFAULT CONSTRUCTOR
 	Vehicle();
 	// OVERLOAD CONSTRUCTOR
-	Vehicle(const std::string& _name, const float& _front_overhang, const std::vector<float>& _wheelbase);
+	Vehicle(const std::string& _name, const float& _width, const float& _front_overhang, const std::vector<float>& _wheelbase);
 	// DESTRUCTOR
 	~Vehicle();
 };

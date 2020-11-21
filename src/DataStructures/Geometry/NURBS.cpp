@@ -334,9 +334,9 @@ float NURBS::getDistance(const float& t) const
 	float D = 0.0f;
 
 	glm::vec3 A = this->getPosition(0.0f);
-	for (int i = 1; i <= /*ELEMENTS*/1000; i++)
+	for (int i = 1; i <= ELEMENTS/*1000*/; i++)
 	{
-		float u = t * float(i) / /*ELEMENTS*/1000;
+		float u = t * float(i) / ELEMENTS/*1000*/;
 		glm::vec3 B = this->getPosition(u);
 		D += glm::distance(A, B);
 		A = B;
@@ -352,9 +352,9 @@ float NURBS::getHorDistance(const float& t) const
 
 	glm::vec3 A = this->getPosition(0.0f);
 	A.y = 0.0f;
-	for (int i = 1; i <= /*ELEMENTS*/1000; i++)
+	for (int i = 1; i <= ELEMENTS/*1000*/; i++)
 	{
-		float u = t * float(i) / /*ELEMENTS*/1000;
+		float u = t * float(i) / ELEMENTS/*1000*/;
 		glm::vec3 B = this->getPosition(u);
 		B.y = 0.0f;
 		D += glm::distance(A, B);
