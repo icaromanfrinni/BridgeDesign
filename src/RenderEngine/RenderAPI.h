@@ -46,13 +46,13 @@ namespace CRAB
     float lastY = SCR_HEIGHT / 2.0f;
     bool firstMouse = true;
     float walkAround = 0.0f;
-
+    
     // projection matrix
     glm::mat4 projection = glm::mat4(1.0f);
 
     // lighting
-    DirectionalLight mainLight({ 0.8f, 0.8f, 0.8f }, camera.LookAt);
-    //DirectionalLight mainLight({ 0.9f, 0.9f, 0.9f }, { -1.0f, -1.0f, -1.0f });
+    //DirectionalLight mainLight({ 0.8f, 0.8f, 0.8f }, camera.LookAt);
+    DirectionalLight mainLight({ 0.9f, 0.9f, 0.9f }, { -1.0f, -1.0f, -1.0f });
     
     // timing
     float deltaTime = 0.0f;
@@ -517,9 +517,10 @@ namespace CRAB
         // alignment
         alignments.push_back(new Alignment("Ramo Esquerdo", road_plan, road_profile));
         // road
-        roadways.push_back(new Road("Av. Prudente de Morais", 7.20f, 60.0f, alignments.back(), vehicles.back()));
+        roadways.push_back(new Road("Av. Prudente de Morais", 9.20f, 60.0f, alignments.back(), vehicles.back()));
         // bridge
-        bridges.push_back(new BoxGirder("Viaduto Esquerdo", roadways.back(), 230.0f, 6.0f, 200.0f));
+        std::vector<float> stations = { 125.0f, 195.0f, 265.0f, 335.0f };
+        bridges.push_back(new BoxGirder("Viaduto Esquerdo", roadways.back(), 230.0f, 6.0f, 200.0f, stations));
 #endif
         
         // mesh
@@ -599,7 +600,7 @@ namespace CRAB
             // light properties
             // ----------------
             // directional light
-            mainLight.direction = camera.LookAt;
+            //mainLight.direction = camera.LookAt;
             ourShader.setDirLight(mainLight);
 
             // view/projection transformations

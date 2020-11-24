@@ -36,7 +36,7 @@ public:
 	//DEFAULT CONSTRUCTOR
 	BoxGirder();
 	// OVERLOAD CONSTRUCTOR (Viaduct)
-	BoxGirder(const std::string& _name, Road* _road, const float& cross_station, const float& vertical_clearance, const float& horizontal_clearance);
+	BoxGirder(const std::string& _name, Road* _road, const float& cross_station, const float& vertical_clearance, const float& horizontal_clearance, const std::vector<float>& _stations);
 	// OVERLOAD CONSTRUCTOR (Overpass)
 	BoxGirder(const std::string& _name, Road* _road, const float& cross_station, const float& vertical_clearance, const float& horizontal_clearance, const float& elevation_level);
 	// OVERLOAD CONSTRUCTOR (Bridge)
@@ -47,7 +47,8 @@ public:
 	// MODEL CONSTRUCTOR
 	void SetupSection();
 	void SetupSection(const float& t);
-	void SetupPiers(const int& nPiers);
+	void SetupPiers(const int& _nPiers);
+	void SetupPiers(const std::vector<float>& _stations);
 	void UpdatePiers();
 	void AddPier();
 	void Update();

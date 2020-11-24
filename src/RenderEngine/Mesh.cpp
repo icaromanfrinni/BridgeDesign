@@ -23,7 +23,7 @@ Mesh::Mesh(const obj& object)
         material.textures.push_back(new Texture("textures/" + object.Name + "_normal.jpg", "normal"));
     }
 
-    for (int i = 0; i < object.Faces.size(); i++)
+    /*for (int i = 0; i < object.Faces.size(); i++)
         for (int j = 0; j < object.Faces[i].vertices.size(); j++)
         {
             unsigned int index;
@@ -39,9 +39,48 @@ Mesh::Mesh(const obj& object)
                 index = object.Faces[i].textures[j] - 1;
                 vertex.TexCoords = glm::vec2(object.vTexture[index].x, object.vTexture[index].y);
             }
-            
+
             vertices.push_back(vertex);
+        }*/
+
+    for (int i = 0; i < object.Faces.size(); i++)
+    {
+        unsigned int index;
+        Mesh::Vertex vertex1, vertex2, vertex3;
+        // ------------------------------------
+        index = object.Faces[i].vertices[0] - 1;
+        vertex1.Position = glm::vec3(object.Vertices[index].x, object.Vertices[index].y, object.Vertices[index].z);
+        index = object.Faces[i].vertices[1] - 1;
+        vertex2.Position = glm::vec3(object.Vertices[index].x, object.Vertices[index].y, object.Vertices[index].z);
+        index = object.Faces[i].vertices[2] - 1;
+        vertex3.Position = glm::vec3(object.Vertices[index].x, object.Vertices[index].y, object.Vertices[index].z);
+        // ------------------------------------
+        index = object.Faces[i].normals[0] - 1;
+        vertex1.Normal = glm::vec3(object.vNormals[index].x, object.vNormals[index].y, object.vNormals[index].z);
+        index = object.Faces[i].normals[1] - 1;
+        vertex2.Normal = glm::vec3(object.vNormals[index].x, object.vNormals[index].y, object.vNormals[index].z);
+        index = object.Faces[i].normals[2] - 1;
+        vertex3.Normal = glm::vec3(object.vNormals[index].x, object.vNormals[index].y, object.vNormals[index].z);
+        // ------------------------------------
+        if (material.hasTexture)
+        {
+            index = object.Faces[i].textures[0] - 1;
+            vertex1.TexCoords = glm::vec2(object.vTexture[index].x, object.vTexture[index].y);
+            index = object.Faces[i].textures[1] - 1;
+            vertex2.TexCoords = glm::vec2(object.vTexture[index].x, object.vTexture[index].y);
+            index = object.Faces[i].textures[2] - 1;
+            vertex3.TexCoords = glm::vec2(object.vTexture[index].x, object.vTexture[index].y);
+
+            glm::vec3 tangent = Calc_Tangent(vertex1, vertex2, vertex3);
+            vertex1.Tangent = tangent;
+            vertex2.Tangent = tangent;
+            vertex3.Tangent = tangent;
         }
+        // ------------------------------------
+        vertices.push_back(vertex1);
+        vertices.push_back(vertex2);
+        vertices.push_back(vertex3);
+    }
 
     // now that we have all the required data, set the vertex buffers and its attribute pointers.
     setupMesh();

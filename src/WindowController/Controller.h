@@ -571,7 +571,7 @@ namespace Controller
 			ImGui::Separator();
 			ImGui::Columns(1);
 			if (ImGui::Button("   OK   ")) {
-				bridges.push_back(new BoxGirder(bridgeName, roadways[CurrentRoad], cross_station, v_clearance, h_clearance));
+				bridges.push_back(new BoxGirder(bridgeName, roadways[CurrentRoad], cross_station, v_clearance, h_clearance, column_stations));
 				for (int i = 0; i < bridges.back()->model.size(); i++)
 					ourMesh_List.push_back(Mesh(bridges.back()->model[i]));
 				show_add_bridge_window = false;

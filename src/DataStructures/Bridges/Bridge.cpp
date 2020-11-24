@@ -140,6 +140,9 @@ float Bridge::Widening(const float& t) const
 	float Z = 0.1f * this->road->speed / sqrtf(radius);
 	// Lateral clearance (C)
 	float C = this->road->width / nLanes - U;
+	if (C < 0.9f)
+		C = 0.9f;
+	//std::cout << "C = " << C << std::endl;
 	// Width needed on a curve (Wc)
 	float Wc = nLanes * (U + C) + (nLanes - 1) * Fa + Z;
 	// Widening of traveled way on curve (w)
