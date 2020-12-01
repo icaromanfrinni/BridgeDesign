@@ -18,6 +18,9 @@ const float TOP_LAYER = 0.10f;
 const float GUARD_RAIL = 0.40f;
 //const float INCLINATION_RATIO = 0.25f;
 
+// MAX Transverse Slope
+const float SLOPE_MAX = 0.06f;
+
 struct Pier
 {
 	float b, h, L, station, ang, depth;
@@ -48,7 +51,7 @@ public:
 	float B;		// Width
 	float H;		// Height
 
-	bool hasWidening = true;
+	bool hasWidening = false;
 	bool haunchedGirder = true;
 
 	// DEFAULT CONSTRUCTOR

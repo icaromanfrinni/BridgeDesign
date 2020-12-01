@@ -37,6 +37,9 @@ public:
     glm::vec3 Up;
     glm::vec3 Right;
     glm::vec3 WorldUp;
+    // Viewing Frustum
+    float Near;
+    float Far;
     // Euler Angles
     float Yaw;
     float Pitch;

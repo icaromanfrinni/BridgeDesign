@@ -39,6 +39,8 @@ namespace CRAB
     // settings
     const unsigned int SCR_WIDTH = 1280;
     const unsigned int SCR_HEIGHT = 720;
+    int current_width = SCR_WIDTH;
+    int current_height = SCR_HEIGHT;
 
     // camera
     //Camera camera;
@@ -514,13 +516,19 @@ namespace CRAB
         road_plan.push_back(new HorSegment(glm::vec3(408.170f, 0.0f, -172.960f), glm::vec3(461.610f, 0.0f, -180.590f)));
         // road_profile
         road_profile.push_back(new VerSegment(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(470.0f, 0.0f, 0.0f)));
+        // road plan for elevation view
+        std::vector<HorSegment*> elevation_view;
+        elevation_view.push_back(new HorSegment(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(470.0f, 0.0f, 0.0f)));
         // alignment
         alignments.push_back(new Alignment("Ramo Esquerdo", road_plan, road_profile));
+        //alignments.push_back(new Alignment("Ramo Esquerdo", elevation_view, road_profile));
         // road
         roadways.push_back(new Road("Av. Prudente de Morais", 9.20f, 60.0f, alignments.back(), vehicles.back()));
         // bridge
         std::vector<float> stations = { 125.0f, 195.0f, 265.0f, 335.0f };
-        bridges.push_back(new BoxGirder("Viaduto Esquerdo", roadways.back(), 230.0f, 6.0f, 200.0f, stations));
+        //std::vector<float> stations = { 55.0f, 125.0f, 195.0f, 265.0f, 335.0f, 405.0f };
+        //bridges.push_back(new BoxGirder("Viaduto Esquerdo", roadways.back(), 230.0f, 6.0f, 200.0f, stations));
+        bridges.push_back(new BoxGirder("Viaduto Esquerdo", roadways.back(), 230.0f, 5.5f, 155.0f, stations));
 #endif
         
         // mesh
@@ -545,7 +553,7 @@ namespace CRAB
 
         // pass projection matrix to shader (as projection matrix rarely changes there's no need to do this per frame)
         // -----------------------------------------------------------------------------------------------------------
-        projection = glm::perspective(glm::radians(camera.FieldOfView), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.10f, 5000.0f);
+        //projection = glm::perspective(glm::radians(camera.FieldOfView), (float)SCR_WIDTH / (float)SCR_HEIGHT, camera.Near, camera.Far);
         //projection = glm::ortho(-100.0f, 100.0f, -100.0f, 100.0f, 0.10f, 1000.0f);
 
         // render loop
@@ -578,7 +586,7 @@ namespace CRAB
 
             // init
             // ----
-            glClearColor(0.4f, 0.4f, 0.4f, 1.0f);
+            glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
             //glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -605,6 +613,8 @@ namespace CRAB
 
             // view/projection transformations
             glm::mat4 view = camera.GetViewMatrix();
+            // in this case, projection matrix could change every frame
+            projection = glm::perspective(glm::radians(camera.FieldOfView), (float)current_width / (float)current_height, camera.Near, camera.Far);
             ourShader.setMat4("projection", projection);
             ourShader.setMat4("view", view);
 
@@ -753,8 +763,10 @@ namespace CRAB
         glViewport(0, 0, width, height);
 
         // update
-        projection = glm::perspective(glm::radians(camera.FieldOfView), (float)width / (float)height, 0.1f, 5000.0f);
+        //projection = glm::perspective(glm::radians(camera.FieldOfView), (float)width / (float)height, camera.Near, camera.Far);
         //projection = glm::ortho(-100.0f, 100.0f, -100.0f, 100.0f, 0.10f, 1000.0f);
+        current_width = width;
+        current_height = height;
     }
 
     // glfw: whenever the mouse moves, this callback is called

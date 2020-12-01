@@ -6,9 +6,6 @@
 #include "HorSegment.h"
 #include "VerSegment.h"
 
-// MAX Transverse Slope
-const float SLOPE_MAX = 0.10f;
-
 class Alignment
 {
 private:

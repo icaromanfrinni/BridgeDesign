@@ -100,7 +100,12 @@ float Bridge::Superelevation(const float& t) const
 	float r = this->alignment->getRadius(t);
 	if (isinf(r))
 		return 0.0f;
-	float slope = powf(this->road->speed, 2.0f) / (r * 127.0f); // AASHTO
+	float fMax;
+	if (this->road->speed >= 80.0f)
+		fMax = 0.24f - this->road->speed / 800.0f;
+	else
+		fMax = 0.188f - this->road->speed / 1667.0f;
+	float slope = (SLOPE_MAX / (SLOPE_MAX + fMax)) * powf(this->road->speed, 2.0f) / (r * 127.0f); // AASHTO
 	if (slope > SLOPE_MAX)
 		slope = SLOPE_MAX;
 	float alpha = atanf(slope) * 180.0f / M_PI;
@@ -200,7 +205,7 @@ std::vector<VerSegment*> Bridge::Vertical_Alignment()
 	
 	// Round up
 	A = ceilf(A);
-	//std::cout << "A = " << A << std::endl;
+	std::cout << "A = " << A << std::endl;
 
 	// VPC
 	/*CRAB::Vector4Df VPC2 = this->road->path2Dv.getPointFromStation(this->CS - Lc / 2);
@@ -341,7 +346,7 @@ std::vector<VerSegment*> Bridge::Vertical_Alignment()
 
 	// ********************************** DEBUG **********************************
 
-	/*std::cout << "\nCURVE 1" << std::endl;
+	std::cout << "\nCURVE 1" << std::endl;
 	std::cout << "VPC1 = [" << VPC1.x << "; " << VPC1.y << "; " << VPC1.z << "]" << std::endl;
 	std::cout << "VPI1 = [" << VPI1.x << "; " << VPI1.y << "; " << VPI1.z << "]" << std::endl;
 	std::cout << "VPT1 = [" << VPT1.x << "; " << VPT1.y << "; " << VPT1.z << "]" << std::endl;
@@ -352,7 +357,7 @@ std::vector<VerSegment*> Bridge::Vertical_Alignment()
 	std::cout << "\nCURVE 3" << std::endl;
 	std::cout << "VPC3 = [" << VPC3.x << "; " << VPC3.y << "; " << VPC3.z << "]" << std::endl;
 	std::cout << "VPI3 = [" << VPI3.x << "; " << VPI3.y << "; " << VPI3.z << "]" << std::endl;
-	std::cout << "VPT3 = [" << VPT3.x << "; " << VPT3.y << "; " << VPT3.z << "]" << std::endl;*/
+	std::cout << "VPT3 = [" << VPT3.x << "; " << VPT3.y << "; " << VPT3.z << "]" << std::endl;
 
 	return profile;
 }

@@ -6,6 +6,8 @@ Camera::Camera() : MovementSpeed(SPEED), MouseSensitivity(SENSITIVITY), FieldOfV
     Position = glm::vec3(0.0f, 0.0f, 25.0f);
     View = glm::vec3(0.0f, 0.0f, 0.0f);
     LookAt = glm::normalize(View - Position);
+    Near = 0.1f;
+    Far = 5000.0f;
     WorldUp = glm::vec3(0.0f, 1.0f, 0.0f);
     Yaw = YAW;
     Pitch = PITCH;
