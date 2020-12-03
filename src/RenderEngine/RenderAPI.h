@@ -53,8 +53,8 @@ namespace CRAB
     glm::mat4 projection = glm::mat4(1.0f);
 
     // lighting
-    //DirectionalLight mainLight({ 0.8f, 0.8f, 0.8f }, camera.LookAt);
-    DirectionalLight mainLight({ 0.9f, 0.9f, 0.9f }, { -1.0f, -1.0f, -1.0f });
+    DirectionalLight mainLight({ 0.8f, 0.8f, 0.8f }, camera.LookAt);
+    //DirectionalLight mainLight({ 0.9f, 0.9f, 0.9f }, { -1.0f, -1.0f, -1.0f });
     
     // timing
     float deltaTime = 0.0f;
@@ -153,7 +153,15 @@ namespace CRAB
            "skybox/clouds/front.jpg",        // front
            "skybox/clouds/back.jpg"         // back
         };
-        Skybox skybox(faces2);
+        std::vector<std::string> faces4 = {
+           "skybox/gray/side1.jpg",        // right
+           "skybox/gray/side2.jpg",        // left
+           "skybox/gray/top.jpg",        // top
+           "skybox/gray/bottom.jpg",        // bottom
+           "skybox/gray/side3.jpg",        // front
+           "skybox/gray/side4.jpg"         // back
+        };
+        Skybox skybox(faces4);
 
         // load textures
         // -------------
@@ -530,16 +538,24 @@ namespace CRAB
         //bridges.push_back(new BoxGirder("Viaduto Esquerdo", roadways.back(), 230.0f, 6.0f, 200.0f, stations));
         bridges.push_back(new BoxGirder("Viaduto Esquerdo", roadways.back(), 230.0f, 5.5f, 155.0f, stations));
 #endif
-        
+
         // mesh
         // ----
         for (int i = 0; i < bridges.size(); i++)
+        {
+            curves.push_back(Grid(bridges[i]->alignment->path3D));
+            curves.push_back(Grid(bridges[i]->abutments.front()->path3D));
+            curves.push_back(Grid(bridges[i]->abutments.back()->path3D));
             for (int j = 0; j < bridges[i]->model.size(); j++)
                 ourMesh_List.push_back(Mesh(bridges[i]->model[j]));
-        /*std::cout << "\t* Roads" << std::endl;
+        }
         for (int i = 0; i < roadways.size(); i++)
-            for (int j = 0; j < roadways[i]->model.size(); j++)
+        {
+            curves.push_back(Grid(roadways[i]->alignment->path3D));
+            /*for (int j = 0; j < roadways[i]->model.size(); j++)
                 ourMesh_List.push_back(Mesh(roadways[i]->model[j]));*/
+        }
+            
 
         //std::cout << "\n\t *** AQUI ***" << std::endl;
         // time after
@@ -578,8 +594,9 @@ namespace CRAB
             case 1: // solid
                 glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
                 break;
-            //case 2: // textured
-            //    break;
+            case 2: // textured
+                glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+                break;
             default:
                 break;
             }
@@ -608,7 +625,7 @@ namespace CRAB
             // light properties
             // ----------------
             // directional light
-            //mainLight.direction = camera.LookAt;
+            mainLight.direction = camera.LookAt;
             ourShader.setDirLight(mainLight);
 
             // view/projection transformations
@@ -625,7 +642,13 @@ namespace CRAB
 
             // render
             for (int i = 0; i < ourMesh_List.size(); i++)
+            {
+                if (Controller::polygon_mode == 1)
+                    ourMesh_List[i].material.hasTexture = false;
+                else
+                    ourMesh_List[i].material.hasTexture = true;
                 ourMesh_List[i].Draw(ourShader);
+            }
 
             // draw grid
             gridShader.use();
@@ -634,8 +657,12 @@ namespace CRAB
             gridShader.setMat4("model", model);
             if (Controller::grid_on)
                 grid_Mesh.Draw(gridShader);
+            if (Controller::alignment_on)
+                for (int i = 0; i < curves.size(); i++)
+                    curves[i].Draw(gridShader);
 
             // draw skybox as last
+            glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
             glDepthFunc(GL_LEQUAL);  // change depth function so depth test passes when values are equal to depth buffer's content
             skyboxShader.use();
             view = glm::mat4(glm::mat3(camera.GetViewMatrix())); // remove translation from the view matrix

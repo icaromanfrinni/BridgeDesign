@@ -5,14 +5,14 @@ Grid::Grid()
 {
     Grid::Vertex p;
     glm::vec3 color;
-    int gridSize = 100;
+    int gridSize = 500;
     // XZ-axis
-    for (int i = -gridSize; i <= gridSize; i += 5)
-        for (int k = -gridSize; k <= gridSize; k += 5)
+    for (int i = -gridSize; i <= gridSize; i += 10)
+        for (int k = -gridSize; k <= gridSize; k += 10)
         {
-            if (i == 0) color = { 0.0f, 0.0f, 0.5f };
-            else if (k == 0) color = { 0.5f, 0.0f, 0.0f };
-            else color = { 0.5f, 0.5f, 0.5f };
+            if (i == 0) color = { 0.3f, 0.3f, 0.9f };
+            else if (k == 0) color = { 0.9f, 0.3f, 0.3f };
+            else color = { 0.3f, 0.3f, 0.3f };
 
             p.Position = { i, 0.0f, -gridSize };  p.Color = color; this->vertices.push_back(p);
             p.Position = { i, 0.0f, gridSize };  p.Color = color; this->vertices.push_back(p);
@@ -20,9 +20,9 @@ Grid::Grid()
             p.Position = { gridSize, 0.0f, k };  p.Color = color; this->vertices.push_back(p);
         }
     // Y-axis
-    color = { 0.0f, 0.5f, 0.0f };
+    color = { 0.3f, 0.9f, 0.3f };
     p.Position = { 0.0f, 0.0f, 0.0f }; p.Color = color; this->vertices.push_back(p);
-    p.Position = { 0.0f, 1.0f, 0.0f }; p.Color = color; this->vertices.push_back(p);
+    p.Position = { 0.0f, 5.0f, 0.0f }; p.Color = color; this->vertices.push_back(p);
 
     this->primitive_type = GL_LINES;
     this->with_points = false;
@@ -46,7 +46,8 @@ Grid::Grid(const NURBS& curve)
 
     Grid::Vertex v;
     //v.Color = { 1.0f, 0.0f, 1.0f }; // magenta
-    v.Color = { 0.0f, 0.0f, 0.0f }; // preta
+    v.Color = { 0.9f, 0.3f, 0.9f }; // magenta2
+    //v.Color = { 0.0f, 0.0f, 0.0f }; // preta
 
     for (int i = 0; i <= STEPS; i++)
     {

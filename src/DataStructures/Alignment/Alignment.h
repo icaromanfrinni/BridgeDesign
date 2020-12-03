@@ -9,10 +9,10 @@
 class Alignment
 {
 private:
-	NURBS path2Dh;	// 2D horizontal curve
-	NURBS path3D;	// 3D curve
 
 public:
+	NURBS path2Dh;	// 2D horizontal curve
+	NURBS path3D;	// 3D curve
 	std::string name;
 	std::vector<HorSegment*> plan;		// Horizontal alignment
 	std::vector<VerSegment*> profile;	// Vertical alignment

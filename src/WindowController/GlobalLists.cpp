@@ -1,5 +1,7 @@
 #include "GlobalLists.h"
 
+// List of Grids
+std::vector<Grid> curves;
 // List of Meshes
 std::vector<Mesh> ourMesh_List;
 // List of Solids (to load .obj file)

@@ -2,9 +2,12 @@
 
 #include <vector>
 
+#include "Grid.h"
 #include "Mesh.h"
 #include "BoxGirder.h"
 
+// List of Grids
+extern std::vector<Grid> curves;
 // List of Meshes
 extern std::vector<Mesh> ourMesh_List;
 // List of Solids (to load .obj file)

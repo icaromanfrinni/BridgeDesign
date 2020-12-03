@@ -7,6 +7,7 @@ namespace Controller
 {
     // Our state
 	static bool grid_on = true;
+	static bool alignment_on = true;
 	static int polygon_mode = 1;
     static bool show_demo_window = false;
     static bool show_another_window = false;
@@ -98,6 +99,7 @@ namespace Controller
 			if (ImGui::BeginMenu("View"))
 			{
 				ImGui::Checkbox("Grid", &grid_on);
+				ImGui::Checkbox("Alignments", &alignment_on);
 				if (ImGui::MenuItem("Zoom Extents", NULL, false, false)) {}
 				ImGui::Separator();
 				if (ImGui::BeginMenu("3D Views"))
@@ -120,7 +122,7 @@ namespace Controller
 				{
 					ImGui::RadioButton("Wireframe", &polygon_mode, 0);
 					ImGui::RadioButton("Solid", &polygon_mode, 1);
-					//ImGui::RadioButton("Textured", &polygon_mode, 2);
+					ImGui::RadioButton("Textured", &polygon_mode, 2);
 					ImGui::EndMenu();
 				}
 				ImGui::EndMenu();
