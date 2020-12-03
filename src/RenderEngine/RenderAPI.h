@@ -556,8 +556,6 @@ namespace CRAB
                 ourMesh_List.push_back(Mesh(roadways[i]->model[j]));*/
         }
             
-
-        //std::cout << "\n\t *** AQUI ***" << std::endl;
         // time after
         // ----------
         auto t2 = std::chrono::high_resolution_clock::now();

@@ -12,6 +12,7 @@ namespace Controller
     static bool show_demo_window = false;
     static bool show_another_window = false;
 	static bool show_general_criteria_window = false;
+	static bool show_camera_window = false;
 	static bool show_add_bridge_window = false;
 	static bool show_edit_bridge_parameters = false;
 	static bool show_edit_bridge_section = false;
@@ -125,6 +126,12 @@ namespace Controller
 					ImGui::RadioButton("Textured", &polygon_mode, 2);
 					ImGui::EndMenu();
 				}
+				if (ImGui::MenuItem("Camera"))
+				{
+					if (show_camera_window)
+						show_camera_window = false;
+					else show_camera_window = true;
+				}
 				ImGui::EndMenu();
 			}
 			if (ImGui::BeginMenu("Road"))
@@ -232,6 +239,54 @@ namespace Controller
 			ImGui::SameLine(205);
 			if (ImGui::Button(" Cancel "))
 				show_general_criteria_window = false;
+
+			// END
+
+			ImGui::End();
+		}
+
+		// Show camera
+		if (show_camera_window)
+		{
+			ImGui::SetNextWindowPos(ImVec2(100, 100), ImGuiCond_Once);
+			ImGui::SetNextWindowSize(ImVec2(240, 120), ImGuiCond_Once);
+			ImGui::Begin("Camera", &show_camera_window, ImGuiWindowFlags_NoResize);
+
+			ImGui::Columns(2, NULL, false);
+			ImGui::SetColumnWidth(0, 100.0f);
+
+			// FIELD OF VIEW
+
+			ImGui::PushID(901);
+			ImGui::AlignTextToFramePadding();
+			ImGui::Text("Field of View");
+			ImGui::NextColumn();
+			ImGui::SetNextItemWidth(120);
+			ImGui::SliderFloat("", &camera.FieldOfView, 1.0f, 90.0f, "%.1f");
+			ImGui::NextColumn();
+			ImGui::PopID();
+
+			// NEAR
+
+			ImGui::PushID(902);
+			ImGui::AlignTextToFramePadding();
+			ImGui::Text("Near");
+			ImGui::NextColumn();
+			ImGui::SetNextItemWidth(120);
+			ImGui::DragFloat("", &camera.Near, 1.0f, 1.0f, 1000.0f, "%.0f m");
+			ImGui::NextColumn();
+			ImGui::PopID();
+
+			// FAR
+
+			ImGui::PushID(903);
+			ImGui::AlignTextToFramePadding();
+			ImGui::Text("Far");
+			ImGui::NextColumn();
+			ImGui::SetNextItemWidth(120);
+			ImGui::DragFloat("", &camera.Far, 1.0f, 1.0f, 1000.0f, "%.0f m");
+			ImGui::NextColumn();
+			ImGui::PopID();
 
 			// END
 
