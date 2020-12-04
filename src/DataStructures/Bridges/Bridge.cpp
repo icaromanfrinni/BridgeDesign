@@ -112,7 +112,7 @@ float Bridge::Superelevation(const float& t) const
 	if (this->alignment->isClockwise(t))
 		alpha = alpha * (-1.0f);
 
-	//std::cout << "t = " << t << "\tslope = " << alpha << "\tcurvature = " << this->alignment->getCurvature(t) << std::endl;
+	//std::cout << "t = " << t << " slope = " << alpha << " curvature = " << this->alignment->getCurvature(t) << std::endl;
 	return alpha;
 }
 // GET NORMAL VECTOR WITH SUPERELEVATION
@@ -205,7 +205,7 @@ std::vector<VerSegment*> Bridge::Vertical_Alignment()
 	
 	// Round up
 	A = ceilf(A);
-	std::cout << "A = " << A << std::endl;
+	//std::cout << "A = " << A << std::endl;
 
 	// VPC
 	/*CRAB::Vector4Df VPC2 = this->road->path2Dv.getPointFromStation(this->CS - Lc / 2);
@@ -346,7 +346,7 @@ std::vector<VerSegment*> Bridge::Vertical_Alignment()
 
 	// ********************************** DEBUG **********************************
 
-	std::cout << "\nCURVE 1" << std::endl;
+	/*std::cout << "\nCURVE 1" << std::endl;
 	std::cout << "VPC1 = [" << VPC1.x << "; " << VPC1.y << "; " << VPC1.z << "]" << std::endl;
 	std::cout << "VPI1 = [" << VPI1.x << "; " << VPI1.y << "; " << VPI1.z << "]" << std::endl;
 	std::cout << "VPT1 = [" << VPT1.x << "; " << VPT1.y << "; " << VPT1.z << "]" << std::endl;
@@ -357,7 +357,7 @@ std::vector<VerSegment*> Bridge::Vertical_Alignment()
 	std::cout << "\nCURVE 3" << std::endl;
 	std::cout << "VPC3 = [" << VPC3.x << "; " << VPC3.y << "; " << VPC3.z << "]" << std::endl;
 	std::cout << "VPI3 = [" << VPI3.x << "; " << VPI3.y << "; " << VPI3.z << "]" << std::endl;
-	std::cout << "VPT3 = [" << VPT3.x << "; " << VPT3.y << "; " << VPT3.z << "]" << std::endl;
+	std::cout << "VPT3 = [" << VPT3.x << "; " << VPT3.y << "; " << VPT3.z << "]" << std::endl;*/
 
 	return profile;
 }

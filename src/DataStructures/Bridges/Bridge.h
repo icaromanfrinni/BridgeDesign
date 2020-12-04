@@ -51,7 +51,7 @@ public:
 	float B;		// Width
 	float H;		// Height
 
-	bool hasWidening = false;
+	bool hasWidening = true;
 	bool haunchedGirder = true;
 
 	// DEFAULT CONSTRUCTOR
