@@ -27,7 +27,7 @@ public:
 	float Lb;   // slab cantilever
 	float h;    // slab thickness
 	float bw;   // webs slab thickness
-	float iw = 0.1f; // web inclination
+	float iw; // web inclination
 	bool iLocked = false;
 	float b;    // bottom slab width
 	float th;   // horizontal haunch

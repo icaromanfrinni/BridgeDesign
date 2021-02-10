@@ -75,8 +75,16 @@ void BoxGirder::SetupSection()
 	if (bw < 0.25f) bw = 0.25f;
 	tv = int((100.0f * (H - 2 * h) / 10.0f) / 5.0f) * 0.05f;
 	if (tv < 0.10f) tv = 0.10f;
-	b = int((100.0f * (B - 2.0f * (Lb + this->iw * (H - h - tv)))) / 5.0f) * 0.05f;
+	b = int((100.0f * (B - 2.0f * (Lb + web_inclination * (H - h - tv)))) / 5.0f) * 0.05f;
 	th = int((100.0f * (b - 2 * bw) / 5.0f) / 5.0f) * 0.05f;
+
+	/*std::cout << "\nH = " << H << std::endl;
+	std::cout << "Lb = " << Lb << std::endl;
+	std::cout << "h = " << h << std::endl;
+	std::cout << "bw = " << bw << std::endl;
+	std::cout << "tv = " << tv << std::endl;
+	std::cout << "b = " << b << std::endl;
+	std::cout << "th = " << th << std::endl;*/
 }
 void BoxGirder::SetupSection(const float& t)
 {
@@ -151,16 +159,18 @@ void BoxGirder::SetupSection(const float& t)
 
 	/*if (this->dH < 1.80f)
 	{
-		std::cout << "\n\tdH = " << this->dH << std::endl;
-		std::cout << "webs slab thickness = " << bw << std::endl;
-		std::cout << "vertical haunch = " << tv << std::endl;
-		std::cout << "bottom slab width = " << b << std::endl;
-		std::cout << "horizontal haunch = " << th << std::endl;
+		std::cout << "\nH = " << this->dH << std::endl;
+		std::cout << "Lb = " << Lb << std::endl;
+		std::cout << "h = " << h << std::endl;
+		std::cout << "bw = " << bw << std::endl;
+		std::cout << "tv = " << tv << std::endl;
+		std::cout << "b = " << b << std::endl;
+		std::cout << "th = " << th << std::endl;
 	}*/
 }
 void BoxGirder::SetupPiers(const int& _nPiers)
 {
-	float b_Pier = 0.9f * this->b;
+	float b_Pier = /*0.9f **/ this->b;
 	float h_Pier = 0.6f * b_Pier;
 	float span_length = this->alignment->getProfileLength() / _nPiers;
 	//std::cout << "span_length = " << span_length << std::endl;
@@ -211,7 +221,7 @@ void BoxGirder::SetupPiers(const int& _nPiers)
 }
 void BoxGirder::SetupPiers(const std::vector<float>& _stations)
 {
-	float b_Pier = 0.9f * this->b;
+	float b_Pier = /*0.9f **/ this->b;
 	float h_Pier = 0.6f * b_Pier;
 	float span_length = _stations.front() - this->alignment->profile.front()->getStart4DPoint().x;
 
@@ -253,7 +263,7 @@ void BoxGirder::SetupPiers(const std::vector<float>& _stations)
 void BoxGirder::AddPier()
 {
 	Pier P;
-	P.b = 0.9f * this->b;
+	P.b =/* 0.9f **/ this->b;
 	P.h = 0.6f * P.b;
 	P.station = this->alignment->profile.front()->getStart4DPoint().x + this->alignment->getProfileLength() / 2.0f;
 	P.ang = 0.0f;

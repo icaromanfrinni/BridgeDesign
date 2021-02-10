@@ -100,12 +100,15 @@ NURBS::NURBS(const std::vector<Geometry*>& segments)
 	}
 
 	/*std::cout << "number of segments = " << segments.size() << std::endl;
-	std::cout << "number of control points = " << this->points.size() << std::endl;
+	std::cout << "number of control points = " << this->points.size() << std::endl;*/
 
-	for (int i = 0; i < this->w.size(); i++)
-		std::cout << "w[" << i << "] = " << this->w[i] << std::endl;
+	/*for (int i = 0; i < this->points.size(); i++)
+		std::cout << "P[" << i << "] = {" << this->points[i].x << "; " << this->points[i].y << "; " << this->points[i].z << "}" << std::endl;*/
 
-	for (int i = 0; i < this->T.size(); i++)
+	/*for (int i = 0; i < this->w.size(); i++)
+		std::cout << "w[" << i << "] = " << this->w[i] << std::endl;*/
+
+	/*for (int i = 0; i < this->T.size(); i++)
 		std::cout << "u[" << i << "] = " << this->T[i] << std::endl;*/
 }
 

@@ -193,6 +193,7 @@ namespace CRAB
         vehicles.push_back(new Vehicle("City Bus", 2.6f, 2.1f, { 7.6f }));
         vehicles.push_back(new Vehicle("Truck WB-12", 2.4f, 0.9f, { 3.8f, 8.4f }));
         vehicles.push_back(new Vehicle("Truck WB-15", 2.6f, 0.9f, { 3.8f, 10.8f }));
+        vehicles.push_back(new Vehicle("Truck WB-19", 2.6f, 1.2f, { 5.9f, 12.5f }));
 
         // load models
         // -----------
@@ -330,7 +331,8 @@ namespace CRAB
         // road
         roadways.push_back(new Road("Rodovia", 12.50f, 40.0f, alignments.back(), vehicles.back()));
         // bridge
-        bridges.push_back(new BoxGirder("Viaduto_1", roadways.back(), 250.0f, 5.5f, 60.0f));
+        std::vector<float> stations;
+        bridges.push_back(new BoxGirder("Viaduto_1", roadways.back(), 250.0f, 5.5f, 60.0f, stations));
 #endif
 
         /* CASO 2: Overpass */
