@@ -126,12 +126,17 @@ NURBS::~NURBS()
 // --------------------------
 void NURBS::SetupArcLengthTable()
 {
+	// comprimento aproximado da curva para construir tabela a cada metro
 	float steps = int(this->getChordLength());
+	// inicialização da tabela
 	arcLength_table.push_back(ArcLength(0.0f, 0.0f));
+	
 	for (int i = 1; i <= steps; i++)
 	{
+		// parâmetro 't' atual
 		float ti = i / steps;
 		float G = 0.0f;
+		// Gauss–Legendre quadrature (n = 2 points)
 		for (int k = 1; k <= 2; k++)
 		{
 			float w, alfa;
@@ -149,7 +154,9 @@ void NURBS::SetupArcLengthTable()
 			CRAB::Vector4Df d1 = this->deriv_4D(tk);
 			G += w * d1.length();
 		}
+		// cálculo do comprimento 's' atual
 		float si = arcLength_table.back().s + 0.5f * (ti - arcLength_table.back().t) * G;
+		// armazena na tabela
 		arcLength_table.push_back(ArcLength(ti, si));
 	}
 }
