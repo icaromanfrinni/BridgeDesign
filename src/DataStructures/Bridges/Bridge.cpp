@@ -77,20 +77,21 @@ void Bridge::SetupBridge()
 	this->H = int((100.0f * this->mainSpan / 20.0f) / 5.0f) * 0.05f;
 
 	// Alignment
-	//this->alignment = this->road->alignment;
-	std::vector<VerSegment*> total_Profile, start_Abutment, end_Abutment, bridge_Profile;
-	total_Profile = this->Vertical_Alignment();
-	this->abutments.clear();
-	// encontro inicial
-	start_Abutment.push_back(total_Profile.front());
-	this->abutments.push_back(new Alignment("Start_Abutment", this->Horizontal_Alignment(), start_Abutment));
-	// encontro final
-	end_Abutment.push_back(total_Profile.back());
-	this->abutments.push_back(new Alignment("End_Abutment", this->Horizontal_Alignment(), end_Abutment));
-	// alinhamento da superestrutura (sem os encontros)
-	for (int i = 1; i < 4; i++)
-		bridge_Profile.push_back(total_Profile[i]);
-	this->alignment = new Alignment(this->name, this->Horizontal_Alignment(), bridge_Profile);
+	////this->alignment = this->road->alignment;
+	//std::vector<VerSegment*> total_Profile, start_Abutment, end_Abutment, bridge_Profile;
+	//total_Profile = this->Vertical_Alignment();
+	//this->abutments.clear();
+	//// encontro inicial
+	//start_Abutment.push_back(total_Profile.front());
+	//this->abutments.push_back(new Alignment("Start_Abutment", this->Horizontal_Alignment(), start_Abutment));
+	//// encontro final
+	//end_Abutment.push_back(total_Profile.back());
+	//this->abutments.push_back(new Alignment("End_Abutment", this->Horizontal_Alignment(), end_Abutment));
+	//// alinhamento da superestrutura (sem os encontros)
+	//for (int i = 1; i < 4; i++)
+	//	bridge_Profile.push_back(total_Profile[i]);
+	//this->alignment = new Alignment(this->name, this->Horizontal_Alignment(), bridge_Profile);
+	this->alignment = new Alignment(this->name, this->Horizontal_Alignment(), this->Vertical_Alignment());
 }
 
 // SUPERELEVATION
@@ -112,7 +113,7 @@ float Bridge::Superelevation(const float& t) const
 	if (this->alignment->isClockwise(t))
 		alpha = alpha * (-1.0f);
 
-	//std::cout << "t = " << t << " slope = " << alpha << " curvature = " << this->alignment->getCurvature(t) << std::endl;
+	//std::cout << "t = " << t << " slope = " << alpha << " curvature = " << this->alignment->getCurvature(t) << " radius = " << r << std::endl;
 	return alpha;
 }
 // GET NORMAL VECTOR WITH SUPERELEVATION
@@ -195,6 +196,7 @@ std::vector<VerSegment*> Bridge::Vertical_Alignment()
 
 	// Length of crest vertical curve
 	float Lc = this->HC;
+	//std::cout << "Lc = " << Lc << std::endl;
 
 	// Algebraic difference in grades (%)
 	float A;
@@ -206,6 +208,7 @@ std::vector<VerSegment*> Bridge::Vertical_Alignment()
 	// Round up
 	A = ceilf(A);
 	//std::cout << "A = " << A << std::endl;
+	//std::cout << "S = " << this->road->StoppingSightDistance() << std::endl;
 
 	// VPC
 	/*CRAB::Vector4Df VPC2 = this->road->path2Dv.getPointFromStation(this->CS - Lc / 2);
@@ -240,10 +243,12 @@ std::vector<VerSegment*> Bridge::Vertical_Alignment()
 	// Length of sag vertical curve (S > L)
 	float Ls = 2 * this->road->StoppingSightDistance() - ((120 + 3.5 * this->road->StoppingSightDistance()) / (A / 2));
 	Ls = int(round(Ls / 5)) * 5;
+	//std::cout << "Ls = " << Ls << std::endl;
 	// Minimun length of vertical curve (0.6 Vp)
 	float Lmin = 0.60f * this->road->speed;
 	// CHECK
 	if (Ls < Lmin) Ls = Lmin;
+	//std::cout << "Lmin = " << Lmin << std::endl;
 
 	// Grades
 	CRAB::Ray g1, g2;

@@ -90,7 +90,7 @@ Mesh::Mesh(const obj& object)
 Mesh::Mesh(const HED::solid* solid)
 {
 #if PRINT == 1
-    std::cout << "solid " << solid->name << ".....................";
+    std::cout << "solid " << solid->name << "....................." << std::endl;
 #endif
 
     material.hasTexture = true;
@@ -129,6 +129,9 @@ Mesh::Mesh(const HED::solid* solid)
     
     for (int i = 0; i < solid->faces.size(); i++)
     {
+#if PRINT == 1
+        std::cout << "i = " << i << std::endl;
+#endif
         // Initialize Polygon
         CRAB::Polygon p;
         HED::halfEdge* he = solid->faces[i]->hEdge;
@@ -159,6 +162,9 @@ Mesh::Mesh(const HED::solid* solid)
         CRAB::Vector4Df normal_plane = solid->faces[i]->normal();
         for (int j = 0; j < t.size(); j++)
         {
+#if PRINT == 1
+            std::cout << "j = " << j << std::endl;
+#endif
             Mesh::Vertex vertex1, vertex2, vertex3;
             // ------------------------------------
             glm::vec3 v_normal = glm::vec3(normal_plane.x, normal_plane.y, normal_plane.z);

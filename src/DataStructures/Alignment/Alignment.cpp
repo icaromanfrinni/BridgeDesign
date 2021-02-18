@@ -25,24 +25,72 @@ Alignment::Alignment(const std::string& _name, const std::vector<HorSegment*>& _
 	}
 	this->path2Dh = NURBS(hor2DSegments);
 
+	// Arc Length Table CONSTRUCTOR
+	// ----------------------------
+	/*std::cout << "\tBuilding the Arc Length Table of horizontal NURBS curve" << std::endl;
+	float steps = int(this->getRoadLength());
+	arcLength_table.push_back(ArcLength(0.0f, 0.0f));
+	for (int i = 1; i <= steps; i++)
+	{
+		float ti = i / steps;
+		float G = 0.0f;
+		for (int k = 1; k <= 2; k++)
+		{
+			float w, alfa;
+			if (k == 1)
+			{
+				w = 1.0f;
+				alfa = -1.0f / sqrtf(3.0f);
+			}
+			else
+			{
+				w = 1.0f;
+				alfa = 1.0f / sqrtf(3.0f);
+			}
+			float tk = 0.5f * ((ti - arcLength_table.back().t) * alfa + (ti + arcLength_table.back().t));
+			CRAB::Vector4Df d1 = this->path2Dh.deriv_4D(tk);
+			G += w * d1.length();
+		}
+		float si = arcLength_table.back().s + 0.5f * (ti - arcLength_table.back().t) * G;
+		arcLength_table.push_back(ArcLength(ti, si));
+	}*/
+
+	//std::cout << "path 2D length = " << this->path2Dh.getLength() << " m" << std::endl;
+	//std::cout << "path 2D length (from table) = " << this->arcLength_table.back().s << " m" << std::endl;
+
 	// Start & End Stations
 	// --------------------
-	float start_station = this->findParameter(this->profile.front()->getStartPoint().x);
-	float end_station = this->findParameter(this->profile.back()->getEndPoint().x);
+	//float start_station = this->findParameter(this->profile.front()->getStartPoint().x);
+	//float end_station = this->findParameter(this->profile.back()->getEndPoint().x);
 
 	// 3D Curve CONSTRUCTOR
 	// --------------------
 	std::cout << "\tBuilding the 3D NURBS curve" << std::endl;
 	std::vector<glm::vec3> points3D;
-	for (int i = 0; i <= ELEMENTS; i++)
+	// VERSÃO ANTIGA (CALCULANDO A DISTÂNCIA PERCORRIDA NA NURBS PELO COMPRIMENTO DOS SEGMENTOS DE CORDA)
+	//for (int i = 0; i <= ELEMENTS; i++)
+	//{
+	//	float t = start_station + (end_station - start_station) * i / ELEMENTS;
+	//	// coordenadas em planta (UTM)
+	//	points3D.push_back(this->path2Dh.getPosition(t));
+	//	// elevation (m)
+	//	float distance = this->path2Dh.getDistance(t);
+	//	int index = findSegment(distance);
+	//	points3D.back().y = profile[index]->getY(distance);
+	//}
+	// VERSÃO NOVA (CRETO)
+	for (int i = 0; i <= this->path2Dh.arcLength_table.size(); i++)
 	{
-		float t = start_station + (end_station - start_station) * i / ELEMENTS;
-		// coordenadas em planta (UTM)
+		float t = float(i) / this->path2Dh.arcLength_table.size();
+		// coordenadas em planta
 		points3D.push_back(this->path2Dh.getPosition(t));
 		// elevation (m)
-		float distance = this->path2Dh.getDistance(t);
-		int index = findSegment(distance);
-		points3D.back().y = profile[index]->getY(distance);
+		if (i == this->path2Dh.arcLength_table.size()) break;
+		//std::cout << "i = " << i << "; distance = " << arcLength_table[i].s << " m" << std::endl;
+		int index = findSegment(this->path2Dh.arcLength_table[i].s);
+		if (index == -1) continue;
+		points3D.back().y = profile[index]->getY(this->path2Dh.arcLength_table[i].s);
+		//std::cout << "y = " << points3D.back().y << std::endl;
 	}
 
 	this->path3D = NURBS(points3D);
@@ -54,9 +102,11 @@ Alignment::~Alignment()
 {
 }
 
-float Alignment::findParameter(const float& distance) const
+float Alignment::findParameter(const float& s) const
 {
-	if (distance >= this->path2Dh.getLength())
+	//std::cout << "Alignment::findParameter(" << s << ")" << std::endl;
+
+	/*if (distance >= this->path2Dh.getArcLength())
 		return 1.0f;
 	if (distance <= 0.0f)
 		return 0.0f;
@@ -74,7 +124,29 @@ float Alignment::findParameter(const float& distance) const
 		if (fabsf(low - mid) < SMALL_NUMBER)
 			return mid;
 	}
-	return mid;
+	return mid;*/
+
+	if (s <= 0.0f)
+		return 0.0f;
+	if (s >= this->path2Dh.getArcLength())
+		return 1.0f;
+
+	int low = 0;
+	int high = this->path2Dh.arcLength_table.size();
+	int mid = int(high / 2.0f);
+
+	while (s < this->path2Dh.arcLength_table[mid].s || s >= this->path2Dh.arcLength_table[mid].s)
+	{
+		if (s < this->path2Dh.arcLength_table[mid].s)
+			high = mid;
+		else low = mid;
+		mid = int((low + high) / 2.0f);
+		if (low == mid)
+			return CRAB::Linear_Interpolation(this->path2Dh.arcLength_table[low].s, this->path2Dh.arcLength_table[low].t, this->path2Dh.arcLength_table[high].s, this->path2Dh.arcLength_table[high].t, s);
+		/*if (fabsf(low - mid) < SMALL_NUMBER)
+			return this->arcLength_table[mid].s;*/
+	}
+	return this->path2Dh.arcLength_table[mid].s;
 }
 
 // FIND THE VERTICAL SEGMENT FROM STATION
@@ -82,15 +154,17 @@ float Alignment::findParameter(const float& distance) const
 int Alignment::findSegment(const float& station) const
 {
 	// special case
-	if (station >= profile.back()->getStartPoint().x)
+	/*if (station >= profile.back()->getStartPoint().x)
 		return profile.size() - 1;
 	if (station < profile.front()->getStartPoint().x)
-		return 0;
+		return 0;*/
+	if (station <= profile.front()->getStartPoint().x || station > profile.back()->getEndPoint().x)
+		return -1;
 
-	int low = 0;
+	// BUSCA BINÁRIA
+	/*int low = 0;
 	int high = profile.size() - 1;
 	int mid = (low + high) / 2;
-
 	while (station < profile[mid]->getStartPoint().x || station >= profile[mid]->getEndPoint().x)
 	{
 		if (station < profile[mid]->getStartPoint().x)
@@ -98,7 +172,11 @@ int Alignment::findSegment(const float& station) const
 		else low = mid;
 		mid = (low + high) / 2;
 	}
-	return mid;
+	return mid;*/
+
+	for (int i = 0; i < profile.size(); i++)
+		if (station > profile[i]->getStartPoint().x && station <= profile[i]->getEndPoint().x)
+			return i;
 }
 
 // RETURN
@@ -170,6 +248,15 @@ float Alignment::getProfileLength() const
 {
 	float Lv = this->profile.back()->getEndPoint().x - this->profile.front()->getStartPoint().x;
 	return Lv;
+}
+// RETURNS THE LENGTH OF HORIZONTAL ALIGNMENT
+// ------------------------------------------
+float Alignment::getRoadLength() const
+{
+	float Lh = 0.0f;
+	for (int i = 0; i < this->plan.size(); i++)
+		Lh += this->plan[i]->segment->getLength();
+	return Lh;
 }
 // RETURNS THE 4D POINT FROM STATION
 // ---------------------------------

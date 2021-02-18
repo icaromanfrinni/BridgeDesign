@@ -35,6 +35,8 @@ NURBS::NURBS(const std::vector<glm::vec3>& _points)
 			this->T.push_back(u);
 		}
 	}
+
+	this->SetupArcLengthTable();
 }
 
 // OVERLOAD CONSTRUCTOR (from Segments)
@@ -110,12 +112,46 @@ NURBS::NURBS(const std::vector<Geometry*>& segments)
 
 	/*for (int i = 0; i < this->T.size(); i++)
 		std::cout << "u[" << i << "] = " << this->T[i] << std::endl;*/
+
+	this->SetupArcLengthTable();
 }
 
 // DESTRUCTOR
 // ----------
 NURBS::~NURBS()
 {
+}
+
+// SETUP THE ARC LENGTH TABLE
+// --------------------------
+void NURBS::SetupArcLengthTable()
+{
+	float steps = int(this->getChordLength());
+	arcLength_table.push_back(ArcLength(0.0f, 0.0f));
+	for (int i = 1; i <= steps; i++)
+	{
+		float ti = i / steps;
+		float G = 0.0f;
+		for (int k = 1; k <= 2; k++)
+		{
+			float w, alfa;
+			if (k == 1)
+			{
+				w = 1.0f;
+				alfa = -1.0f / sqrtf(3.0f);
+			}
+			else
+			{
+				w = 1.0f;
+				alfa = 1.0f / sqrtf(3.0f);
+			}
+			float tk = 0.5f * ((ti - arcLength_table.back().t) * alfa + (ti + arcLength_table.back().t));
+			CRAB::Vector4Df d1 = this->deriv_4D(tk);
+			G += w * d1.length();
+		}
+		float si = arcLength_table.back().s + 0.5f * (ti - arcLength_table.back().t) * G;
+		arcLength_table.push_back(ArcLength(ti, si));
+	}
 }
 
 // BASIS FUNCTIONS
@@ -180,8 +216,9 @@ glm::vec3 NURBS::deriv(const float& t) const
 		W += this->w[index] * Base;
 		dW += this->w[index] * dBase;
 	}
+	glm::vec3 d = (dA * W - A * dW) / powf(W, 2.0f);
 
-	return (dA * W - A * dW) / powf(W, 2.0f);
+	return d;
 }
 glm::vec3 NURBS::deriv2(const float& t) const
 {
@@ -209,6 +246,69 @@ glm::vec3 NURBS::deriv2(const float& t) const
 
 	return (((dA2 * W) - (A * dW2)) * W - ((dA * W) - (A * dW)) * 2.0f) / powf(W, 3.0f);
 }
+//float NURBS::dX(const float& t) const
+//{
+//	int span = this->FindSpan(t);
+//
+//	float A = 0.0f;
+//	float dA = 0.0f;
+//	float W = 0.0f;
+//	float dW = 0.0f;
+//	for (int i = 0; i <= this->P; i++)
+//	{
+//		int index = span - this->P + i;
+//		float Base = this->N(index, this->P, t);
+//		float dBase = this->dN(index, this->P, t);
+//		A += (this->points[index].x * this->w[index]) * Base;
+//		dA += (this->points[index].x * this->w[index]) * dBase;
+//		W += this->w[index] * Base;
+//		dW += this->w[index] * dBase;
+//	}
+//
+//	return (dA * W - A * dW) / powf(W, 2.0f);
+//}
+//float NURBS::dY(const float& t) const
+//{
+//	int span = this->FindSpan(t);
+//
+//	float A = 0.0f;
+//	float dA = 0.0f;
+//	float W = 0.0f;
+//	float dW = 0.0f;
+//	for (int i = 0; i <= this->P; i++)
+//	{
+//		int index = span - this->P + i;
+//		float Base = this->N(index, this->P, t);
+//		float dBase = this->dN(index, this->P, t);
+//		A += (this->points[index].y * this->w[index]) * Base;
+//		dA += (this->points[index].y * this->w[index]) * dBase;
+//		W += this->w[index] * Base;
+//		dW += this->w[index] * dBase;
+//	}
+//
+//	return (dA * W - A * dW) / powf(W, 2.0f);
+//}
+//float NURBS::dZ(const float& t) const
+//{
+//	int span = this->FindSpan(t);
+//
+//	float A = 0.0f;
+//	float dA = 0.0f;
+//	float W = 0.0f;
+//	float dW = 0.0f;
+//	for (int i = 0; i <= this->P; i++)
+//	{
+//		int index = span - this->P + i;
+//		float Base = this->N(index, this->P, t);
+//		float dBase = this->dN(index, this->P, t);
+//		A += (this->points[index].z * this->w[index]) * Base;
+//		dA += (this->points[index].z * this->w[index]) * dBase;
+//		W += this->w[index] * Base;
+//		dW += this->w[index] * dBase;
+//	}
+//
+//	return (dA * W - A * dW) / powf(W, 2.0f);
+//}
 
 // FIND THE ith KNOT SPAN
 // ----------------------
@@ -234,6 +334,30 @@ int NURBS::FindSpan(const float& t) const
 	return mid;
 }
 
+// RETURNS THE DERIVATIVE
+// ----------------------
+CRAB::Vector4Df NURBS::deriv_4D(const float& t) const
+{
+	int span = this->FindSpan(t);
+
+	glm::vec3 A = { 0.0f, 0.0f, 0.0f };
+	glm::vec3 dA = { 0.0f, 0.0f, 0.0f };
+	float W = 0.0f;
+	float dW = 0.0f;
+	for (int i = 0; i <= this->P; i++)
+	{
+		int index = span - this->P + i;
+		float Base = this->N(index, this->P, t);
+		float dBase = this->dN(index, this->P, t);
+		A += (this->points[index] * this->w[index]) * Base;
+		dA += (this->points[index] * this->w[index]) * dBase;
+		W += this->w[index] * Base;
+		dW += this->w[index] * dBase;
+	}
+	glm::vec3 d = (dA * W - A * dW) / powf(W, 2.0f);
+
+	return CRAB::Vector4Df{ d.x, d.y, d.z, 0.0f };
+}
 // RETURNS A POINT ON THE CURVE
 // ----------------------------
 glm::vec3 NURBS::getPosition(const float& t) const
@@ -313,12 +437,11 @@ float NURBS::getRadius(const float& t) const
 	return 1 / k;
 }
 
-// RETURNS THE LENGTH OF CURVE
-// ---------------------------
-float NURBS::getLength() const
+// RETURNS THE CHORD LENGTH OF CURVE
+// ---------------------------------
+float NURBS::getChordLength() const
 {
 	float L = 0.0f;
-
 	glm::vec3 A = this->getPosition(0.0f);
 	for (int i = 1; i <= ELEMENTS; i++)
 	{
@@ -330,21 +453,84 @@ float NURBS::getLength() const
 	return L;
 }
 
+// RETURNS THE ARC LENGTH OF CURVE
+// -------------------------------
+float NURBS::getArcLength() const
+{
+	/*float steps = 100.0f;
+	std::vector<float> t;
+	std::vector<float> s;
+	t.push_back(0.0f);
+	s.push_back(0.0f);
+	for (int i = 1; i <= steps; i++)
+	{
+		float ti = i / steps;
+		float G = 0.0f;
+		for (int k = 1; k <= 2; k++)
+		{
+			float w, alfa;
+			if (k == 1)
+			{
+				w = 1.0f;
+				alfa = -1.0f / sqrtf(3.0f);
+			}
+			else
+			{
+				w = 1.0f;
+				alfa = 1.0f / sqrtf(3.0f);
+			}
+			float tk = 0.5f * ((ti - t.back()) * alfa + (ti + t.back()));
+			glm::vec3 deriv3D = this->deriv(tk);
+			CRAB::Vector4Df deriv4D = { deriv3D.x, deriv3D.y, deriv3D.z, 0.0f };
+			G += w * deriv4D.length();
+		}
+		float si = s.back() + 0.5f * (ti - t.back()) * G;
+		t.push_back(ti);
+		s.push_back(si);
+	}
+	return s.back();*/
+	return this->arcLength_table.back().s;
+}
+
 // RETURNS THE DISTANCE FROM START
 // -------------------------------
 float NURBS::getDistance(const float& t) const
 {
-	float D = 0.0f;
+	//std::cout << "NURBS::getDistance(" << t << ")" << std::endl;
 
+	/*float D = 0.0f;
+	float steps = 100.0f;
 	glm::vec3 A = this->getPosition(0.0f);
-	for (int i = 1; i <= ELEMENTS/*1000*/; i++)
+	for (int i = 1; i <= steps; i++)
 	{
-		float u = t * float(i) / ELEMENTS/*1000*/;
+		float u = t * float(i) / steps;
 		glm::vec3 B = this->getPosition(u);
 		D += glm::distance(A, B);
 		A = B;
 	}
-	return D;
+	return D;*/
+
+	if (t == 0.0f)
+		return this->arcLength_table.front().s;
+	if (t == 1.0f)
+		return this->arcLength_table.back().s;
+
+	int low = 0;
+	int high = this->arcLength_table.size();
+	int mid = int(high / 2.0f);
+
+	while (t < this->arcLength_table[mid].t || t >= this->arcLength_table[mid].t)
+	{
+		if (t < this->arcLength_table[mid].t)
+			high = mid;
+		else low = mid;
+		mid = int((low + high) / 2.0f);
+		if (low == mid)
+			return CRAB::Linear_Interpolation(this->arcLength_table[low].t, this->arcLength_table[low].s, this->arcLength_table[high].t, this->arcLength_table[high].s, t);
+		/*if (fabsf(low - mid) < SMALL_NUMBER)
+			return this->arcLength_table[mid].s;*/
+	}
+	return this->arcLength_table[mid].s;
 }
 
 // RETURNS THE HORIZONTAL DISTANCE FROM START
@@ -353,11 +539,12 @@ float NURBS::getHorDistance(const float& t) const
 {
 	float D = 0.0f;
 
+	float steps = 100.0f;
 	glm::vec3 A = this->getPosition(0.0f);
 	A.y = 0.0f;
-	for (int i = 1; i <= ELEMENTS/*1000*/; i++)
+	for (int i = 1; i <= steps; i++)
 	{
-		float u = t * float(i) / ELEMENTS/*1000*/;
+		float u = t * float(i) / steps;
 		glm::vec3 B = this->getPosition(u);
 		B.y = 0.0f;
 		D += glm::distance(A, B);

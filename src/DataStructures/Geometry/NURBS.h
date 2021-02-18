@@ -17,6 +17,15 @@
 
 #define ELEMENTS 100
 
+struct ArcLength
+{
+	float t, s;
+	// CONSTRUCTOR
+	ArcLength(const float& _t, const float& _s)
+		: t(_t), s(_s)
+	{	}
+};
+
 class NURBS
 {
 private:
@@ -27,8 +36,11 @@ private:
 	// DERIVATIVES
 	glm::vec3 deriv(const float& t) const;
 	glm::vec3 deriv2(const float& t) const;
+	CRAB::Vector4Df deriv_4D(const float& t) const;
 	// FIND THE ith KNOT SPAN
 	int FindSpan(const float& t) const;
+	// SETUP THE ARC LENGTH TABLE
+	void SetupArcLengthTable();
 
 public:
 	// Control Points
@@ -39,6 +51,8 @@ public:
 	int P;
 	// Knot vector
 	std::vector<float> T;
+	// Arc Length table
+	std::vector<ArcLength> arcLength_table;
 
 	// DEFAULT CONSTRUCTOR
 	NURBS();
@@ -63,8 +77,10 @@ public:
 	float getCurvature(const float& t) const;
 	// RETURNS THE RADIUS OF CURVATURE
 	float getRadius(const float& t) const;
-	// RETURNS THE LENGTH OF CURVE
-	float getLength() const;
+	// RETURNS THE CHORD LENGTH OF CURVE
+	float getChordLength() const;
+	// RETURNS THE ARC LENGTH OF CURVE
+	float getArcLength() const;
 	// RETURNS THE DISTANCE FROM START
 	float getDistance(const float& t) const;
 	// RETURNS THE HORIZONTAL DISTANCE FROM START

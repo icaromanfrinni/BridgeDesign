@@ -111,7 +111,7 @@ namespace CRAB
 				L.push_back(((i - 1) + v.size()) % v.size());
 				R.push_back(((i + 1) + v.size()) % v.size());
 			}
-
+			
 			int i = v.size() - 1;
 			while (t.size() < (v.size() - 2))
 			{

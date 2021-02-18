@@ -920,33 +920,34 @@ void BoxGirder::Update()
 		}
 	}
 
-#pragma region PIERS
-	for (int i = 0; i < piers.size(); i++)
+	// PIERS
 	{
-		// UPDATE Local axis
-		CRAB::Vector4Df WorldUp = { 0.0f, 1.0f, 0.0f, 0.0f };
-		CRAB::Vector4Df vRight = cross(piers[i].dir, WorldUp).to_unitary();
-		// v0
-		CRAB::Vector4Df start_point = piers[i].base + (piers[i].dir * (piers[i].h / 2.0f)) + (vRight * (piers[i].b / 2.0f));
-		EulerOp::mvfs(model, start_point);
-		model.back()->name = "PIER";
-		model.back()->material = { 0.8f, 0.8f, 0.8f, 1.0f };
-		// v1
-		CRAB::Vector4Df newVertex = model.back()->vertices.back()->point - (vRight * piers[i].b);
-		EulerOp::mev(model.back()->faces.front()->hEdge, NULL, 0, newVertex);
-		// v2
-		newVertex = model.back()->vertices.back()->point - (piers[i].dir * piers[i].h);
-		EulerOp::mev(model.back()->halfEdges[0], NULL, 1, newVertex);
-		// v3
-		newVertex = model.back()->vertices.back()->point + (vRight * piers[i].b);
-		EulerOp::mev(model.back()->halfEdges[2], NULL, 2, newVertex);
-		// f1
-		EulerOp::mef(model.back()->halfEdges.front(), model.back()->halfEdges[5], 0);
+		for (int i = 0; i < piers.size(); i++)
+		{
+			// UPDATE Local axis
+			CRAB::Vector4Df WorldUp = { 0.0f, 1.0f, 0.0f, 0.0f };
+			CRAB::Vector4Df vRight = cross(piers[i].dir, WorldUp).to_unitary();
+			// v0
+			CRAB::Vector4Df start_point = piers[i].base + (piers[i].dir * (piers[i].h / 2.0f)) + (vRight * (piers[i].b / 2.0f));
+			EulerOp::mvfs(model, start_point);
+			model.back()->name = "PIER";
+			model.back()->material = { 0.8f, 0.8f, 0.8f, 1.0f };
+			// v1
+			CRAB::Vector4Df newVertex = model.back()->vertices.back()->point - (vRight * piers[i].b);
+			EulerOp::mev(model.back()->faces.front()->hEdge, NULL, 0, newVertex);
+			// v2
+			newVertex = model.back()->vertices.back()->point - (piers[i].dir * piers[i].h);
+			EulerOp::mev(model.back()->halfEdges[0], NULL, 1, newVertex);
+			// v3
+			newVertex = model.back()->vertices.back()->point + (vRight * piers[i].b);
+			EulerOp::mev(model.back()->halfEdges[2], NULL, 2, newVertex);
+			// f1
+			EulerOp::mef(model.back()->halfEdges.front(), model.back()->halfEdges[5], 0);
 
-		// EXTRUDE
-		EulerOp::EXTRUDE(model.back()->faces.front(), WorldUp, piers[i].L);
+			// EXTRUDE
+			EulerOp::EXTRUDE(model.back()->faces.front(), WorldUp, piers[i].L);
+		}
 	}
-#pragma endregion
 
 #pragma region ABUTMENTS
 	{

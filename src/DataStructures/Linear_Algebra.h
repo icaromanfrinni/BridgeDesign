@@ -335,5 +335,13 @@ namespace CRAB {
 		m.row[3] = { 0.0f, 0.0f, 0.0f, 1.0f };
 		return m;
 	}
+
+	// Linear Interpolation
+	// --------------------
+	inline float Linear_Interpolation(const float& x0, const float& y0, const float& x1, const float& y1, const float& xp)
+	{
+		float yp = y0 + ((y1 - y0) / (x1 - x0)) * (xp - x0);
+		return yp;
+	}
 }
 #endif
