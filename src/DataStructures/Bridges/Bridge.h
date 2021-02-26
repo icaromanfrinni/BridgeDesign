@@ -52,7 +52,7 @@ public:
 	float H;		// Height
 
 	bool hasWidening = true;
-	bool haunchedGirder = true;
+	bool haunchedGirder = false;
 
 	// DEFAULT CONSTRUCTOR
 	Bridge();

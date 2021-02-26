@@ -157,6 +157,7 @@ void NURBS::SetupArcLengthTable()
 		// cálculo do comprimento 's' atual
 		float si = arcLength_table.back().s + 0.5f * (ti - arcLength_table.back().t) * G;
 		// armazena na tabela
+		//std::cout << "t = " << ti << "; s = " << si << std::endl;
 		arcLength_table.push_back(ArcLength(ti, si));
 	}
 }
@@ -538,6 +539,33 @@ float NURBS::getDistance(const float& t) const
 			return this->arcLength_table[mid].s;*/
 	}
 	return this->arcLength_table[mid].s;
+}
+
+// RETURNS THE PARAMETER FROM ARC LENGTH
+// -------------------------------------
+float NURBS::getParameter(const float& length) const
+{
+	if (length == 0.0f)
+		return this->arcLength_table.front().t;
+	if (length >= this->arcLength_table.back().s)
+		return this->arcLength_table.back().t;
+
+	int low = 0;
+	int high = this->arcLength_table.size();
+	int mid = int(high / 2.0f);
+
+	while (length < this->arcLength_table[mid].s || length >= this->arcLength_table[mid].s)
+	{
+		if (length < this->arcLength_table[mid].s)
+			high = mid;
+		else low = mid;
+		mid = int((low + high) / 2.0f);
+		if (low == mid)
+			return CRAB::Linear_Interpolation(this->arcLength_table[low].s, this->arcLength_table[low].t, this->arcLength_table[high].s, this->arcLength_table[high].t, length);
+		/*if (fabsf(low - mid) < SMALL_NUMBER)
+			return this->arcLength_table[mid].s;*/
+	}
+	return this->arcLength_table[mid].t;
 }
 
 // RETURNS THE HORIZONTAL DISTANCE FROM START

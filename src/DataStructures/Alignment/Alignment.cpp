@@ -62,6 +62,10 @@ Alignment::Alignment(const std::string& _name, const std::vector<HorSegment*>& _
 	// --------------------
 	//float start_station = this->findParameter(this->profile.front()->getStartPoint().x);
 	//float end_station = this->findParameter(this->profile.back()->getEndPoint().x);
+	//float t_start = this->path2Dh.getParameter(this->profile.front()->getEndPoint().x);
+	//float t_end = this->path2Dh.getParameter(this->profile.back()->getStartPoint().x);
+	//std::cout << "start station = " << t_start << " (s = " << this->profile.front()->getEndPoint().x << " m)" << std::endl;
+	//std::cout << "end station = " << t_end << " (s = " << this->profile.back()->getStartPoint().x << " m)" << std::endl;
 
 	// 3D Curve CONSTRUCTOR
 	// --------------------
@@ -79,18 +83,39 @@ Alignment::Alignment(const std::string& _name, const std::vector<HorSegment*>& _
 	//	points3D.back().y = profile[index]->getY(distance);
 	//}
 	// VERSÃO NOVA (CRETO)
-	for (int i = 0; i <= this->path2Dh.arcLength_table.size(); i++)
+	//for (int i = 0; i <= this->path2Dh.arcLength_table.size(); i++)
+	//{
+	//	float t = float(i) / this->path2Dh.arcLength_table.size();
+	//	// coordenadas em planta
+	//	points3D.push_back(this->path2Dh.getPosition(t));
+	//	// elevation (m)
+	//	if (i == this->path2Dh.arcLength_table.size()) break;
+	//	//std::cout << "i = " << i << "; distance = " << arcLength_table[i].s << " m" << std::endl;
+	//	int index = findSegment(this->path2Dh.arcLength_table[i].s);
+	//	if (index == -1) continue;
+	//	points3D.back().y = profile[index]->getY(this->path2Dh.arcLength_table[i].s);
+	//	//std::cout << "y = " << points3D.back().y << std::endl;
+	//}
+	// A CADA METRO
+	// Initialize 's'
+	float s = 0.0f;
+	while (s <= this->path2Dh.getArcLength())
 	{
-		float t = float(i) / this->path2Dh.arcLength_table.size();
-		// coordenadas em planta
+		// Computes 't' corresponding to 's' in the table
+		float t = this->path2Dh.getParameter(s);
+		// Gets the horizontal curve point at parameter 't'
 		points3D.push_back(this->path2Dh.getPosition(t));
-		// elevation (m)
-		if (i == this->path2Dh.arcLength_table.size()) break;
-		//std::cout << "i = " << i << "; distance = " << arcLength_table[i].s << " m" << std::endl;
-		int index = findSegment(this->path2Dh.arcLength_table[i].s);
-		if (index == -1) continue;
-		points3D.back().y = profile[index]->getY(this->path2Dh.arcLength_table[i].s);
-		//std::cout << "y = " << points3D.back().y << std::endl;
+		// Find the segment of the longitudinal profile corresponding to 's'
+		int index = findSegment(s);
+		if (index == -1)
+		{
+			s++;
+			continue;
+		}
+		// Computes the elevation coordinate from the vertical alignment
+		points3D.back().y = profile[index]->getY(s);
+
+		s++;
 	}
 
 	this->path3D = NURBS(points3D);

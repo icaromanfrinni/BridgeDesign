@@ -83,6 +83,8 @@ public:
 	float getArcLength() const;
 	// RETURNS THE DISTANCE FROM START
 	float getDistance(const float& t) const;
+	// RETURNS THE PARAMETER FROM ARC LENGTH
+	float getParameter(const float& length) const;
 	// RETURNS THE HORIZONTAL DISTANCE FROM START
 	float getHorDistance(const float& t) const;
 	// CLOCKWISE CHECK

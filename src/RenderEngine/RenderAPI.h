@@ -574,7 +574,7 @@ namespace CRAB
         // ----
         for (int i = 0; i < bridges.size(); i++)
         {
-            curves.push_back(Grid(bridges[i]->alignment->path3D));
+            //curves.push_back(Grid(bridges[i]->alignment->path3D));
             //curves.push_back(Grid(bridges[i]->abutments.front()->path3D));
             //curves.push_back(Grid(bridges[i]->abutments.back()->path3D));
             for (int j = 0; j < bridges[i]->model.size(); j++)
@@ -582,6 +582,7 @@ namespace CRAB
         }
         for (int i = 0; i < roadways.size(); i++)
         {
+            curves.push_back(Grid(roadways[i]->alignment->path2Dh));
             //curves.push_back(Grid(roadways[i]->alignment->path3D));
             /*for (int j = 0; j < roadways[i]->model.size(); j++)
                 ourMesh_List.push_back(Mesh(roadways[i]->model[j]));*/
