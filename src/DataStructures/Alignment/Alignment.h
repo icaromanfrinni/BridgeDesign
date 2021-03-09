@@ -20,8 +20,8 @@ class Alignment
 private:
 
 public:
-	NURBS path2Dh;	// 2D horizontal curve
-	NURBS path3D;	// 3D curve
+	NURBS path2D;	// 2D horizontal curve
+	//NURBS path3D;	// 3D curve
 	std::string name;
 	std::vector<HorSegment*> plan;			// Horizontal alignment
 	std::vector<VerSegment*> profile;		// Vertical alignment
@@ -45,7 +45,7 @@ public:
 	float getCurvature(const float& t) const;
 	float getRadius(const float& t) const;
 	float getDistance(const float& t) const;
-	float getHorDistance(const float& t) const;
+	//float getHorDistance(const float& t) const;
 
 	// RETURNS THE 't' PARAMETER OF NURBS CURVE
 	float findParameter(const float& s) const;

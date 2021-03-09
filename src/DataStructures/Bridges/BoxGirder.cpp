@@ -98,8 +98,8 @@ void BoxGirder::SetupSection(const float& t)
 	// ALTURA VARIÁVEL ENTRE APOIOS
 	//std::cout << "t = " << t << std::endl;
 	// Distância X
-	//float x = this->alignment->getDistance(t);
-	float x = this->alignment->getHorDistance(t);
+	float x = this->alignment->getDistance(t);
+	//float x = this->alignment->getHorDistance(t);
 	/*std::cout << "\nx = " << x << std::endl;
 	std::cout << "x,plano = " << _x << std::endl;*/
 	// Intervalo
@@ -818,9 +818,12 @@ void BoxGirder::Update()
 	// Initialize
 	model.clear();
 
+	float start_station = this->alignment->findParameter(this->alignment->profile.front()->getStartPoint().x);
+	float end_station = this->alignment->findParameter(this->alignment->profile.back()->getEndPoint().x);
 	// TOP_LAYER
 	{
-		std::vector<CRAB::Vector4Df> cross_section = this->TopLayer_section(0);
+		//std::vector<CRAB::Vector4Df> cross_section = this->TopLayer_section(0);
+		std::vector<CRAB::Vector4Df> cross_section = this->TopLayer_section(start_station);
 		EulerOp::mvfs(model, cross_section.front());
 		model.back()->name = "TOP_LAYER";
 		model.back()->material = { 0.1f, 0.1f, 0.1f, 1.0f };
@@ -841,20 +844,36 @@ void BoxGirder::Update()
 		EulerOp::mef(model.back()->halfEdges.front(), model.back()->halfEdges.back(), 0);
 
 		// Sweep
-		for (int i = 1; i <= ELEMENTS; i++)
+		//for (int i = 1; i <= ELEMENTS; i++)
+		//{
+		//	// Current position
+		//	float t = float(i) / ELEMENTS;
+		//	// Next section
+		//	std::vector<CRAB::Vector4Df> new_section = this->TopLayer_section(t);
+		//	// Solid
+		//	EulerOp::SWEEP(model.back()->faces.front(), new_section);
+		//}
+
+		float s = this->alignment->getDistance(start_station) + 1.0f;
+		float s_end = this->alignment->getDistance(end_station);
+		while (s < s_end)
 		{
+			//std::cout << "station = " << s << std::endl;
 			// Current position
-			float t = float(i) / ELEMENTS;
+			float t = this->alignment->findParameter(s);
 			// Next section
 			std::vector<CRAB::Vector4Df> new_section = this->TopLayer_section(t);
 			// Solid
 			EulerOp::SWEEP(model.back()->faces.front(), new_section);
+
+			s++;
 		}
 	}
 	
 	// DECK
 	{
-		std::vector<CRAB::Vector4Df> cross_section = this->Deck_section(0.0f);
+		//std::vector<CRAB::Vector4Df> cross_section = this->Deck_section(0.0f);
+		std::vector<CRAB::Vector4Df> cross_section = this->Deck_section(start_station);
 		EulerOp::mvfs(model, cross_section.front());
 		model.back()->name = "DECK";
 		model.back()->material = { 0.8f, 0.8f, 0.8f, 1.0f };
@@ -875,20 +894,36 @@ void BoxGirder::Update()
 		EulerOp::mef(model.back()->halfEdges.front(), model.back()->halfEdges.back(), 0);
 
 		// Sweep
-		for (int i = 1; i <= /*ELEMENTS*/200; i++)
+		//for (int i = 1; i <= /*ELEMENTS*/200; i++)
+		//{
+		//	// Current position
+		//	float t = float(i) / /*ELEMENTS*/200;
+		//	// Next section
+		//	std::vector<CRAB::Vector4Df> new_section = this->Deck_section(t);
+		//	// Solid
+		//	EulerOp::SWEEP(model.back()->faces.front(), new_section);
+		//}	
+
+		float s = this->alignment->getDistance(start_station) + 1.0f;
+		float s_end = this->alignment->getDistance(end_station);
+		while (s < s_end)
 		{
+			//std::cout << "station = " << s << std::endl;
 			// Current position
-			float t = float(i) / /*ELEMENTS*/200;
+			float t = this->alignment->findParameter(s);
 			// Next section
 			std::vector<CRAB::Vector4Df> new_section = this->Deck_section(t);
 			// Solid
 			EulerOp::SWEEP(model.back()->faces.front(), new_section);
-		}			
+
+			s++;
+		}
 	}
 
 	// U_SECTION
 	{
-		std::vector<CRAB::Vector4Df> cross_section = this->U_section(0.0f);
+		//std::vector<CRAB::Vector4Df> cross_section = this->U_section(0.0f);
+		std::vector<CRAB::Vector4Df> cross_section = this->U_section(start_station);
 		EulerOp::mvfs(model, cross_section.front());
 		model.back()->name = "U_SECTION";
 		model.back()->material = { 0.8f, 0.8f, 0.8f, 1.0f };
@@ -909,14 +944,29 @@ void BoxGirder::Update()
 		EulerOp::mef(model.back()->halfEdges.front(), model.back()->halfEdges.back(), 0);
 
 		// Sweep
-		for (int i = 1; i <= /*ELEMENTS*/200; i++)
+		//for (int i = 1; i <= /*ELEMENTS*/200; i++)
+		//{
+		//	// Current position
+		//	float t = float(i) / /*ELEMENTS*/200;
+		//	// Next section
+		//	std::vector<CRAB::Vector4Df> new_section = this->U_section(t);
+		//	// Solid
+		//	EulerOp::SWEEP(model.back()->faces.front(), new_section);
+		//}
+
+		float s = this->alignment->getDistance(start_station) + 1.0f;
+		float s_end = this->alignment->getDistance(end_station);
+		while (s < s_end)
 		{
+			//std::cout << "station = " << s << std::endl;
 			// Current position
-			float t = float(i) / /*ELEMENTS*/200;
+			float t = this->alignment->findParameter(s);
 			// Next section
 			std::vector<CRAB::Vector4Df> new_section = this->U_section(t);
 			// Solid
 			EulerOp::SWEEP(model.back()->faces.front(), new_section);
+
+			s++;
 		}
 	}
 

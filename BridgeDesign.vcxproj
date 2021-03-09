@@ -180,6 +180,7 @@
     <ClInclude Include="src\DataStructures\Geometry\Geometry.h" />
     <ClInclude Include="src\DataStructures\Geometry\Line.h" />
     <ClInclude Include="src\DataStructures\Geometry\NURBS.h" />
+    <ClInclude Include="src\DataStructures\Geometry\ParabolicArc.h" />
     <ClInclude Include="src\DataStructures\HalfEdge.h" />
     <ClInclude Include="src\DataStructures\Light\DirectionalLight.h" />
     <ClInclude Include="src\DataStructures\Light\Light.h" />
@@ -218,6 +219,7 @@
     <ClCompile Include="src\DataStructures\Geometry\Geometry.cpp" />
     <ClCompile Include="src\DataStructures\Geometry\Line.cpp" />
     <ClCompile Include="src\DataStructures\Geometry\NURBS.cpp" />
+    <ClCompile Include="src\DataStructures\Geometry\ParabolicArc.cpp" />
     <ClCompile Include="src\DataStructures\Light\DirectionalLight.cpp" />
     <ClCompile Include="src\DataStructures\Light\Light.cpp" />
     <ClCompile Include="src\DataStructures\Material\Material.cpp" />

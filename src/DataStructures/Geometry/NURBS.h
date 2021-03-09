@@ -81,7 +81,7 @@ public:
 	float getChordLength() const;
 	// RETURNS THE ARC LENGTH OF CURVE
 	float getArcLength() const;
-	// RETURNS THE DISTANCE FROM START
+	// RETURNS THE DISTANCE ALONG THE CURVE (from Arclength Table)
 	float getDistance(const float& t) const;
 	// RETURNS THE PARAMETER FROM ARC LENGTH
 	float getParameter(const float& length) const;

@@ -517,19 +517,11 @@ namespace CRAB
 
         /* Automation and Construction 2020: Viaduto do Baldo */
 #if EXAMPLE == 14
-
-        // road plan for elevation view
-        std::vector<HorSegment*> elevation_view;
-        elevation_view.push_back(new HorSegment(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(470.0f, 0.0f, 0.0f)));
-
         // road_profile
         std::vector<VerSegment*> road_profile;
         road_profile.push_back(new VerSegment(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(470.0f, 0.0f, 0.0f)));
 
         std::vector<float> stations;
-        //stations = { 125.0f, 195.0f, 265.0f, 335.0f };                 // 70, 70, 70
-        //stations = { 127.5f, 152.5f, 195.0f, 265.0f, 307.5f, 332.5f }; // 25, 42.5, 70, 42.5, 25
-        //stations = { 55.0f, 125.0f, 195.0f, 265.0f, 335.0f, 405.0f };  // 70, 70, 70, 70, 70
 
         // VIADUTO ESQUERDO
         // ----------------
@@ -541,7 +533,6 @@ namespace CRAB
         road_plan_LEFT.push_back(new HorSegment(glm::vec3(408.170f, 0.0f, -172.960f), glm::vec3(461.610f, 0.0f, -180.590f)));
         // alignment
         alignments.push_back(new Alignment("Ramo Esquerdo", road_plan_LEFT, road_profile));
-        //alignments.push_back(new Alignment("Ramo Esquerdo", elevation_view, road_profile));
         
         /* R00 */
         //roadways.push_back(new Road("Av. Prudente de Morais", 9.20f, 60.0f, alignments.back(), vehicles.back()));
@@ -582,7 +573,7 @@ namespace CRAB
         }
         for (int i = 0; i < roadways.size(); i++)
         {
-            curves.push_back(Grid(roadways[i]->alignment->path2Dh));
+            curves.push_back(Grid(roadways[i]->alignment->path2D));
             //curves.push_back(Grid(roadways[i]->alignment->path3D));
             /*for (int j = 0; j < roadways[i]->model.size(); j++)
                 ourMesh_List.push_back(Mesh(roadways[i]->model[j]));*/
