@@ -10,16 +10,17 @@
 class VerSegment
 {
 public:
+	// Straight Line || Parabolic Arc
 	Geometry* segment;
 
 	// DEFAULT CONSTRUCTOR
 	VerSegment();
 	// OVERLOAD CONSTRUCTOR (Straight Line)
-	VerSegment(const glm::vec3& _p0, const glm::vec3& _p1);
+	//VerSegment(const glm::vec3& _p0, const glm::vec3& _p1);
 	// OVERLOAD CONSTRUCTOR (Straight Line from CRAB::Vector)
 	VerSegment(const CRAB::Vector4Df& _p0, const CRAB::Vector4Df& _p1);
 	// OVERLOAD CONSTRUCTOR (Parabolic Arc)
-	VerSegment(const glm::vec3& _p0, const glm::vec3& _p1, const glm::vec3& _p2);
+	//VerSegment(const glm::vec3& _p0, const glm::vec3& _p1, const glm::vec3& _p2);
 	// OVERLOAD CONSTRUCTOR (Parabolic Arc from CRAB::Vector)
 	VerSegment(const CRAB::Vector4Df& _p0, const CRAB::Vector4Df& _p1, const CRAB::Vector4Df& _p2);
 	// DESTRUCTOR
@@ -30,9 +31,9 @@ public:
 	glm::vec3 getMidPoint() const;
 	glm::vec3 getEndPoint() const;
 	// RETURN (CRAB::Vector4Df)
-	CRAB::Vector4Df getStart4DPoint() const;
-	CRAB::Vector4Df getMid4DPoint() const;
-	CRAB::Vector4Df getEnd4DPoint() const;
+	CRAB::Vector4Df getStartPoint4D() const;
+	CRAB::Vector4Df getMidPoint4D() const;
+	CRAB::Vector4Df getEndPoint4D() const;
 
 	// RETURN THE ELEVATION
 	float getY(const float& x) const;

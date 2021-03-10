@@ -289,14 +289,14 @@ std::vector<VerSegment*> Bridge::Vertical_Alignment()
 		if (this->road->alignment->profile[i]->Contains(P))
 		{
 			VPI1 = P;
-			tan_Segment = (this->road->alignment->profile[i]->getMid4DPoint() - this->road->alignment->profile[i]->getStart4DPoint()).to_unitary();
+			tan_Segment = (this->road->alignment->profile[i]->getMidPoint4D() - this->road->alignment->profile[i]->getStartPoint4D()).to_unitary();
 			break;
 		}
 		// if its before all segments
 		if (i == 0)
 		{
 			VPI1 = P;
-			tan_Segment = (this->road->alignment->profile[i]->getMid4DPoint() - this->road->alignment->profile[i]->getStart4DPoint()).to_unitary();
+			tan_Segment = (this->road->alignment->profile[i]->getMidPoint4D() - this->road->alignment->profile[i]->getStartPoint4D()).to_unitary();
 		}
 	}
 	// Projections (hor & vert)
@@ -324,12 +324,12 @@ std::vector<VerSegment*> Bridge::Vertical_Alignment()
 		if (this->road->alignment->profile[i]->Contains(P))
 		{
 			VPI3 = P;
-			tan_Segment = (this->road->alignment->profile[i]->getEnd4DPoint() - this->road->alignment->profile[i]->getMid4DPoint()).to_unitary();
+			tan_Segment = (this->road->alignment->profile[i]->getEndPoint4D() - this->road->alignment->profile[i]->getMidPoint4D()).to_unitary();
 			break;
 		}
 		// if its after all segments
 		VPI3 = P;
-		tan_Segment = (this->road->alignment->profile[i]->getEnd4DPoint() - this->road->alignment->profile[i]->getMid4DPoint()).to_unitary();
+		tan_Segment = (this->road->alignment->profile[i]->getEndPoint4D() - this->road->alignment->profile[i]->getMidPoint4D()).to_unitary();
 	}
 	// Projections (hor & vert)
 	vPxz = (PlaneXZ * tan_Segment).to_unitary();

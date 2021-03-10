@@ -141,9 +141,9 @@ public:
 	virtual glm::vec3 getStartPoint() const = 0;
 	virtual glm::vec3 getMidPoint() const = 0;
 	virtual glm::vec3 getEndPoint() const = 0;
-	virtual CRAB::Vector4Df getStart4DPoint() const = 0;
-	virtual CRAB::Vector4Df getMid4DPoint() const = 0;
-	virtual CRAB::Vector4Df getEnd4DPoint() const = 0;
+	virtual CRAB::Vector4Df getStartPoint4D() const = 0;
+	virtual CRAB::Vector4Df getMidPoint4D() const = 0;
+	virtual CRAB::Vector4Df getEndPoint4D() const = 0;
 	virtual float getLength() const = 0;
 	virtual float getY(const float& x) const = 0;
 	virtual float midPointWeight() const = 0;

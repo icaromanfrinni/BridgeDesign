@@ -10,10 +10,10 @@ VerSegment::VerSegment()
 
 // OVERLOAD CONSTRUCTOR (Straight Line)
 // ------------------------------------
-VerSegment::VerSegment(const glm::vec3& _p0, const glm::vec3& _p1)
-{
-	this->segment = new Line(_p0, _p1);
-}
+//VerSegment::VerSegment(const glm::vec3& _p0, const glm::vec3& _p1)
+//{
+//	this->segment = new Line(_p0, _p1);
+//}
 // OVERLOAD CONSTRUCTOR (Straight Line from CRAB::Vector)
 // ------------------------------------------------------
 VerSegment::VerSegment(const CRAB::Vector4Df& _p0, const CRAB::Vector4Df& _p1)
@@ -22,10 +22,10 @@ VerSegment::VerSegment(const CRAB::Vector4Df& _p0, const CRAB::Vector4Df& _p1)
 }
 // OVERLOAD CONSTRUCTOR (Parabolic Arc)
 // ---------------------------------------
-VerSegment::VerSegment(const glm::vec3& _p0, const glm::vec3& _p1, const glm::vec3& _p2)
-{
-	this->segment = new ParabolicArc(_p0, _p1, _p2);
-}
+//VerSegment::VerSegment(const glm::vec3& _p0, const glm::vec3& _p1, const glm::vec3& _p2)
+//{
+//	this->segment = new ParabolicArc(_p0, _p1, _p2);
+//}
 // OVERLOAD CONSTRUCTOR (Parabolic Arc from CRAB::Vector)
 // -----------------------------------------------------
 VerSegment::VerSegment(const CRAB::Vector4Df& _p0, const CRAB::Vector4Df& _p1, const CRAB::Vector4Df& _p2)
@@ -56,17 +56,17 @@ glm::vec3 VerSegment::getEndPoint() const
 
 // RETURN (CRAB::Vector4Df)
 // ------------------------
-CRAB::Vector4Df VerSegment::getStart4DPoint() const
+CRAB::Vector4Df VerSegment::getStartPoint4D() const
 {
-	return segment->getStart4DPoint();
+	return segment->getStartPoint4D();
 }
-CRAB::Vector4Df VerSegment::getMid4DPoint() const
+CRAB::Vector4Df VerSegment::getMidPoint4D() const
 {
-	return segment->getMid4DPoint();
+	return segment->getMidPoint4D();
 }
-CRAB::Vector4Df VerSegment::getEnd4DPoint() const
+CRAB::Vector4Df VerSegment::getEndPoint4D() const
 {
-	return segment->getEnd4DPoint();
+	return segment->getEndPoint4D();
 }
 
 // RETURN THE ELEVATION

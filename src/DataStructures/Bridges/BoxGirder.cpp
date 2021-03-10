@@ -176,7 +176,7 @@ void BoxGirder::SetupPiers(const int& _nPiers)
 	//std::cout << "span_length = " << span_length << std::endl;
 	//float end_length = (total_length - (_nPiers - 1) * span) / 2.0f;
 	// first pier
-	float station = this->alignment->profile.front()->getStart4DPoint().x + span_length / 2.0f;
+	float station = this->alignment->profile.front()->getStartPoint4D().x + span_length / 2.0f;
 
 	this->piers.clear();
 	this->span_vector.clear();
@@ -193,10 +193,10 @@ void BoxGirder::SetupPiers(const int& _nPiers)
 		P.h = h_Pier;
 		P.station = station;
 		
-		//this->span_vector.push_back(P.station - this->alignment->profile.front()->getStart4DPoint().x);
-		span.end = P.station - this->alignment->profile.front()->getStart4DPoint().x - P.h / 2.0f;
+		//this->span_vector.push_back(P.station - this->alignment->profile.front()->getStartPoint4D().x);
+		span.end = P.station - this->alignment->profile.front()->getStartPoint4D().x - P.h / 2.0f;
 		this->span_vector.push_back(span);
-		span.start = P.station - this->alignment->profile.front()->getStart4DPoint().x + P.h / 2.0f;
+		span.start = P.station - this->alignment->profile.front()->getStartPoint4D().x + P.h / 2.0f;
 
 		P.ang = 0.0f;
 		P.dir = this->alignment->getTangentFromStation(P.station);
@@ -212,9 +212,9 @@ void BoxGirder::SetupPiers(const int& _nPiers)
 		piers.push_back(P);
 		station += span_length;
 	}
-	//this->span_vector.push_back(this->alignment->profile.back()->getEnd4DPoint().x - this->alignment->profile.front()->getStart4DPoint().x);
-	//float last_span = 2.0f * ((this->alignment->profile.back()->getEnd4DPoint().x - this->alignment->profile.front()->getStart4DPoint().x) - this->span_vector.back());
-	float last_span = 2.0f * ((this->alignment->profile.back()->getEnd4DPoint().x - this->alignment->profile.front()->getStart4DPoint().x) - span.start);
+	//this->span_vector.push_back(this->alignment->profile.back()->getEndPoint4D().x - this->alignment->profile.front()->getStartPoint4D().x);
+	//float last_span = 2.0f * ((this->alignment->profile.back()->getEndPoint4D().x - this->alignment->profile.front()->getStartPoint4D().x) - this->span_vector.back());
+	float last_span = 2.0f * ((this->alignment->profile.back()->getEndPoint4D().x - this->alignment->profile.front()->getStartPoint4D().x) - span.start);
 	span.end = span.start + last_span;
 	//this->span_vector.push_back(this->span_vector.back() + last_span);
 	this->span_vector.push_back(span);
@@ -223,7 +223,7 @@ void BoxGirder::SetupPiers(const std::vector<float>& _stations)
 {
 	float b_Pier = /*0.9f **/ this->b;
 	float h_Pier = 0.6f * b_Pier;
-	float span_length = _stations.front() - this->alignment->profile.front()->getStart4DPoint().x;
+	float span_length = _stations.front() - this->alignment->profile.front()->getStartPoint4D().x;
 
 	this->piers.clear();
 	this->span_vector.clear();
@@ -239,9 +239,9 @@ void BoxGirder::SetupPiers(const std::vector<float>& _stations)
 		P.h = h_Pier;
 		P.station = _stations[i];
 
-		span.end = P.station - this->alignment->profile.front()->getStart4DPoint().x - P.h / 2.0f;
+		span.end = P.station - this->alignment->profile.front()->getStartPoint4D().x - P.h / 2.0f;
 		this->span_vector.push_back(span);
-		span.start = P.station - this->alignment->profile.front()->getStart4DPoint().x + P.h / 2.0f;
+		span.start = P.station - this->alignment->profile.front()->getStartPoint4D().x + P.h / 2.0f;
 
 		P.ang = 0.0f;
 		P.dir = this->alignment->getTangentFromStation(P.station);
@@ -255,7 +255,7 @@ void BoxGirder::SetupPiers(const std::vector<float>& _stations)
 		//std::cout << "H pilar = " << P.L << std::endl;
 		piers.push_back(P);
 	}
-	float profile_length = this->alignment->profile.back()->getEnd4DPoint().x - this->alignment->profile.front()->getStart4DPoint().x;
+	float profile_length = this->alignment->profile.back()->getEndPoint4D().x - this->alignment->profile.front()->getStartPoint4D().x;
 	float last_span = 2.0f * (profile_length - span.start);
 	span.end = span.start + last_span;
 	this->span_vector.push_back(span);
@@ -265,7 +265,7 @@ void BoxGirder::AddPier()
 	Pier P;
 	P.b =/* 0.9f **/ this->b;
 	P.h = 0.6f * P.b;
-	P.station = this->alignment->profile.front()->getStart4DPoint().x + this->alignment->getProfileLength() / 2.0f;
+	P.station = this->alignment->profile.front()->getStartPoint4D().x + this->alignment->getProfileLength() / 2.0f;
 	P.ang = 0.0f;
 	P.dir = this->alignment->getTangentFromStation(P.station);
 	P.base = this->road->alignment->getPositionFromStation(P.station);
@@ -419,9 +419,9 @@ void BoxGirder::UpdatePiers()
 		this->piers[i].L = (top - this->piers[i].base).length() - this->H;
 
 		// UPDATE span vector
-		//this->span_vector[i + 1] = this->piers[i].station - this->alignment->profile.front()->getStart4DPoint().x;
-		this->span_vector[i].end = this->piers[i].station - this->alignment->profile.front()->getStart4DPoint().x - this->piers[i].h / 2.0f;
-		this->span_vector[i + 1].start = this->piers[i].station - this->alignment->profile.front()->getStart4DPoint().x + this->piers[i].h / 2.0f;
+		//this->span_vector[i + 1] = this->piers[i].station - this->alignment->profile.front()->getStartPoint4D().x;
+		this->span_vector[i].end = this->piers[i].station - this->alignment->profile.front()->getStartPoint4D().x - this->piers[i].h / 2.0f;
+		this->span_vector[i + 1].start = this->piers[i].station - this->alignment->profile.front()->getStartPoint4D().x + this->piers[i].h / 2.0f;
 		
 		// configura as extremidades do vertor de vãos com valores fora da extensão total para garantir H / 2 (balanços)
 		/*if (i == 0)
@@ -667,7 +667,7 @@ void BoxGirder::UpdatePiers()
 //	EulerOp::SWEEP(model.back()->faces.front(), this->abutments.front());
 //
 //	// ROAD LEVEL
-//	float start_station = this->abutments.front()->profile.front()->getStart4DPoint().x;
+//	float start_station = this->abutments.front()->profile.front()->getStartPoint4D().x;
 //	float base_level = this->road->alignment->getPositionFromStation(start_station).y - 0.5f;
 //	//std::cout << "base_level = " << base_level << std::endl;
 //	// OFFSET
@@ -754,7 +754,7 @@ void BoxGirder::UpdatePiers()
 //	EulerOp::SWEEP(model.back()->faces.front(), this->abutments.back());
 //
 //	// ROAD LEVEL
-//	start_station = this->abutments.back()->profile.front()->getStart4DPoint().x;
+//	start_station = this->abutments.back()->profile.front()->getStartPoint4D().x;
 //	base_level = this->road->alignment->getPositionFromStation(start_station).y - 0.5f;
 //	// OFFSET
 //	offset = (B / 2.0f - GUARD_RAIL) * SLOPE + TOP_LAYER;
@@ -1029,7 +1029,7 @@ void BoxGirder::Update()
 		//EulerOp::SWEEP(model.back()->faces.front(), this->abutments.front());
 
 		//// ROAD LEVEL
-		//float start_station = this->abutments.front()->profile.front()->getStart4DPoint().x;
+		//float start_station = this->abutments.front()->profile.front()->getStartPoint4D().x;
 		//float base_level = this->road->alignment->getPositionFromStation(start_station).y - 0.5f;
 		////std::cout << "base_level = " << base_level << std::endl;
 		//// OFFSET
@@ -1116,7 +1116,7 @@ void BoxGirder::Update()
 		//EulerOp::SWEEP(model.back()->faces.front(), this->abutments.back());
 
 		//// ROAD LEVEL
-		//start_station = this->abutments.back()->profile.front()->getStart4DPoint().x;
+		//start_station = this->abutments.back()->profile.front()->getStartPoint4D().x;
 		//base_level = this->road->alignment->getPositionFromStation(start_station).y - 0.5f;
 		//// OFFSET
 		//offset = (B / 2.0f) * SLOPE + TOP_LAYER;

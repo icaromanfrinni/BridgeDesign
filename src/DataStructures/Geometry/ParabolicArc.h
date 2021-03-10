@@ -7,8 +7,8 @@
 class ParabolicArc
 	: public Geometry
 {
-	glm::vec3 p1, p2, p3;
-	glm::vec3 tan1, tan2;
+	CRAB::Vector4Df p1, p2, p3;
+	CRAB::Vector4Df tan1, tan2;
 	float g1, g2;
 
 	// SETUP
@@ -17,21 +17,18 @@ class ParabolicArc
 public:
 	// DEFAULT CONSTRUCTOR
 	ParabolicArc();
-	// OVERLOAD CONSTRUCTOR (from glm::vec3)
-	ParabolicArc(const glm::vec3 &_p1, const glm::vec3 &_p2, const glm::vec3 &_p3);
-	// OVERLOAD CONSTRUCTOR (from CRAB::Vector4Df)
+	// OVERLOAD CONSTRUCTOR
 	ParabolicArc(const CRAB::Vector4Df &_p1, const CRAB::Vector4Df &_p2, const CRAB::Vector4Df &_p3);
 	// DESTRUCTOR
 	~ParabolicArc();
 
-	// RETURN (glm::vec3)
+	// RETURN
 	glm::vec3 getStartPoint() const;
 	glm::vec3 getMidPoint() const;
 	glm::vec3 getEndPoint() const;
-	// RETURN (CRAB::Vector4Df)
-	CRAB::Vector4Df getStart4DPoint() const;
-	CRAB::Vector4Df getMid4DPoint() const;
-	CRAB::Vector4Df getEnd4DPoint() const;
+	CRAB::Vector4Df getStartPoint4D() const;
+	CRAB::Vector4Df getMidPoint4D() const;
+	CRAB::Vector4Df getEndPoint4D() const;
 	// RETURNS THE SEGMENT LENGTH
 	float getLength() const;
 	// RETURN THE ELEVATION

@@ -7,26 +7,23 @@
 class Line
 	: public Geometry
 {
-	glm::vec3 p0, p1;
+	CRAB::Vector4Df p1, p2;
 
 public:
 	// DEFAULT CONSTRUCTOR
 	Line();
 	// OVERLOAD CONSTRUCTOR (from two points)
-	Line(const glm::vec3 &_p0, const glm::vec3 &_p1);
-	// OVERLOAD CONSTRUCTOR (from CRAB::Vector4Df)
-	Line(const CRAB::Vector4Df& _p0, const CRAB::Vector4Df& _p1);
+	Line(const CRAB::Vector4Df& _p1, const CRAB::Vector4Df& _p2);
 	// DESTRUCTOR
 	~Line();
 
-	// RETURN (glm::vec3)
+	// RETURN
 	glm::vec3 getStartPoint() const;
 	glm::vec3 getMidPoint() const;
 	glm::vec3 getEndPoint() const;
-	// RETURN (CRAB::Vector4Df)
-	CRAB::Vector4Df getStart4DPoint() const;
-	CRAB::Vector4Df getMid4DPoint() const;
-	CRAB::Vector4Df getEnd4DPoint() const;
+	CRAB::Vector4Df getStartPoint4D() const;
+	CRAB::Vector4Df getMidPoint4D() const;
+	CRAB::Vector4Df getEndPoint4D() const;
 	// RETURNS THE SEGMENT LENGTH
 	float getLength() const;
 	// RETURNS THE ELEVATION
