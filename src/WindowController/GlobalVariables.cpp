@@ -9,7 +9,7 @@ std::string bridgeName, roadName;
 float v_clearance = 6.0f;
 float main_span = 70.0;
 std::vector<float> column_stations;
-float cross_station, h_clearance;
+float cross_station, h_clearance, start_s, end_s;
 float roadWidth, dSpeed;
 int nLanes = 2;
 float nPiers;

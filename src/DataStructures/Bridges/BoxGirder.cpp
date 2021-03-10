@@ -9,8 +9,8 @@ BoxGirder::BoxGirder()
 
 // OVERLOAD CONSTRUCTOR (Viaduct)
 // ------------------------------
-BoxGirder::BoxGirder(const std::string& _name, Road* _road, const float& cross_station, const float& vertical_clearance, const float& horizontal_clearance, const std::vector<float>& _stations)
-	: Bridge(_name, _road, cross_station, vertical_clearance, horizontal_clearance)
+BoxGirder::BoxGirder(const std::string& _name, Road* _road, const float& cross_station, const float& vertical_clearance, const float& horizontal_clearance, const std::vector<float>& _stations, const float& start_station, const float& end_station)
+	: Bridge(_name, _road, cross_station, vertical_clearance, horizontal_clearance, start_station, end_station)
 {
 	// Preliminary calculations
 	this->SetupSection();
@@ -32,8 +32,8 @@ BoxGirder::BoxGirder(const std::string& _name, Road* _road, const float& cross_s
 
 // OVERLOAD CONSTRUCTOR (Overpass)
 // -------------------------------
-BoxGirder::BoxGirder(const std::string& _name, Road* _road, const float& cross_station, const float& vertical_clearance, const float& horizontal_clearance, const float& elevation_level)
-	: Bridge(_name, _road, cross_station, vertical_clearance, horizontal_clearance, elevation_level)
+BoxGirder::BoxGirder(const std::string& _name, Road* _road, const float& cross_station, const float& vertical_clearance, const float& horizontal_clearance, const float& elevation_level, const float& start_station, const float& end_station)
+	: Bridge(_name, _road, cross_station, vertical_clearance, horizontal_clearance, elevation_level, start_station, end_station)
 {
 	// Preliminary calculations
 	this->SetupSection();
@@ -46,8 +46,8 @@ BoxGirder::BoxGirder(const std::string& _name, Road* _road, const float& cross_s
 
 // OVERLOAD CONSTRUCTOR (Bridge)
 // -----------------------------
-BoxGirder::BoxGirder(const std::string& _name, Road* _road, const float& cross_station, const float& vertical_clearance, const float& horizontal_clearance, const float& elevation_level, const float& water_surface)
-	: Bridge(_name, _road, cross_station, vertical_clearance, horizontal_clearance, elevation_level, water_surface)
+BoxGirder::BoxGirder(const std::string& _name, Road* _road, const float& cross_station, const float& vertical_clearance, const float& horizontal_clearance, const float& elevation_level, const float& water_surface, const float& start_station, const float& end_station)
+	: Bridge(_name, _road, cross_station, vertical_clearance, horizontal_clearance, elevation_level, water_surface, start_station, end_station)
 {
 	// Preliminary calculations
 	this->SetupSection();
@@ -818,12 +818,14 @@ void BoxGirder::Update()
 	// Initialize
 	model.clear();
 
-	float start_station = this->alignment->findParameter(this->alignment->profile.front()->getStartPoint().x);
-	float end_station = this->alignment->findParameter(this->alignment->profile.back()->getEndPoint().x);
+	//float start_station = this->alignment->findParameter(this->alignment->profile.front()->getStartPoint().x);
+	//float end_station = this->alignment->findParameter(this->alignment->profile.back()->getEndPoint().x);
+	float start_t = this->alignment->findParameter(this->start_S);
+	float end_t = this->alignment->findParameter(this->end_S);
 	// TOP_LAYER
 	{
 		//std::vector<CRAB::Vector4Df> cross_section = this->TopLayer_section(0);
-		std::vector<CRAB::Vector4Df> cross_section = this->TopLayer_section(start_station);
+		std::vector<CRAB::Vector4Df> cross_section = this->TopLayer_section(start_t);
 		EulerOp::mvfs(model, cross_section.front());
 		model.back()->name = "TOP_LAYER";
 		model.back()->material = { 0.1f, 0.1f, 0.1f, 1.0f };
@@ -854,8 +856,8 @@ void BoxGirder::Update()
 		//	EulerOp::SWEEP(model.back()->faces.front(), new_section);
 		//}
 
-		float s = this->alignment->getDistance(start_station) + 1.0f;
-		float s_end = this->alignment->getDistance(end_station);
+		float s = this->alignment->getDistance(start_t) + 1.0f;
+		float s_end = this->alignment->getDistance(end_t);
 		while (s < s_end)
 		{
 			//std::cout << "station = " << s << std::endl;
@@ -873,7 +875,7 @@ void BoxGirder::Update()
 	// DECK
 	{
 		//std::vector<CRAB::Vector4Df> cross_section = this->Deck_section(0.0f);
-		std::vector<CRAB::Vector4Df> cross_section = this->Deck_section(start_station);
+		std::vector<CRAB::Vector4Df> cross_section = this->Deck_section(start_t);
 		EulerOp::mvfs(model, cross_section.front());
 		model.back()->name = "DECK";
 		model.back()->material = { 0.8f, 0.8f, 0.8f, 1.0f };
@@ -904,8 +906,8 @@ void BoxGirder::Update()
 		//	EulerOp::SWEEP(model.back()->faces.front(), new_section);
 		//}	
 
-		float s = this->alignment->getDistance(start_station) + 1.0f;
-		float s_end = this->alignment->getDistance(end_station);
+		float s = this->alignment->getDistance(start_t) + 1.0f;
+		float s_end = this->alignment->getDistance(end_t);
 		while (s < s_end)
 		{
 			//std::cout << "station = " << s << std::endl;
@@ -923,7 +925,7 @@ void BoxGirder::Update()
 	// U_SECTION
 	{
 		//std::vector<CRAB::Vector4Df> cross_section = this->U_section(0.0f);
-		std::vector<CRAB::Vector4Df> cross_section = this->U_section(start_station);
+		std::vector<CRAB::Vector4Df> cross_section = this->U_section(start_t);
 		EulerOp::mvfs(model, cross_section.front());
 		model.back()->name = "U_SECTION";
 		model.back()->material = { 0.8f, 0.8f, 0.8f, 1.0f };
@@ -954,8 +956,8 @@ void BoxGirder::Update()
 		//	EulerOp::SWEEP(model.back()->faces.front(), new_section);
 		//}
 
-		float s = this->alignment->getDistance(start_station) + 1.0f;
-		float s_end = this->alignment->getDistance(end_station);
+		float s = this->alignment->getDistance(start_t) + 1.0f;
+		float s_end = this->alignment->getDistance(end_t);
 		while (s < s_end)
 		{
 			//std::cout << "station = " << s << std::endl;

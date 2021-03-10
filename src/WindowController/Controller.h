@@ -549,7 +549,7 @@ namespace Controller
 		if (show_add_bridge_window)
 		{
 			ImGui::SetNextWindowPos(ImVec2(100, 100), ImGuiCond_Once);
-			ImGui::SetNextWindowSize(ImVec2(295, 175), ImGuiCond_Once);
+			ImGui::SetNextWindowSize(ImVec2(295, 220), ImGuiCond_Once);
 			ImGui::Begin("New Bridge", &show_add_bridge_window, ImGuiWindowFlags_NoResize);   // Pass a pointer to our bool variable (the window will have a closing button that will clear the bool when clicked)
 			
 			ImGui::Columns(2, NULL, false);
@@ -623,12 +623,34 @@ namespace Controller
 			ImGui::NextColumn();
 			ImGui::PopID();
 
+			// START STATION
+
+			ImGui::PushID(906);
+			ImGui::AlignTextToFramePadding();
+			ImGui::Text("Start station");
+			ImGui::NextColumn();
+			ImGui::SetNextItemWidth(80);
+			ImGui::DragFloat("m", &start_s, 0.01f, 0.00f, 1000.00f, "%.2f");
+			ImGui::NextColumn();
+			ImGui::PopID();
+
+			// END STATION
+
+			ImGui::PushID(907);
+			ImGui::AlignTextToFramePadding();
+			ImGui::Text("End station");
+			ImGui::NextColumn();
+			ImGui::SetNextItemWidth(80);
+			ImGui::DragFloat("m", &end_s, 0.01f, 0.00f, 1000.00f, "%.2f");
+			ImGui::NextColumn();
+			ImGui::PopID();
+
 			// BUTTONS
 
 			ImGui::Separator();
 			ImGui::Columns(1);
 			if (ImGui::Button("   OK   ")) {
-				bridges.push_back(new BoxGirder(bridgeName, roadways[CurrentRoad], cross_station, v_clearance, h_clearance, column_stations));
+				bridges.push_back(new BoxGirder(bridgeName, roadways[CurrentRoad], cross_station, v_clearance, h_clearance, column_stations, start_s, end_s));
 				for (int i = 0; i < bridges.back()->model.size(); i++)
 					ourMesh_List.push_back(Mesh(bridges.back()->model[i]));
 				show_add_bridge_window = false;
@@ -646,7 +668,7 @@ namespace Controller
 		if (show_edit_bridge_parameters)
 		{
 			ImGui::SetNextWindowPos(ImVec2(100, 100), ImGuiCond_Once);
-			ImGui::SetNextWindowSize(ImVec2(275, 270), ImGuiCond_Once);
+			ImGui::SetNextWindowSize(ImVec2(275, 315), ImGuiCond_Once);
 			ImGui::Begin("General parameters", &show_edit_bridge_parameters, ImGuiWindowFlags_NoResize);
 
 			// BRIDGE
@@ -758,6 +780,28 @@ namespace Controller
 				ImGui::NextColumn();
 				ImGui::SetNextItemWidth(80);
 				ImGui::DragFloat("", &nPiers, 1.0f, 1.0f, 100.0f, "%.0f");
+				ImGui::NextColumn();
+				ImGui::PopID();
+
+				// START STATION
+
+				ImGui::PushID(908);
+				ImGui::AlignTextToFramePadding();
+				ImGui::Text("Start station");
+				ImGui::NextColumn();
+				ImGui::SetNextItemWidth(80);
+				ImGui::DragFloat("m", &bridges[CurrentBridge]->start_S, 0.01f, 0.00f, 1000.00f, "%.2f");
+				ImGui::NextColumn();
+				ImGui::PopID();
+
+				// END STATION
+
+				ImGui::PushID(909);
+				ImGui::AlignTextToFramePadding();
+				ImGui::Text("End station");
+				ImGui::NextColumn();
+				ImGui::SetNextItemWidth(80);
+				ImGui::DragFloat("m", &bridges[CurrentBridge]->end_S, 0.01f, 0.00f, 1000.00f, "%.2f");
 				ImGui::NextColumn();
 				ImGui::PopID();
 

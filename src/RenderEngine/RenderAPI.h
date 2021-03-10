@@ -547,7 +547,7 @@ namespace CRAB
         /* R01 */
         roadways.push_back(new Road("Pista Esquerda", 9.20f, 50.0f, alignments.back(), vehicles.back()));
         stations = { 145.0f, 195.0f, 265.0f, 315.0f }; // 50m, 70m, 50m
-        bridges.push_back(new BoxGirder("Viaduto Esquerdo", roadways.back(), 230.0f, 5.5f, 100.0f, stations));
+        bridges.push_back(new BoxGirder("Viaduto Esquerdo", roadways.back(), 230.0f, 5.5f, 100.0f, stations, 110.0f, 350.0f));
 
         //// VIADUTO DIREITO
         //// ---------------
