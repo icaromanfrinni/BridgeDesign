@@ -10,21 +10,10 @@ ParabolicArc::ParabolicArc()
 ParabolicArc::ParabolicArc(const CRAB::Vector4Df &_p1, const CRAB::Vector4Df &_p2, const CRAB::Vector4Df &_p3)
 	: p1(_p1), p2(_p2), p3(_p3)
 {
-	this->Setup();
-}
-// DESTRUCTOR
-// ----------
-ParabolicArc::~ParabolicArc()
-{
-}
-// SETUP
-// -----
-void ParabolicArc::Setup()
-{
 	this->tan1 = (this->p2 - this->p1).to_unitary();
 	this->tan2 = (this->p3 - this->p2).to_unitary();
 	CRAB::Vector4Df xAxis = { 1.0f, 0.0f, 0.0f, 0.0f };
-	
+
 	this->g1 = tanf(acosf(CRAB::dot(xAxis, this->tan1)));
 	if (CRAB::cross(xAxis, this->tan1).z < 0.0f)
 		this->g1 *= -1.0f;
@@ -32,6 +21,51 @@ void ParabolicArc::Setup()
 	this->g2 = tanf(acosf(CRAB::dot(xAxis, this->tan2)));
 	if (CRAB::cross(xAxis, this->tan2).z < 0.0f)
 		this->g2 *= -1.0f;
+}
+// OVERLOAD CONSTRUCTOR (from endpoints)
+// -------------------------------------
+ParabolicArc::ParabolicArc(const CRAB::Vector4Df& _p1, const CRAB::Vector4Df& _p3, const float& A)
+	: p1(_p1), p3(_p3)
+{
+	float L = this->p3.x - this->p1.x;
+	float g3 = (this->p3.y - this->p1.y) / L;
+	this->g1 = (A / 200.0f) + g3;
+	this->g2 = -(A / 200.0f) + g3;
+	
+	this->p2 = { 0.0f, 0.0f, 0.0f, 1.0f };
+	this->p2.x = this->p1.x + (L / 2.0f);
+	this->p2.y = this->p1.y + this->g1 * (L / 2.0f);
+
+	this->tan1 = (this->p2 - this->p1).to_unitary();
+	this->tan2 = (this->p3 - this->p2).to_unitary();
+}
+// OVERLOAD CONSTRUCTOR (from midpoint)
+// ------------------------------------
+ParabolicArc::ParabolicArc(const CRAB::Vector4Df& _p2, const CRAB::Vector4Df& _tan1, const CRAB::Vector4Df& _tan2, const float& L)
+	: p2(_p2), tan1(_tan1), tan2(_tan2)
+{
+	CRAB::Vector4Df xAxis = { 1.0f, 0.0f, 0.0f, 0.0f };
+
+	this->g1 = tanf(acosf(CRAB::dot(xAxis, this->tan1)));
+	if (CRAB::cross(xAxis, this->tan1).z < 0.0f)
+		this->g1 *= -1.0f;
+
+	this->g2 = tanf(acosf(CRAB::dot(xAxis, this->tan2)));
+	if (CRAB::cross(xAxis, this->tan2).z < 0.0f)
+		this->g2 *= -1.0f;
+
+	this->p1 = { 0.0f, 0.0f, 0.0f, 1.0f };
+	this->p1.x = this->p2.x - (L / 2.0f);
+	this->p1.y = this->p2.y - this->g1 * (L / 2.0f);
+
+	this->p3 = { 0.0f, 0.0f, 0.0f, 1.0f };
+	this->p3.x = this->p2.x + (L / 2.0f);
+	this->p3.y = this->p2.y + this->g2 * (L / 2.0f);
+}
+// DESTRUCTOR
+// ----------
+ParabolicArc::~ParabolicArc()
+{
 }
 
 // RETURN

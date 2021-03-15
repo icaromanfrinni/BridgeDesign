@@ -23,6 +23,10 @@ public:
 	//VerSegment(const glm::vec3& _p0, const glm::vec3& _p1, const glm::vec3& _p2);
 	// OVERLOAD CONSTRUCTOR (Parabolic Arc from CRAB::Vector)
 	VerSegment(const CRAB::Vector4Df& _p0, const CRAB::Vector4Df& _p1, const CRAB::Vector4Df& _p2);
+	// OVERLOAD CONSTRUCTOR (Parabolic Arc from endpoints with A in percent)
+	VerSegment(const CRAB::Vector4Df& _p0, const CRAB::Vector4Df& _p2, const float& A);
+	// OVERLOAD CONSTRUCTOR (Parabolic Arc from midpoint)
+	VerSegment(const CRAB::Vector4Df& _p1, const CRAB::Vector4Df& _tan1, const CRAB::Vector4Df& _tan2, const float& L);
 	// DESTRUCTOR
 	~VerSegment();
 

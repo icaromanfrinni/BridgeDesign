@@ -132,6 +132,7 @@ void BoxGirder::SetupSection(const float& t)
 	{
 		this->SetupSection();
 		this->dH = H;
+		//std::cout << "dH = " << this->dH << " m" << std::endl;
 		return;
 	}
 	//std::cout << "low = " << low << std::endl;
@@ -147,6 +148,7 @@ void BoxGirder::SetupSection(const float& t)
 	float y = C1 * powf(x, 2.0f) + C2 * x;
 	// Atualiza a altura
 	this->dH = H - y;
+	//std::cout << "dH = " << this->dH << " m" << std::endl;
 
 	// Box-Girder Bridge Attributes
 	Lb = int((100.0f * B / 4.3f) / 5.0f) * 0.05f;

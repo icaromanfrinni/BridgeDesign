@@ -192,11 +192,10 @@ std::vector<VerSegment*> Bridge::Vertical_Alignment()
 		return profile;
 	}
 
-	// ********************************** CREST VERTICAL CURVE **********************************
+	/* ================================== CREST VERTICAL CURVE ================================== */
 
 	// Length of crest vertical curve
 	float Lc = this->HC;
-	//std::cout << "Lc = " << Lc << std::endl;
 
 	// Algebraic difference in grades (%)
 	float A;
@@ -207,164 +206,148 @@ std::vector<VerSegment*> Bridge::Vertical_Alignment()
 	
 	// Round up
 	A = ceilf(A);
-	std::cout << "A = " << A << std::endl;
-	std::cout << "S = " << this->road->StoppingSightDistance() << std::endl;
+	//std::cout << "A = " << A << std::endl;
+	//std::cout << "S = " << this->road->StoppingSightDistance() << std::endl;
 
 	// VPC
-	/*CRAB::Vector4Df VPC2 = this->road->path2Dv.getPointFromStation(this->CS - Lc / 2);
-	VPC2.y += this->VC + this->H;*/
-	CRAB::Vector4Df VPC2 = { 0.0f, 0.0f, 0.0f, 1.0f };
-	VPC2.x = this->CS - Lc / 2.0f;														// coordenada horizontal
-	//index = this->road->alignment->findSegment(VPC2.x);									// segmento onde está contido
-	//VPC2.y = this->road->alignment->profile[index]->getY(VPC2.x) + this->VC + this->H;	// coordenada vertical
-	//VPC2.y = this->EL + this->VC + this->H;
-	VPC2.y = this->WS + this->VC + this->H;
-	// VPI
-	/*CRAB::Vector4Df VPI2 = this->road->path2Dv.getPointFromStation(this->CS);
-	VPI2.y += this->VC + this->H + (A / 200) * Lc / 2;*/
-	CRAB::Vector4Df VPI2 = { 0.0f, 0.0f, 0.0f, 1.0f };
-	VPI2.x = this->CS;																								// coordenada horizontal
-	//index = this->road->alignment->findSegment(VPI2.x);																// segmento onde está contido
-	//VPI2.y = this->road->alignment->profile[index]->getY(VPI2.x) + this->VC + this->H + (A / 200.0f) * Lc / 2.0f;	// coordenada vertical
-	//VPI2.y = this->EL + this->VC + this->H + (A / 200.0f) * Lc / 2.0f;
-	VPI2.y = this->WS + this->VC + this->H + (A / 200.0f) * Lc / 2.0f;
-	// VPT
-	/*CRAB::Vector4Df VPT2 = this->road->path2Dv.getPointFromStation(this->CS + Lc / 2);
-	VPT2.y += this->VC + this->H;*/
-	CRAB::Vector4Df VPT2 = { 0.0f, 0.0f, 0.0f, 1.0f };
-	VPT2.x = this->CS + Lc / 2.0f;														// coordenada horizontal
-	//index = this->road->alignment->findSegment(VPT2.x);									// segmento onde está contido
-	//VPT2.y = this->road->alignment->profile[index]->getY(VPT2.x) + this->VC + this->H;	// coordenada vertical
-	//VPT2.y = this->EL + this->VC + this->H;
-	VPT2.y = this->WS + this->VC + this->H;
-
-	//// ********************************** SAG VERTICAL CURVE **********************************
-
-	// Length of sag vertical curve (S < L)
-	float Ls = (A / 2) * powf(this->road->StoppingSightDistance(), 2.0f) / (120.0f + 3.5f * this->road->StoppingSightDistance());
-	// Length of sag vertical curve (S > L)
-	//float Ls = 2 * this->road->StoppingSightDistance() - ((120 + 3.5 * this->road->StoppingSightDistance()) / (A / 2));
-	Ls = int(round(Ls / 5)) * 5;
-	//std::cout << "Ls = " << Ls << std::endl;
-	// Minimun length of vertical curve (0.6 Vp)
-	float Lmin = 0.60f * this->road->speed;
-	// CHECK
-	if (Ls < Lmin) Ls = Lmin;
-	//std::cout << "Lmin = " << Lmin << std::endl;
-
-	// Grades
-	CRAB::Ray g1, g2;
-	g1.origin = VPC2;
-	g1.direction = (VPC2 - VPI2).to_unitary();
-	g2.origin = VPT2;
-	g2.direction = (VPT2 - VPI2).to_unitary();
-
-	// Tangent of the collided segment
-	CRAB::Vector4Df tan_Segment;
-
-	// Length of tangent segment
-	float d;
-
-	// Horizontal Matrix
-	CRAB::Matrix4 PlaneXZ = CRAB::Matrix4{
-			1, 0, 0, 0,
-			0, 0, 0, 0,
-			0, 0, 1, 0,
-			0, 0, 0, 1 };
-	// Horizontal Vector
-	CRAB::Vector4Df vPxz;
-
-	// Angle of the tangent
-	float cosTeta1, cosTeta2;
-
-	// --------------
-	//      LEFT
-	// --------------
-
-	// VPI
-	CRAB::Vector4Df VPI1;
-	for (int i = 0; i < this->road->alignment->profile.size(); i++)
+	CRAB::Vector4Df VPC = { 0.0f, 0.0f, 0.0f, 1.0f };
+	VPC.x = this->CS - Lc / 2.0f;
+	if (this->WS == this->EL) // verifica se é viaduto
 	{
-		// get the intersect point
-		CRAB::Vector4Df P = this->road->alignment->profile[i]->Collision(g1);
-		// check if its between the extreme points
-		if (this->road->alignment->profile[i]->Contains(P))
-		{
-			VPI1 = P;
-			tan_Segment = (this->road->alignment->profile[i]->getMidPoint4D() - this->road->alignment->profile[i]->getStartPoint4D()).to_unitary();
-			break;
-		}
-		// if its before all segments
-		if (i == 0)
-		{
-			VPI1 = P;
-			tan_Segment = (this->road->alignment->profile[i]->getMidPoint4D() - this->road->alignment->profile[i]->getStartPoint4D()).to_unitary();
-		}
+		index = this->road->alignment->findSegment(VPC.x);
+		VPC.y = this->road->alignment->profile[index]->getY(VPC.x) + this->VC + this->H;
 	}
-	// Projections (hor & vert)
-	vPxz = (PlaneXZ * tan_Segment).to_unitary();
-	cosTeta1 = fabsf(CRAB::dot(tan_Segment, vPxz));
-	cosTeta2 = fabsf(CRAB::dot(g1.direction, vPxz));
-	d = Ls / (cosTeta1 + cosTeta2);
+	else
+		VPC.y = this->WS + this->VC + this->H;
 
-	// VPC
-	CRAB::Vector4Df VPC1 = VPI1 + (tan_Segment * -1.0f) * d;
 	// VPT
-	CRAB::Vector4Df VPT1 = VPI1 + (g1.direction * -1.0f) * d;
-
-	// ---------------
-	//      RIGHT
-	// ---------------
-
-	// VPI
-	CRAB::Vector4Df VPI3;
-	for (int i = 0; i < this->road->alignment->profile.size(); i++)
+	CRAB::Vector4Df VPT = { 0.0f, 0.0f, 0.0f, 1.0f };
+	VPT.x = this->CS + Lc / 2.0f;
+	if (this->WS == this->EL) // verifica se é viaduto
 	{
-		// get the intersect point
-		CRAB::Vector4Df P = this->road->alignment->profile[i]->Collision(g2);
-		// check if its between the extreme points
-		if (this->road->alignment->profile[i]->Contains(P))
-		{
-			VPI3 = P;
-			tan_Segment = (this->road->alignment->profile[i]->getEndPoint4D() - this->road->alignment->profile[i]->getMidPoint4D()).to_unitary();
-			break;
-		}
-		// if its after all segments
-		VPI3 = P;
-		tan_Segment = (this->road->alignment->profile[i]->getEndPoint4D() - this->road->alignment->profile[i]->getMidPoint4D()).to_unitary();
+		index = this->road->alignment->findSegment(VPT.x);
+		VPT.y = this->road->alignment->profile[index]->getY(VPT.x) + this->VC + this->H;
 	}
-	// Projections (hor & vert)
-	vPxz = (PlaneXZ * tan_Segment).to_unitary();
-	cosTeta1 = fabsf(CRAB::dot(g2.direction, vPxz));
-	cosTeta2 = fabsf(CRAB::dot(tan_Segment, vPxz));
-	d = Ls / (cosTeta1 + cosTeta2);
-	// VPC
-	CRAB::Vector4Df VPC3 = VPI3 + (g2.direction * -1.0f) * d;
-	// VPT
-	CRAB::Vector4Df VPT3 = VPI3 + tan_Segment * d;
+	else
+		VPT.y = this->WS + this->VC + this->H;
+
+	VerSegment* CrestCurve = new VerSegment(VPC, VPT, A);
+
+	/* ================================== SAG VERTICAL CURVE ================================== */
+
+	// LEFT
+	VerSegment* SagCurve_LEFT;
+	{
+		CRAB::Vector4Df VPI;
+		CRAB::Vector4Df grade;
+
+		// Collision Test
+		CRAB::Ray r;
+		r.origin = CrestCurve->getStartPoint4D();
+		r.direction = (CrestCurve->getStartPoint4D() - CrestCurve->getMidPoint4D()).to_unitary();
+		for (int i = 0; i < this->road->alignment->profile.size(); i++)
+		{
+			CRAB::Vector4Df P = this->road->alignment->profile[i]->Collision(r);
+			// check if its between the extreme points
+			if (this->road->alignment->profile[i]->Contains(P))
+			{
+				VPI = P;
+				grade = (this->road->alignment->profile[i]->getMidPoint4D() - this->road->alignment->profile[i]->getStartPoint4D()).to_unitary();
+				break;
+			}
+			// if its before all segments
+			if (i == 0)
+			{
+				VPI = P;
+				grade = (this->road->alignment->profile[i]->getMidPoint4D() - this->road->alignment->profile[i]->getStartPoint4D()).to_unitary();
+			}
+		}
+
+		// Algebraic difference in grades (%)
+		float As = 100.0f * tanf(acosf(CRAB::dot(grade, r.direction * (-1.0f))));
+		// Length of sag vertical curve (S < L)
+		float Ls = (As / 2) * powf(this->road->StoppingSightDistance(), 2.0f) / (120.0f + 3.5f * this->road->StoppingSightDistance());
+
+		SagCurve_LEFT = new VerSegment(VPI, grade, r.direction * (-1.0f), Ls);
+
+		/*std::cout << "\n" << std::endl;
+		std::cout << "SagCurve_LEFT" << std::endl;
+		std::cout << "A = " << As << " %" << std::endl;
+		std::cout << "L = " << Ls << " m" << std::endl;
+		std::cout << "\n" << std::endl;*/
+	}
+
+	// RIGHT
+	VerSegment* SagCurve_RIGHT;
+	{
+		CRAB::Vector4Df VPI;
+		CRAB::Vector4Df grade;
+
+		// Collision Test
+		CRAB::Ray r;
+		r.origin = CrestCurve->getEndPoint4D();
+		r.direction = (CrestCurve->getEndPoint4D() - CrestCurve->getMidPoint4D()).to_unitary();
+		for (int i = 0; i < this->road->alignment->profile.size(); i++)
+		{
+			CRAB::Vector4Df P = this->road->alignment->profile[i]->Collision(r);
+			// check if its between the extreme points
+			if (this->road->alignment->profile[i]->Contains(P))
+			{
+				VPI = P;
+				grade = (this->road->alignment->profile[i]->getEndPoint4D() - this->road->alignment->profile[i]->getMidPoint4D()).to_unitary();
+				break;
+			}
+			// if its before all segments
+			if (i == 0)
+			{
+				VPI = P;
+				grade = (this->road->alignment->profile[i]->getEndPoint4D() - this->road->alignment->profile[i]->getMidPoint4D()).to_unitary();
+			}
+		}
+
+		// Algebraic difference in grades (%)
+		float As = 100.0f * tanf(acosf(CRAB::dot(grade, r.direction)));
+		// Length of sag vertical curve (S < L)
+		float Ls = (As / 2) * powf(this->road->StoppingSightDistance(), 2.0f) / (120.0f + 3.5f * this->road->StoppingSightDistance());
+
+		SagCurve_RIGHT = new VerSegment(VPI, r.direction, grade, Ls);
+
+		/*std::cout << "\n" << std::endl;
+		std::cout << "SagCurve_RIGHT" << std::endl;
+		std::cout << "A = " << As << " %" << std::endl;
+		std::cout << "L = " << Ls << " m" << std::endl;
+		std::cout << "\n" << std::endl;*/
+	}
 
 	//// ********************************** RETURN **********************************
-	
-	profile.push_back(new VerSegment(VPC1, VPI1, VPT1));
-	profile.push_back(new VerSegment(VPT1, VPC2));
-	profile.push_back(new VerSegment(VPC2, VPI2, VPT2));
-	profile.push_back(new VerSegment(VPT2, VPC3));
-	profile.push_back(new VerSegment(VPC3, VPI3, VPT3));
+
+	profile.push_back(SagCurve_LEFT);
+	profile.push_back(new VerSegment(SagCurve_LEFT->getEndPoint4D(), CrestCurve->getStartPoint4D()));
+	profile.push_back(CrestCurve);
+	profile.push_back(new VerSegment(CrestCurve->getEndPoint4D(), SagCurve_RIGHT->getStartPoint4D()));
+	profile.push_back(SagCurve_RIGHT);
 
 	// ********************************** DEBUG **********************************
 
-	std::cout << "\nCURVE 1" << std::endl;
+	/*std::cout << "\nCURVE 1" << std::endl;
+	CRAB::Vector4Df VPC1 = SagCurve_LEFT->getStartPoint4D();
+	CRAB::Vector4Df VPI1 = SagCurve_LEFT->getMidPoint4D();
+	CRAB::Vector4Df VPT1 = SagCurve_LEFT->getEndPoint4D();
 	std::cout << "VPC1 = [" << VPC1.x << "; " << VPC1.y << "; " << VPC1.z << "]" << std::endl;
 	std::cout << "VPI1 = [" << VPI1.x << "; " << VPI1.y << "; " << VPI1.z << "]" << std::endl;
 	std::cout << "VPT1 = [" << VPT1.x << "; " << VPT1.y << "; " << VPT1.z << "]" << std::endl;
 	std::cout << "\nCURVE 2" << std::endl;
-	std::cout << "VPC2 = [" << VPC2.x << "; " << VPC2.y << "; " << VPC2.z << "]" << std::endl;
+	CRAB::Vector4Df VPI2 = CrestCurve->getMidPoint4D();
+	std::cout << "VPC2 = [" << VPC.x << "; " << VPC.y << "; " << VPC.z << "]" << std::endl;
 	std::cout << "VPI2 = [" << VPI2.x << "; " << VPI2.y << "; " << VPI2.z << "]" << std::endl;
-	std::cout << "VPT2 = [" << VPT2.x << "; " << VPT2.y << "; " << VPT2.z << "]" << std::endl;
+	std::cout << "VPT2 = [" << VPT.x << "; " << VPT.y << "; " << VPT.z << "]" << std::endl;
 	std::cout << "\nCURVE 3" << std::endl;
+	CRAB::Vector4Df VPC3 = SagCurve_RIGHT->getStartPoint4D();
+	CRAB::Vector4Df VPI3 = SagCurve_RIGHT->getMidPoint4D();
+	CRAB::Vector4Df VPT3 = SagCurve_RIGHT->getEndPoint4D();
 	std::cout << "VPC3 = [" << VPC3.x << "; " << VPC3.y << "; " << VPC3.z << "]" << std::endl;
 	std::cout << "VPI3 = [" << VPI3.x << "; " << VPI3.y << "; " << VPI3.z << "]" << std::endl;
-	std::cout << "VPT3 = [" << VPT3.x << "; " << VPT3.y << "; " << VPT3.z << "]" << std::endl;
+	std::cout << "VPT3 = [" << VPT3.x << "; " << VPT3.y << "; " << VPT3.z << "]" << std::endl;*/
 
 	return profile;
 }

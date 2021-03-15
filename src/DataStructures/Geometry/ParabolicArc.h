@@ -11,14 +11,15 @@ class ParabolicArc
 	CRAB::Vector4Df tan1, tan2;
 	float g1, g2;
 
-	// SETUP
-	void Setup();
-
 public:
 	// DEFAULT CONSTRUCTOR
 	ParabolicArc();
 	// OVERLOAD CONSTRUCTOR
 	ParabolicArc(const CRAB::Vector4Df &_p1, const CRAB::Vector4Df &_p2, const CRAB::Vector4Df &_p3);
+	// OVERLOAD CONSTRUCTOR (from endpoints)
+	ParabolicArc(const CRAB::Vector4Df& _p1, const CRAB::Vector4Df& _p3, const float& A);
+	// OVERLOAD CONSTRUCTOR (from midpoint)
+	ParabolicArc(const CRAB::Vector4Df& _p2, const CRAB::Vector4Df& _tan1, const CRAB::Vector4Df& _tan2, const float& L);
 	// DESTRUCTOR
 	~ParabolicArc();
 

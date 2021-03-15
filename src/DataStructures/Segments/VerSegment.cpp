@@ -32,6 +32,18 @@ VerSegment::VerSegment(const CRAB::Vector4Df& _p0, const CRAB::Vector4Df& _p1, c
 {
 	this->segment = new ParabolicArc(_p0, _p1, _p2);
 }
+// OVERLOAD CONSTRUCTOR (Parabolic Arc from endpoints)
+// ---------------------------------------------------
+VerSegment::VerSegment(const CRAB::Vector4Df& _p0, const CRAB::Vector4Df& _p2, const float& A)
+{
+	this->segment = new ParabolicArc(_p0, _p2, A);
+}
+// OVERLOAD CONSTRUCTOR (Parabolic Arc from midpoint)
+// --------------------------------------------------
+VerSegment::VerSegment(const CRAB::Vector4Df& _p1, const CRAB::Vector4Df& _tan1, const CRAB::Vector4Df& _tan2, const float& L)
+{
+	this->segment = new ParabolicArc(_p1, _tan1, _tan2, L);
+}
 
 // DESTRUCTOR
 // ----------
