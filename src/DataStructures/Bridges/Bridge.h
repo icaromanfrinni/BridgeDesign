@@ -55,6 +55,7 @@ public:
 
 	bool hasWidening = true;
 	bool haunchedGirder = true;
+	bool automaticPiers = true;
 
 	// DEFAULT CONSTRUCTOR
 	Bridge();

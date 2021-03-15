@@ -18,13 +18,21 @@ BoxGirder::BoxGirder(const std::string& _name, Road* _road, const float& cross_s
 	if (_stations.empty())
 	{
 		// Piers
-		int n = round(this->alignment->getProfileLength() / this->mainSpan);
-		//std::cout << "getProfileLength() = " << this->alignment->getProfileLength() << std::endl;
-		//std::cout << "nPiers = " << nPiers << std::endl;
-		SetupPiers(n);
+		this->automaticPiers = true;
+		int n = round((this->end_S - this->start_S) / this->mainSpan);
+		this->SetupPiers(n);
 	}
 	else
-		SetupPiers(_stations);
+	{
+		this->automaticPiers = false;
+		this->SetupPiers(_stations);
+	}
+
+	/*for (int i = 0; i < span_vector.size(); i++)
+	{
+		std::cout << "span " << i << " start = " << span_vector[i].start << std::endl;
+		std::cout << "span " << i << " end = " << span_vector[i].end << std::endl;
+	}*/
 	
 	// Model
 	this->Update();
@@ -100,8 +108,8 @@ void BoxGirder::SetupSection(const float& t)
 	// Distância X
 	float x = this->alignment->getDistance(t);
 	//float x = this->alignment->getHorDistance(t);
-	/*std::cout << "\nx = " << x << std::endl;
-	std::cout << "x,plano = " << _x << std::endl;*/
+	//std::cout << "\nx = " << x << std::endl;
+	//std::cout << "x,plano = " << _x << std::endl;
 	// Intervalo
 	float low = 0.0f, high = 0.0f;
 	for (int i = 0; i < this->span_vector.size(); i++)
@@ -170,102 +178,110 @@ void BoxGirder::SetupSection(const float& t)
 }
 void BoxGirder::SetupPiers(const int& _nPiers)
 {
-	float b_Pier = /*0.9f **/ this->b;
-	float h_Pier = 0.6f * b_Pier;
-	float span_length = this->alignment->getProfileLength() / _nPiers;
-	//std::cout << "span_length = " << span_length << std::endl;
-	//float end_length = (total_length - (_nPiers - 1) * span) / 2.0f;
-	// first pier
-	float station = this->alignment->profile.front()->getStartPoint4D().x + span_length / 2.0f;
-
+	// Initialize
 	this->piers.clear();
 	this->span_vector.clear();
-	//this->span_vector.push_back(0.0f);
-	//this->span_vector.push_back(-span_length / 2.0f);
+
+	// Piers dimensions
+	float b_Pier = this->b;			// largura transversal
+	float h_Pier = 0.6f * b_Pier;	// largura longitudinal
+	float span_length = (this->end_S - this->start_S) / _nPiers;
+
+	// first pier
+	float station = this->start_S + span_length / 2.0f;
+
 	Span span;
-	span.start = -span_length / 2.0f;
+	span.start = this->start_S - (span_length + h_Pier) / 2.0f;
 	for (int i = 0; i < _nPiers; i++)
 	{
-		//std::cout << "\nPilar P" << i + 1 << std::endl;
+		// Inicializa o pilar com as dimensões padrões
 		Pier P;
 		P.b = b_Pier;
-		//std::cout << "B pilar = " << P.b << std::endl;
 		P.h = h_Pier;
+		// Armazena a estaca do pilar
 		P.station = station;
 		
-		//this->span_vector.push_back(P.station - this->alignment->profile.front()->getStartPoint4D().x);
-		span.end = P.station - this->alignment->profile.front()->getStartPoint4D().x - P.h / 2.0f;
+		// Armazena o final do vão anterior no início do pilar corrente
+		span.end = P.station - P.h / 2.0f;
+		// Insere o vão no vetor de vãos
 		this->span_vector.push_back(span);
-		span.start = P.station - this->alignment->profile.front()->getStartPoint4D().x + P.h / 2.0f;
+		// Inicia outro vão no fim do pilar corrente
+		span.start = P.station + P.h / 2.0f;
 
+		// Ângulo de rotação do pilar em relação a tangente do alinhamento
 		P.ang = 0.0f;
 		P.dir = this->alignment->getTangentFromStation(P.station);
 		P.base = this->road->alignment->getPositionFromStation(P.station);
 		if (P.base.y > this->EL)
 			P.base.y = this->EL;
-		P.depth = 0.50f;
-		P.base.y -= P.depth; // topo do bloco
+		P.depth = 0.50f;		// profundidade da base do pilar (positivo para rebaixo)
+		P.base.y -= P.depth;	// topo do bloco
 		CRAB::Vector4Df top = this->alignment->getPositionFromStation(P.station);
 		P.L = (top - P.base).length() - this->H;
-		//std::cout << "H pilar = " << P.L << std::endl;
-		//P.L = (top - P.base).length() - (this->H + (this->B / 2.0f) * SLOPE + TOP_LAYER);
+		// Adiciona o pilar na lista
 		piers.push_back(P);
 		station += span_length;
 	}
-	//this->span_vector.push_back(this->alignment->profile.back()->getEndPoint4D().x - this->alignment->profile.front()->getStartPoint4D().x);
-	//float last_span = 2.0f * ((this->alignment->profile.back()->getEndPoint4D().x - this->alignment->profile.front()->getStartPoint4D().x) - this->span_vector.back());
-	float last_span = 2.0f * ((this->alignment->profile.back()->getEndPoint4D().x - this->alignment->profile.front()->getStartPoint4D().x) - span.start);
-	span.end = span.start + last_span;
-	//this->span_vector.push_back(this->span_vector.back() + last_span);
+	// O último balanço
+	float last_span = this->end_S - span.start;
+	span.end = span.start + 2.0f * last_span;
 	this->span_vector.push_back(span);
 }
 void BoxGirder::SetupPiers(const std::vector<float>& _stations)
 {
-	float b_Pier = /*0.9f **/ this->b;
-	float h_Pier = 0.6f * b_Pier;
-	float span_length = _stations.front() - this->alignment->profile.front()->getStartPoint4D().x;
-
+	// Initialize
 	this->piers.clear();
 	this->span_vector.clear();
 
+	// Piers dimensions
+	float b_Pier = this->b;			// largura transversal
+	float h_Pier = 0.6f * b_Pier;	// largura longitudinal
+	
+	// Primeiro balanço
+	float first_span = _stations.front() - this->start_S - h_Pier / 2.0f;
+
 	Span span;
-	span.start = -span_length;
+	span.start = this->start_S - first_span;
 	for (int i = 0; i < _stations.size(); i++)
 	{
-		//std::cout << "\nPilar P" << i+1 << std::endl;
+		// Inicializa o pilar com as dimensões padrões
 		Pier P;
 		P.b = b_Pier;
-		//std::cout << "B pilar = " << P.b << std::endl;
 		P.h = h_Pier;
+		// Armazena a estaca do pilar
 		P.station = _stations[i];
-
-		span.end = P.station - this->alignment->profile.front()->getStartPoint4D().x - P.h / 2.0f;
+		
+		// Armazena o final do vão anterior no início do pilar corrente
+		span.end = P.station - P.h / 2.0f;
+		// Insere o vão no vetor de vãos
 		this->span_vector.push_back(span);
-		span.start = P.station - this->alignment->profile.front()->getStartPoint4D().x + P.h / 2.0f;
+		// Inicia outro vão no fim do pilar corrente
+		span.start = P.station + P.h / 2.0f;
 
+		// Ângulo de rotação do pilar em relação a tangente do alinhamento
 		P.ang = 0.0f;
 		P.dir = this->alignment->getTangentFromStation(P.station);
 		P.base = this->road->alignment->getPositionFromStation(P.station);
 		if (P.base.y > this->EL)
 			P.base.y = this->EL;
-		P.depth = 0.50f;
-		P.base.y -= P.depth; // topo do bloco
+		P.depth = 0.50f;		// profundidade da base do pilar (positivo para rebaixo)
+		P.base.y -= P.depth;	// topo do bloco
 		CRAB::Vector4Df top = this->alignment->getPositionFromStation(P.station);
 		P.L = (top - P.base).length() - this->H;
-		//std::cout << "H pilar = " << P.L << std::endl;
+		// Adiciona o pilar na lista
 		piers.push_back(P);
 	}
-	float profile_length = this->alignment->profile.back()->getEndPoint4D().x - this->alignment->profile.front()->getStartPoint4D().x;
-	float last_span = 2.0f * (profile_length - span.start);
-	span.end = span.start + last_span;
+	// O último balanço
+	float last_span = this->end_S - span.start;
+	span.end = span.start + 2.0f * last_span;
 	this->span_vector.push_back(span);
 }
 void BoxGirder::AddPier()
 {
 	Pier P;
-	P.b =/* 0.9f **/ this->b;
+	P.b = this->b;
 	P.h = 0.6f * P.b;
-	P.station = this->alignment->profile.front()->getStartPoint4D().x + this->alignment->getProfileLength() / 2.0f;
+	P.station = this->start_S;
 	P.ang = 0.0f;
 	P.dir = this->alignment->getTangentFromStation(P.station);
 	P.base = this->road->alignment->getPositionFromStation(P.station);
@@ -275,7 +291,7 @@ void BoxGirder::AddPier()
 	P.base.y -= P.depth; // topo do bloco
 	CRAB::Vector4Df top = this->alignment->getPositionFromStation(P.station);
 	P.L = (top - P.base).length() - this->H;
-	//P.L = (top - P.base).length() - (this->H + (this->B / 2.0f) * SLOPE + TOP_LAYER);
+	
 	piers.push_back(P);
 }
 
@@ -403,10 +419,60 @@ std::vector<CRAB::Vector4Df> BoxGirder::U_section(const float& t)
 	return nodes;
 }
 
+// REORDER PIERS
+// -------------
+void BoxGirder::merge(std::vector<Pier>& X, int start, int mid, int end, std::vector<Pier>& aux)
+{
+	int left = start;
+	int right = mid;
+	for (int i = start; i < end; ++i)
+	{
+		if ((left < mid) and ((right >= end) or (X[left].station < X[right].station))) {
+			aux[i] = X[left];
+			++left;
+		}
+		else {
+			aux[i] = X[right];
+			++right;
+		}
+	}
+
+	for (int i = start; i < end; ++i) {
+		X[i] = aux[i];
+	}
+}
+void BoxGirder::mergesort(std::vector<Pier>& X, int start, int end, std::vector<Pier>& aux)
+{
+	if ((end - start) < 2)
+		return;
+
+	int mid = (start + end) / 2;
+	this->mergesort(X, start, mid, aux);
+	this->mergesort(X, mid, end, aux);
+	this->merge(X, start, mid, end, aux);
+}
+void BoxGirder::mergesort(std::vector<Pier>& X)
+{
+	std::vector<Pier> aux(X.size());
+	this->mergesort(X, 0, X.size(), aux);
+}
+
 // UPDATE THE MODEL
 // ----------------
 void BoxGirder::UpdatePiers()
 {
+	// Reordenar pelas estacas
+	this->mergesort(this->piers);
+
+	// Initialize
+	this->span_vector.clear();
+	Span span;
+
+	// Primeiro balanço
+	float first_span = this->piers.front().station - this->start_S - this->piers.front().h / 2.0f;
+	span.start = this->start_S - first_span;
+
+	// Atualizar parâmetros internos
 	for (int i = 0; i < this->piers.size(); i++)
 	{
 		this->piers[i].dir = CRAB::rotateY(this->piers[i].ang) * this->alignment->getTangentFromStation(this->piers[i].station);
@@ -419,16 +485,18 @@ void BoxGirder::UpdatePiers()
 		this->piers[i].L = (top - this->piers[i].base).length() - this->H;
 
 		// UPDATE span vector
-		//this->span_vector[i + 1] = this->piers[i].station - this->alignment->profile.front()->getStartPoint4D().x;
-		this->span_vector[i].end = this->piers[i].station - this->alignment->profile.front()->getStartPoint4D().x - this->piers[i].h / 2.0f;
-		this->span_vector[i + 1].start = this->piers[i].station - this->alignment->profile.front()->getStartPoint4D().x + this->piers[i].h / 2.0f;
-		
-		// configura as extremidades do vertor de vãos com valores fora da extensão total para garantir H / 2 (balanços)
-		/*if (i == 0)
-			this->span_vector.front() = -this->span_vector[i + 1];
-		else if (i == this->piers.size() - 1)
-			this->span_vector.back() = -this->span_vector[i + 1];*/
+		// Armazena o final do vão anterior no início do pilar corrente
+		span.end = this->piers[i].station - this->piers[i].h / 2.0f;
+		// Insere o vão no vetor de vãos
+		this->span_vector.push_back(span);
+		// Inicia outro vão no fim do pilar corrente
+		span.start = this->piers[i].station + this->piers[i].h / 2.0f;
 	}
+
+	// O último balanço
+	float last_span = this->end_S - span.start;
+	span.end = span.start + 2.0f * last_span;
+	this->span_vector.push_back(span);
 }
 //void BoxGirder::OLD_Update()
 //{
@@ -818,10 +886,11 @@ void BoxGirder::Update()
 	// Initialize
 	model.clear();
 
-	//float start_station = this->alignment->findParameter(this->alignment->profile.front()->getStartPoint().x);
-	//float end_station = this->alignment->findParameter(this->alignment->profile.back()->getEndPoint().x);
 	float start_t = this->alignment->findParameter(this->start_S);
+	//std::cout << "start station = " << this->start_S << " m (t = " << start_t << ")" << std::endl;
 	float end_t = this->alignment->findParameter(this->end_S);
+	//std::cout << "end station = " << this->end_S << " m (t = " << end_t << ")" << std::endl;
+
 	// TOP_LAYER
 	{
 		//std::vector<CRAB::Vector4Df> cross_section = this->TopLayer_section(0);
@@ -896,10 +965,10 @@ void BoxGirder::Update()
 		EulerOp::mef(model.back()->halfEdges.front(), model.back()->halfEdges.back(), 0);
 
 		// Sweep
-		//for (int i = 1; i <= /*ELEMENTS*/200; i++)
+		//for (int i = 1; i <= /*ELEMENTS*/20; i++)
 		//{
 		//	// Current position
-		//	float t = float(i) / /*ELEMENTS*/200;
+		//	float t = float(i) / /*ELEMENTS*/20;
 		//	// Next section
 		//	std::vector<CRAB::Vector4Df> new_section = this->Deck_section(t);
 		//	// Solid

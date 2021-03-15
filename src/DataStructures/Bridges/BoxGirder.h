@@ -22,6 +22,11 @@ class BoxGirder
 	//std::vector<float> span_vector; // TODO: vetor de ponteiros
 	std::vector<Span> span_vector;
 
+	// REORDER PIERS
+	void merge(std::vector<Pier>& X, int start, int mid, int end, std::vector<Pier>& aux);
+	void mergesort(std::vector<Pier>& X, int start, int end, std::vector<Pier>& aux);
+	void mergesort(std::vector<Pier>& X);
+
 public:
 	// Box-Girder Bridge Attributes
 	float Lb;   // slab cantilever

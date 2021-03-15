@@ -774,11 +774,14 @@ namespace Controller
 
 				// NUMBER OF PIERS
 
-				ImGui::PushID(907);
+				//ImGui::PushID(907);
 				ImGui::AlignTextToFramePadding();
 				ImGui::Text("Number of piers");
 				ImGui::NextColumn();
-				ImGui::SetNextItemWidth(80);
+				ImGui::Checkbox("", &bridges[CurrentBridge]->automaticPiers);
+				ImGui::SameLine(33);
+				ImGui::SetNextItemWidth(55);
+				ImGui::PushID(907);
 				ImGui::DragFloat("", &nPiers, 1.0f, 1.0f, 100.0f, "%.0f");
 				ImGui::NextColumn();
 				ImGui::PopID();
@@ -820,7 +823,8 @@ namespace Controller
 				if (ImGui::Button(" UPDATE ")) {
 					bridges[CurrentBridge]->SetupBridge();
 					bridges[CurrentBridge]->SetupSection();
-					bridges[CurrentBridge]->SetupPiers(nPiers);
+					if (bridges[CurrentBridge]->automaticPiers)
+						bridges[CurrentBridge]->SetupPiers(nPiers);
 					bridges[CurrentBridge]->Update();
 					/*std::vector<Bridge*>::iterator it = bridges.begin() + CurrentBridge;
 					bridges.erase(it);*/
