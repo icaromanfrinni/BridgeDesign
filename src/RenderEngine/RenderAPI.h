@@ -519,35 +519,29 @@ namespace CRAB
 #if EXAMPLE == 14
         // road_profile
         std::vector<VerSegment*> road_profile;
-        //road_profile.push_back(new VerSegment(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(470.0f, 0.0f, 0.0f)));
         road_profile.push_back(new VerSegment({ 0.0f, 0.0f, 0.0f, 1.0f }, { 470.0f, 0.0f, 0.0f, 1.0f }));
 
-        std::vector<float> stations;
+        // EIXOS
+        // World    HorSegment  VerSegment
+        // X        X           X
+        // Y        -           Y
+        // Z        -Y          -
 
         // VIADUTO ESQUERDO
         // ----------------
         std::vector<HorSegment*> road_plan_LEFT;
         // road_plan
-        /*road_plan_LEFT.push_back(new HorSegment(glm::vec3(0.000f, 0.0f, -187.830f), glm::vec3(150.820f, 0.0f, -153.860f)));
-        road_plan_LEFT.push_back(new HorSegment(glm::vec3(150.820f, 0.0f, -153.860f), glm::vec3(220.630f, 0.0f, -138.140f), glm::vec3(290.73f, 0.0f, -152.54f)));
-        road_plan_LEFT.push_back(new HorSegment(glm::vec3(290.730f, 0.0f, -152.540f), glm::vec3(349.140f, 0.0f, -164.540f), glm::vec3(408.17f, 0.0f, -172.96f)));
-        road_plan_LEFT.push_back(new HorSegment(glm::vec3(408.170f, 0.0f, -172.960f), glm::vec3(461.610f, 0.0f, -180.590f)));*/
         road_plan_LEFT.push_back(new HorSegment({ 0.000f, 0.0f, -187.830f, 1.0f }, { 150.820f, 0.0f, -153.860f, 1.0f }));
         road_plan_LEFT.push_back(new HorSegment({ 150.820f, 0.0f, -153.860f, 1.0f }, { 220.630f, 0.0f, -138.140f, 1.0f }, { 290.73f, 0.0f, -152.54f, 1.0f }));
         road_plan_LEFT.push_back(new HorSegment({ 290.730f, 0.0f, -152.540f, 1.0f }, { 349.140f, 0.0f, -164.540f, 1.0f }, { 408.17f, 0.0f, -172.96f, 1.0f }));
         road_plan_LEFT.push_back(new HorSegment({ 408.170f, 0.0f, -172.960f, 1.0f }, { 461.610f, 0.0f, -180.590f, 1.0f }));
         // alignment
         alignments.push_back(new Alignment("Ramo Esquerdo", road_plan_LEFT, road_profile));
-        
-        /* R00 */
-        //roadways.push_back(new Road("Av. Prudente de Morais", 9.20f, 60.0f, alignments.back(), vehicles.back()));
-        //stations = { 125.0f, 195.0f, 265.0f, 335.0f }; // 3 x 70m
-        //bridges.push_back(new BoxGirder("Viaduto Esquerdo", roadways.back(), 230.0f, 6.0f, 200.0f, stations));
 
         /* R01 */
         roadways.push_back(new Road("Pista Esquerda", 9.20f, 50.0f, alignments.back(), vehicles.back()));
-        stations = { 145.0f, 195.0f, 265.0f, 315.0f }; // 50m, 70m, 50m
-        bridges.push_back(new BoxGirder("Viaduto Esquerdo", roadways.back(), 230.0f, 5.5f, 100.0f, stations, 110.0f, 350.0f));
+        //main_span = 70.0;
+        //bridges.push_back(new BoxGirder("Viaduto Esquerdo", roadways.back(), 230.0f, 5.5f, 100.0f, { 145.0f, 195.0f, 265.0f, 315.0f }, 110.0f, 350.0f));
 
         //// VIADUTO DIREITO
         //// ---------------

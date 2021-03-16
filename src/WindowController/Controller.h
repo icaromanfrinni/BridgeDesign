@@ -168,8 +168,13 @@ namespace Controller
 					{
 						show_add_bridge_window = true;
 						bridgeName = "Untitled";
-						cross_station = 250.0f;
-						h_clearance = 60.0f;
+						main_span = 70.0;
+						cross_station = 230.0f;
+						v_clearance = 5.5f;
+						h_clearance = 100.0f;
+						piers_inline = "145 195 265 315";
+						start_s = 110.0f;
+						end_s = 350.0f;
 					}
 				}
 				if (ImGui::BeginMenu("Edit Bridge"))
@@ -549,7 +554,7 @@ namespace Controller
 		if (show_add_bridge_window)
 		{
 			ImGui::SetNextWindowPos(ImVec2(100, 100), ImGuiCond_Once);
-			ImGui::SetNextWindowSize(ImVec2(295, 220), ImGuiCond_Once);
+			ImGui::SetNextWindowSize(ImVec2(295, 245), ImGuiCond_Once);
 			ImGui::Begin("New Bridge", &show_add_bridge_window, ImGuiWindowFlags_NoResize);   // Pass a pointer to our bool variable (the window will have a closing button that will clear the bool when clicked)
 			
 			ImGui::Columns(2, NULL, false);
@@ -623,9 +628,20 @@ namespace Controller
 			ImGui::NextColumn();
 			ImGui::PopID();
 
-			// START STATION
+			// COLUMN STATIONS
 
 			ImGui::PushID(906);
+			ImGui::AlignTextToFramePadding();
+			ImGui::Text("Piers");
+			ImGui::NextColumn();
+			ImGui::SetNextItemWidth(120);
+			ImGui::InputText("", &piers_inline, 0, NULL, NULL);
+			ImGui::NextColumn();
+			ImGui::PopID();
+
+			// START STATION
+
+			ImGui::PushID(907);
 			ImGui::AlignTextToFramePadding();
 			ImGui::Text("Start station");
 			ImGui::NextColumn();
@@ -636,7 +652,7 @@ namespace Controller
 
 			// END STATION
 
-			ImGui::PushID(907);
+			ImGui::PushID(908);
 			ImGui::AlignTextToFramePadding();
 			ImGui::Text("End station");
 			ImGui::NextColumn();
@@ -649,7 +665,23 @@ namespace Controller
 
 			ImGui::Separator();
 			ImGui::Columns(1);
-			if (ImGui::Button("   OK   ")) {
+			if (ImGui::Button("   OK   "))
+			{
+				column_stations.clear();
+				if (!piers_inline.empty())
+				{
+					column_stations.clear();
+					std::istringstream p(piers_inline);
+					float s;
+					while (true)
+					{
+						p >> s;
+						if (!p)
+							break;
+						column_stations.push_back(s);
+					}
+				}
+
 				bridges.push_back(new BoxGirder(bridgeName, roadways[CurrentRoad], cross_station, v_clearance, h_clearance, column_stations, start_s, end_s));
 				for (int i = 0; i < bridges.back()->model.size(); i++)
 					ourMesh_List.push_back(Mesh(bridges.back()->model[i]));

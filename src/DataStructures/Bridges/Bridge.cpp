@@ -235,6 +235,8 @@ std::vector<VerSegment*> Bridge::Vertical_Alignment()
 
 	/* ================================== SAG VERTICAL CURVE ================================== */
 
+	float Lmin = 0.6 * this->road->speed;
+
 	// LEFT
 	VerSegment* SagCurve_LEFT;
 	{
@@ -267,6 +269,8 @@ std::vector<VerSegment*> Bridge::Vertical_Alignment()
 		float As = 100.0f * tanf(acosf(CRAB::dot(grade, r.direction * (-1.0f))));
 		// Length of sag vertical curve (S < L)
 		float Ls = (As / 2) * powf(this->road->StoppingSightDistance(), 2.0f) / (120.0f + 3.5f * this->road->StoppingSightDistance());
+		if (Ls < Lmin)
+			Ls = Lmin;
 
 		SagCurve_LEFT = new VerSegment(VPI, grade, r.direction * (-1.0f), Ls);
 
@@ -309,6 +313,8 @@ std::vector<VerSegment*> Bridge::Vertical_Alignment()
 		float As = 100.0f * tanf(acosf(CRAB::dot(grade, r.direction)));
 		// Length of sag vertical curve (S < L)
 		float Ls = (As / 2) * powf(this->road->StoppingSightDistance(), 2.0f) / (120.0f + 3.5f * this->road->StoppingSightDistance());
+		if (Ls < Lmin)
+			Ls = Lmin;
 
 		SagCurve_RIGHT = new VerSegment(VPI, r.direction, grade, Ls);
 
