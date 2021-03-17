@@ -12,6 +12,9 @@ Road::Road()
 Road::Road(const std::string& _name, const float& _width, const float& _speed, Alignment* _alignment, Vehicle* _vehicle)
 	: name(_name), width(_width), speed(_speed), alignment(_alignment), vehicle(_vehicle)
 {
+	// Setup
+	this->StoppingSightDistance();
+
 	// Model
 	update();
 
@@ -26,18 +29,13 @@ Road::~Road()
 
 // ROAD DESIGN
 // -----------
-int Road::StoppingSightDistance() const
+void Road::StoppingSightDistance()
 {
-	// Default Vertical curves values
-	// ------------------------------
-	float t = 2.5f;	// brake reaction time
-	float a = 3.4f;	// deceleration rate
-
 	// Stopping Sight Distance (S)
 	// ---------------------------
-	float d1 = 0.278 * this->speed * t;				// brake reaction distance
-	float d2 = 0.039 * powf(this->speed, 2.0f) / a;	// braking distance on level
-	return round((d1 + d2) / 5) * 5;
+	float d1 = 0.278 * this->speed * reactionTime;			// brake reaction distance
+	float d2 = 0.039 * powf(this->speed, 2.0f) / decelRate;	// braking distance on level
+	this->SSD = round((d1 + d2) / 5) * 5;
 }
 
 // UPDATE THE MODEL

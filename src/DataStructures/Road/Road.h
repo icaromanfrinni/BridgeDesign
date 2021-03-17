@@ -13,6 +13,8 @@
 
 class Road
 {
+	// ROAD DESIGN
+	void StoppingSightDistance();
 	// Alignment path3D;
 public:
 	std::string name;
@@ -20,6 +22,7 @@ public:
 	std::vector<HED::solid*> model;
 	float width;		// Roadway width
 	float speed;		// Design speed
+	float SSD;			// Stopping Sight Distance
 	Vehicle* vehicle;	// Design vehicle
 
 	// DEFAULT CONSTRUCTOR
@@ -28,9 +31,6 @@ public:
 	Road(const std::string& _name, const float& _width, const float& _speed, Alignment* _alignment, Vehicle* _vehicle);
 	// DESTRUCTOR
 	~Road();
-
-	// ROAD DESIGN
-	int StoppingSightDistance() const;
 
 	// MODEL CONSTRUCTOR
 	void update();

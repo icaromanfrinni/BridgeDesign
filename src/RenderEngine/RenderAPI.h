@@ -719,32 +719,32 @@ namespace CRAB
         if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
             glfwSetWindowShouldClose(window, true);
 
-        if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
+        /*if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
             camera.ProcessKeyboard(UP, deltaTime);
         if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
             camera.ProcessKeyboard(DOWN, deltaTime);
         if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
             camera.ProcessKeyboard(LEFT, deltaTime);
         if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
-            camera.ProcessKeyboard(RIGHT, deltaTime);
+            camera.ProcessKeyboard(RIGHT, deltaTime);*/
 
         if (glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS)
             TheKeyState = GLFW_KEY_LEFT_CONTROL;
         if (glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS)
             TheKeyState = GLFW_KEY_LEFT_SHIFT;
 
-        if (glfwGetKey(window, GLFW_KEY_E) == GLFW_PRESS)
+        if (glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS && glfwGetKey(window, GLFW_KEY_E) == GLFW_PRESS)
         {
             for (int i = 0; i < bridges.size(); i++)
                 HED::WriteObjFile(bridges[i]->model);
         }
-        if (glfwGetKey(window, GLFW_KEY_N) == GLFW_PRESS)
+        if (glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS && glfwGetKey(window, GLFW_KEY_N) == GLFW_PRESS)
         {
             solids.clear();
             ourMesh_List.clear();
             bridges.clear();
         }
-        if (glfwGetKey(window, GLFW_KEY_L) == GLFW_PRESS)
+        if (glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS && glfwGetKey(window, GLFW_KEY_I) == GLFW_PRESS)
         {
             std::string fileName;
             std::cout << "Enter file name (*.obj): " << std::endl;
@@ -770,7 +770,7 @@ namespace CRAB
                 }
             }
         }
-        if (glfwGetKey(window, GLFW_KEY_F) == GLFW_PRESS)
+        /*if (glfwGetKey(window, GLFW_KEY_F) == GLFW_PRESS)
         {
             walkAround += deltaTime * 0.1f;
             if (walkAround > 1.0f)
@@ -798,7 +798,7 @@ namespace CRAB
             camera.View = glm::vec3(view.x, view.y, view.z);
             camera.LookAt = camera.View - camera.Position;
             camera.Up = glm::vec3(up.x, up.y, up.z);
-        }
+        }*/
     }
 
     // glfw: whenever the window size changed (by OS or user resize) this callback function executes

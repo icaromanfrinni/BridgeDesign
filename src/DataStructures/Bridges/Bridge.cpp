@@ -106,9 +106,9 @@ float Bridge::Superelevation(const float& t) const
 		fMax = 0.24f - this->road->speed / 800.0f;
 	else
 		fMax = 0.188f - this->road->speed / 1667.0f;
-	float slope = (SLOPE_MAX / (SLOPE_MAX + fMax)) * powf(this->road->speed, 2.0f) / (r * 127.0f); // AASHTO
-	if (slope > SLOPE_MAX)
-		slope = SLOPE_MAX;
+	float slope = ((slopeMax / 100.0f) / ((slopeMax / 100.0f) + fMax)) * powf(this->road->speed, 2.0f) / (r * 127.0f); // AASHTO
+	if (slope > (slopeMax / 100.0f))
+		slope = (slopeMax / 100.0f);
 	float alpha = atanf(slope) * 180.0f / M_PI;
 	if (this->alignment->isClockwise(t))
 		alpha = alpha * (-1.0f);
@@ -199,15 +199,15 @@ std::vector<VerSegment*> Bridge::Vertical_Alignment()
 
 	// Algebraic difference in grades (%)
 	float A;
-	if (this->road->StoppingSightDistance() < Lc)
-		A = Lc * 100 * (powf(sqrtf(2 * h1) + sqrtf(2 * h2), 2.0f)) / powf(this->road->StoppingSightDistance(), 2.0f);
+	if (this->road->SSD < Lc)
+		A = Lc * 100 * (powf(sqrtf(2 * eyeHeight) + sqrtf(2 * objHeight), 2.0f)) / powf(this->road->SSD, 2.0f);
 	else
-		A = (200 * powf(sqrtf(h1) + sqrtf(h2), 2.0f)) / (2.0f * this->road->StoppingSightDistance() - Lc);
+		A = (200 * powf(sqrtf(eyeHeight) + sqrtf(objHeight), 2.0f)) / (2.0f * this->road->SSD - Lc);
 	
 	// Round up
 	A = ceilf(A);
 	//std::cout << "A = " << A << std::endl;
-	//std::cout << "S = " << this->road->StoppingSightDistance() << std::endl;
+	//std::cout << "S = " << this->road->SSD << std::endl;
 
 	// VPC
 	CRAB::Vector4Df VPC = { 0.0f, 0.0f, 0.0f, 1.0f };
@@ -236,6 +236,7 @@ std::vector<VerSegment*> Bridge::Vertical_Alignment()
 	/* ================================== SAG VERTICAL CURVE ================================== */
 
 	float Lmin = 0.6 * this->road->speed;
+	//std::cout << "L,min = " << Lmin << " m" << std::endl;
 
 	// LEFT
 	VerSegment* SagCurve_LEFT;
@@ -268,17 +269,15 @@ std::vector<VerSegment*> Bridge::Vertical_Alignment()
 		// Algebraic difference in grades (%)
 		float As = 100.0f * tanf(acosf(CRAB::dot(grade, r.direction * (-1.0f))));
 		// Length of sag vertical curve (S < L)
-		float Ls = (As / 2) * powf(this->road->StoppingSightDistance(), 2.0f) / (120.0f + 3.5f * this->road->StoppingSightDistance());
+		float Ls = As * powf(this->road->SSD, 2.0f) / (200.0f * lightHeight + 3.5f * this->road->SSD);
 		if (Ls < Lmin)
 			Ls = Lmin;
 
 		SagCurve_LEFT = new VerSegment(VPI, grade, r.direction * (-1.0f), Ls);
 
-		/*std::cout << "\n" << std::endl;
-		std::cout << "SagCurve_LEFT" << std::endl;
+		/*std::cout << "\nSagCurve_LEFT" << std::endl;
 		std::cout << "A = " << As << " %" << std::endl;
-		std::cout << "L = " << Ls << " m" << std::endl;
-		std::cout << "\n" << std::endl;*/
+		std::cout << "L = " << Ls << " m" << std::endl;*/
 	}
 
 	// RIGHT
@@ -312,17 +311,15 @@ std::vector<VerSegment*> Bridge::Vertical_Alignment()
 		// Algebraic difference in grades (%)
 		float As = 100.0f * tanf(acosf(CRAB::dot(grade, r.direction)));
 		// Length of sag vertical curve (S < L)
-		float Ls = (As / 2) * powf(this->road->StoppingSightDistance(), 2.0f) / (120.0f + 3.5f * this->road->StoppingSightDistance());
+		float Ls = As * powf(this->road->SSD, 2.0f) / (200.0f * lightHeight + 3.5f * this->road->SSD);
 		if (Ls < Lmin)
 			Ls = Lmin;
 
 		SagCurve_RIGHT = new VerSegment(VPI, r.direction, grade, Ls);
 
-		/*std::cout << "\n" << std::endl;
-		std::cout << "SagCurve_RIGHT" << std::endl;
+		/*std::cout << "\nSagCurve_RIGHT" << std::endl;
 		std::cout << "A = " << As << " %" << std::endl;
-		std::cout << "L = " << Ls << " m" << std::endl;
-		std::cout << "\n" << std::endl;*/
+		std::cout << "L = " << Ls << " m" << std::endl;*/
 	}
 
 	//// ********************************** RETURN **********************************

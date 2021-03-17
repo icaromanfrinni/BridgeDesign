@@ -83,7 +83,7 @@ void BoxGirder::SetupSection()
 	if (bw < 0.25f) bw = 0.25f;
 	tv = int((100.0f * (H - 2 * h) / 10.0f) / 5.0f) * 0.05f;
 	if (tv < 0.10f) tv = 0.10f;
-	b = int((100.0f * (B - 2.0f * (Lb + web_inclination * (H - h - tv)))) / 5.0f) * 0.05f;
+	b = int((100.0f * (B - 2.0f * (Lb + this->iw * (H - h - tv)))) / 5.0f) * 0.05f;
 	th = int((100.0f * (b - 2 * bw) / 5.0f) / 5.0f) * 0.05f;
 
 	/*std::cout << "\nH = " << H << std::endl;

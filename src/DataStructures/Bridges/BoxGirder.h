@@ -29,15 +29,15 @@ class BoxGirder
 
 public:
 	// Box-Girder Bridge Attributes
-	float Lb;   // slab cantilever
-	float h;    // slab thickness
-	float bw;   // webs slab thickness
-	float iw; // web inclination
+	float Lb;		// slab cantilever
+	float h;		// slab thickness
+	float bw;		// webs slab thickness
+	float iw = 0.1f;// web inclination
 	bool iLocked = false;
-	float b;    // bottom slab width
-	float th;   // horizontal haunch
-	float tv;   // vertical haunch
-	float dH;	// haunched girder
+	float b;		// bottom slab width
+	float th;		// horizontal haunch
+	float tv;		// vertical haunch
+	float dH;		// haunched girder
 
 	//DEFAULT CONSTRUCTOR
 	BoxGirder();

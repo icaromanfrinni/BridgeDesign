@@ -8,10 +8,6 @@
 #include "Road.h"
 #include "GlobalVariables.h"
 
-// Default Vertical curves values
-const float h1 = 1.08;	// height of eye above roadway surface
-const float h2 = 0.60;	// height of object above roadway surface
-
 // Default bridge values
 const float SLOPE = 0.0f;
 const float TOP_LAYER = 0.10f;
@@ -19,7 +15,7 @@ const float GUARD_RAIL = 0.40f;
 //const float INCLINATION_RATIO = 0.25f;
 
 // MAX Transverse Slope
-const float SLOPE_MAX = 0.06f;
+//const float SLOPE_MAX = 0.06f;
 
 struct Pier
 {

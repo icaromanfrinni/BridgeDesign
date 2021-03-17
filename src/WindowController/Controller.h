@@ -24,9 +24,9 @@ namespace Controller
     inline void ShowDemo()
     {
         // 1. Show the big demo window (Most of the sample code is in ImGui::ShowDemoWindow()! You can browse its code to learn more about Dear ImGui!).
-        if (show_demo_window)
-            ImGui::ShowDemoWindow(&show_demo_window);
-
+		if (show_demo_window)
+			ImGui::ShowDemoWindow(&show_demo_window);
+            
         // 2. Show a simple window that we create ourselves. We use a Begin/End pair to created a named window.
         {
             static float f = 0.0f;
@@ -67,16 +67,37 @@ namespace Controller
 		{
 			if (ImGui::BeginMenu("File"))
 			{
-				if (ImGui::MenuItem("New", "N"))
+				if (ImGui::MenuItem("New", "Ctrl+N"))
 				{
 					solids.clear();
 					ourMesh_List.clear();
 					bridges.clear();
 				}
-				/*if (ImGui::MenuItem("Open", NULL, false, false)) {}
-				if (ImGui::MenuItem("Save", NULL, false, false)) {}
-				if (ImGui::MenuItem("Import", NULL, false, false)) {}
-				if (ImGui::BeginMenu("Export"))
+				//if (ImGui::MenuItem("Open", NULL, false, false)) {}
+				//if (ImGui::MenuItem("Save", NULL, false, false)) {}
+				ImGui::Separator();
+				if (ImGui::MenuItem("Import", "Ctrl+I"))
+				{
+					std::string fileName;
+					std::cout << "Enter file name (*.obj): " << std::endl;
+					std::cin >> fileName;
+					fileName = "objects/" + fileName + ".obj";
+					ObjFile inputObjFile;
+					if (inputObjFile.ReadObjFile(fileName) == false)
+					{
+						MessageBox(NULL, (LPCWSTR)L"File could not be opened!", (LPCWSTR)L"Info",
+							MB_OK | MB_ICONEXCLAMATION);
+					}
+					else
+						for (int i = 0; i < inputObjFile.objectList.size(); i++)
+							ourMesh_List.push_back(Mesh(inputObjFile.objectList[i]));
+				}
+				if (ImGui::MenuItem("Export", "Ctrl+E"))
+				{
+					for (int i = 0; i < bridges.size(); i++)
+						HED::WriteObjFile(bridges[i]->model);
+				}
+				/*if (ImGui::BeginMenu("Export"))
 				{
 					if (ImGui::MenuItem("Wavefront (.obj)", NULL, false, false)) {}
 					if (ImGui::MenuItem("Half-edge (.hed)", NULL, false, false)) {}
@@ -168,7 +189,7 @@ namespace Controller
 					{
 						show_add_bridge_window = true;
 						bridgeName = "Untitled";
-						main_span = 70.0;
+						//main_span = 70.0;
 						cross_station = 230.0f;
 						v_clearance = 5.5f;
 						h_clearance = 100.0f;
@@ -207,31 +228,101 @@ namespace Controller
 		if (show_general_criteria_window)
 		{
 			ImGui::SetNextWindowPos(ImVec2(100, 100), ImGuiCond_Once);
-			ImGui::SetNextWindowSize(ImVec2(275, 220), ImGuiCond_Once);
+			ImGui::SetNextWindowSize(ImVec2(325, 250), ImGuiCond_Once);
 			ImGui::Begin("General Criteria", &show_general_criteria_window, ImGuiWindowFlags_NoResize);
 
 			ImGui::Columns(2, NULL, false);
-			ImGui::SetColumnWidth(0, 160.0f);
-
-			// VERTICAL CLEARANCE
-
-			ImGui::PushID(901);
-			ImGui::AlignTextToFramePadding();
-			ImGui::Text("Vertical clearance");
-			ImGui::NextColumn();
-			ImGui::SetNextItemWidth(80);
-			ImGui::DragFloat("m", &v_clearance, 0.01f, 0.00f, 1000.00f, "%.2f");
-			ImGui::NextColumn();
-			ImGui::PopID();
+			ImGui::SetColumnWidth(0, 200.0f);
 
 			// MAIN SPAN
 
-			ImGui::PushID(902);
+			ImGui::PushID(901);
 			ImGui::AlignTextToFramePadding();
 			ImGui::Text("Main span");
 			ImGui::NextColumn();
 			ImGui::SetNextItemWidth(80);
 			ImGui::DragFloat("m", &main_span, 0.01f, 0.00f, 1000.00f, "%.2f");
+			ImGui::NextColumn();
+			ImGui::PopID();
+
+			// MAXIMUM SUPERELEVATION
+
+			ImGui::PushID(902);
+			ImGui::AlignTextToFramePadding();
+			ImGui::Text("Maximum superelevation");
+			ImGui::NextColumn();
+			ImGui::SetNextItemWidth(80);
+			ImGui::DragFloat("%", &slopeMax, 0.01f, 0.00f, 10.00f, "%.2f");
+			ImGui::NextColumn();
+			ImGui::PopID();
+
+			// SEPARATOR
+
+			ImGui::Separator();
+
+			// DECELERATION RATE
+
+			ImGui::PushID(903);
+			ImGui::AlignTextToFramePadding();
+			ImGui::Text("Deceleration rate");
+			ImGui::NextColumn();
+			ImGui::SetNextItemWidth(80);
+			ImGui::DragFloat("m/s2", &decelRate, 0.01f, 0.00f, 1000.00f, "%.2f");
+			ImGui::NextColumn();
+			ImGui::PopID();
+
+			// REACTION TIME
+
+			ImGui::PushID(904);
+			ImGui::AlignTextToFramePadding();
+			ImGui::Text("Brake reaction time");
+			ImGui::NextColumn();
+			ImGui::SetNextItemWidth(80);
+			ImGui::DragFloat("s", &reactionTime, 0.01f, 0.00f, 1000.00f, "%.2f");
+			ImGui::NextColumn();
+			ImGui::PopID();
+
+			// HEIGHT OF EYE
+
+			ImGui::PushID(905);
+			ImGui::AlignTextToFramePadding();
+			ImGui::Text("Height of eye above road");
+			ImGui::NextColumn();
+			ImGui::SetNextItemWidth(80);
+			ImGui::DragFloat("m", &eyeHeight, 0.01f, 0.00f, 1000.00f, "%.2f");
+			ImGui::NextColumn();
+			ImGui::PopID();
+
+			// HEIGHT OF OBJECT
+
+			ImGui::PushID(906);
+			ImGui::AlignTextToFramePadding();
+			ImGui::Text("Height of object above road");
+			ImGui::NextColumn();
+			ImGui::SetNextItemWidth(80);
+			ImGui::DragFloat("m", &objHeight, 0.01f, 0.00f, 1000.00f, "%.2f");
+			ImGui::NextColumn();
+			ImGui::PopID();
+
+			// HEADLIGHT HEIGHT
+
+			ImGui::PushID(907);
+			ImGui::AlignTextToFramePadding();
+			ImGui::Text("Headlight height above road");
+			ImGui::NextColumn();
+			ImGui::SetNextItemWidth(80);
+			ImGui::DragFloat("m", &lightHeight, 0.01f, 0.00f, 1000.00f, "%.2f");
+			ImGui::NextColumn();
+			ImGui::PopID();
+
+			// ANGLE OF LIGHT
+
+			ImGui::PushID(908);
+			ImGui::AlignTextToFramePadding();
+			ImGui::Text("Angle of headlight (degree)");
+			ImGui::NextColumn();
+			ImGui::SetNextItemWidth(80);
+			ImGui::DragFloat("", &lightAngle, 0.01f, 0.00f, 1000.00f, "%.2f");
 			ImGui::NextColumn();
 			ImGui::PopID();
 
@@ -241,7 +332,7 @@ namespace Controller
 			ImGui::Columns(1);
 			if (ImGui::Button("   OK   "))
 				show_general_criteria_window = false;
-			ImGui::SameLine(205);
+			ImGui::SameLine(255);
 			if (ImGui::Button(" Cancel "))
 				show_general_criteria_window = false;
 
@@ -806,7 +897,6 @@ namespace Controller
 
 				// NUMBER OF PIERS
 
-				//ImGui::PushID(907);
 				ImGui::AlignTextToFramePadding();
 				ImGui::Text("Number of piers");
 				ImGui::NextColumn();
@@ -1059,7 +1149,7 @@ namespace Controller
 		if (show_edit_bridge_columns)
 		{
 			ImGui::SetNextWindowPos(ImVec2(100, 100), ImGuiCond_Once);
-			ImGui::SetNextWindowSize(ImVec2(275, 295), ImGuiCond_Once);
+			ImGui::SetNextWindowSize(ImVec2(275, 225), ImGuiCond_Once);
 			ImGui::Begin("Columns", &show_edit_bridge_columns, ImGuiWindowFlags_NoResize);
 
 			// BRIDGE
