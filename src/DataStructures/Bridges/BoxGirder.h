@@ -32,7 +32,7 @@ public:
 	float Lb;		// slab cantilever
 	float h;		// slab thickness
 	float bw;		// webs slab thickness
-	float iw = 0.1f;// web inclination
+	float iw;		// web inclination
 	bool iLocked = false;
 	float b;		// bottom slab width
 	float th;		// horizontal haunch
@@ -44,9 +44,9 @@ public:
 	// OVERLOAD CONSTRUCTOR (Viaduct)
 	BoxGirder(const std::string& _name, Road* _road, const float& cross_station, const float& vertical_clearance, const float& horizontal_clearance, const std::vector<float>& _stations, const float& start_station, const float& end_station);
 	// OVERLOAD CONSTRUCTOR (Overpass)
-	BoxGirder(const std::string& _name, Road* _road, const float& cross_station, const float& vertical_clearance, const float& horizontal_clearance, const float& elevation_level, const float& start_station, const float& end_station);
+	//BoxGirder(const std::string& _name, Road* _road, const float& cross_station, const float& vertical_clearance, const float& horizontal_clearance, const float& elevation_level, const float& start_station, const float& end_station);
 	// OVERLOAD CONSTRUCTOR (Bridge)
-	BoxGirder(const std::string& _name, Road* _road, const float& cross_station, const float& vertical_clearance, const float& horizontal_clearance, const float& elevation_level, const float& water_surface, const float& start_station, const float& end_station);
+	//BoxGirder(const std::string& _name, Road* _road, const float& cross_station, const float& vertical_clearance, const float& horizontal_clearance, const float& elevation_level, const float& water_surface, const float& start_station, const float& end_station);
 	// DESTRUCTOR
 	~BoxGirder();
 

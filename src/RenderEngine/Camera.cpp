@@ -6,8 +6,8 @@ Camera::Camera() : MovementSpeed(SPEED), MouseSensitivity(SENSITIVITY), FieldOfV
     Position = glm::vec3(0.0f, 0.0f, 25.0f);
     View = glm::vec3(0.0f, 0.0f, 0.0f);
     LookAt = glm::normalize(View - Position);
-    Near = 1.0f;
-    Far = 2000.0f;
+    Near = 0.1f;
+    Far = 5000.0f;
     WorldUp = glm::vec3(0.0f, 1.0f, 0.0f);
     Yaw = YAW;
     Pitch = PITCH;
@@ -61,10 +61,10 @@ void Camera::ProcessMouseMovement(float xoffset, float yoffset)
     Pitch += yoffset;
 
     // Make sure that when pitch is out of bounds, screen doesn't get flipped
-    if (Pitch > 89.0f)
-        Pitch = 89.0f;
-    if (Pitch < -89.0f)
-        Pitch = -89.0f;
+    if (Pitch > 89.9f)
+        Pitch = 89.9f;
+    if (Pitch < -89.9f)
+        Pitch = -89.9f;
 
     // Update Front, Right and Up Vectors using the updated Euler angles
     updateCameraVectors();
@@ -77,15 +77,6 @@ void Camera::ProcessMouseScroll(float yoffset)
     Position += front * yoffset * MouseSensitivity;
    // View += front * yoffset * MouseSensitivity;
 }
-
-//// Update the parameters from new camera's position
-//void Camera::update3DView()
-//{
-//    LookAt = glm::normalize(View - Position);
-//    Right = glm::normalize(glm::cross(LookAt, Up));
-//    // Yaw
-//    // Pitch
-//}
 
 // Calculates the front vector from the Camera's (updated) Euler Angles
 void Camera::updateCameraVectors()

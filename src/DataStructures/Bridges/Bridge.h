@@ -40,8 +40,8 @@ public:
 	float start_S;	// start station
 	float end_S;	// end station
 	float mainSpan; // Main span
-	float EL;		// elevation level
-	float WS;		// water surface
+	//float EL;		// elevation level
+	//float WS;		// water surface
 	std::vector<Pier> piers;
 	std::vector<Alignment*> abutments;
 
@@ -58,9 +58,9 @@ public:
 	// OVERLOAD CONSTRUCTOR (Viaduct)
 	Bridge(const std::string& _name, Road* _road, const float& cross_station, const float& vertical_clearance, const float& horizontal_clearance, const float& start_station, const float& end_station);
 	// OVERLOAD CONSTRUCTOR (Overpass)
-	Bridge(const std::string& _name, Road* _road, const float& cross_station, const float& vertical_clearance, const float& horizontal_clearance, const float& elevation_level, const float& start_station, const float& end_station);
+	//Bridge(const std::string& _name, Road* _road, const float& cross_station, const float& vertical_clearance, const float& horizontal_clearance, const float& elevation_level, const float& start_station, const float& end_station);
 	// OVERLOAD CONSTRUCTOR (Bridge)
-	Bridge(const std::string& _name, Road* _road, const float& cross_station, const float& vertical_clearance, const float& horizontal_clearance, const float& elevation_level, const float& water_surface, const float& start_station, const float& end_station);
+	//Bridge(const std::string& _name, Road* _road, const float& cross_station, const float& vertical_clearance, const float& horizontal_clearance, const float& elevation_level, const float& water_surface, const float& start_station, const float& end_station);
 	// DESTRUCTOR
 	virtual ~Bridge() = 0;
 

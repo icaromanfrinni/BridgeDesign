@@ -48,10 +48,10 @@ void main()
     {
 	// LIGHTING MAPS
 	// -------------
-        ka = vec3(texture(u_Texture_diffuse, v_TexCoord)) * 0.5;
+        ka = vec3(texture(u_Texture_diffuse, v_TexCoord));// * 0.5;
         kd = vec3(texture(u_Texture_diffuse, v_TexCoord));
         ks = vec3(texture(u_Texture_specular, v_TexCoord)) * 0.5;
-        norm = texture(u_Texture_normal, v_TexCoord).rgb;
+        norm = texture(u_Texture_normal, v_TexCoord).rgb * 0.5;
         norm = normalize(norm * 2.0 - 1.0);
         //norm = normalize(TBN * norm);
         // --------------
@@ -81,16 +81,24 @@ void main()
 vec3 CalcDirLight(DirLight light, vec3 normal, vec3 viewDir)
 {
     vec3 lightDir = TBN_matrix * normalize(-light.direction);
+    
     // diffuse shading
     float diff = max(dot(normal, lightDir), 0.0);
+    //float diff = 1.0f;
+    
     // specular shading
     vec3 reflectDir = reflect(-lightDir, normal);
     float spec = pow(max(dot(viewDir, reflectDir), 0.0), material.shininess);
+    //float spec = 1.0f;
     //vec3 halfwayDir = normalize(lightDir + viewDir);
     //float spec = pow(max(dot(viewDir, halfwayDir), 0.0), material.shininess);
+
     // combine results
-    vec3 ambient  = light.intensity * ka; //vec3 ambient  = light.ambient * ka;
-    vec3 diffuse  = light.intensity * diff * kd; //vec3 diffuse  = light.diffuse * diff * kd;
-    vec3 specular = light.intensity * spec * ks; //vec3 specular = light.specular * spec * ks;
+    //vec3 ambient  = light.ambient * ka;
+    //vec3 diffuse  = light.diffuse * diff * kd;
+    //vec3 specular = light.specular * spec * ks;
+    vec3 ambient  = light.intensity * ka; 
+    vec3 diffuse  = light.intensity * diff * kd; 
+    vec3 specular = light.intensity * spec * ks; 
     return (ambient + diffuse + specular);
 }  

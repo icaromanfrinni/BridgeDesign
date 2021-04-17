@@ -61,12 +61,11 @@ public:
     void ProcessMouseMovement(float xoffset, float yoffset);
     // Processes input received from a mouse scroll-wheel event. Only requires input on the vertical wheel-axis
     void ProcessMouseScroll(float yoffset);
-    //// Update the parameters from new camera's position
-    //void update3DView();
 
+    void updateCameraVectors();
 private:
     // Calculates the front vector from the Camera's (updated) Euler Angles
-    void updateCameraVectors();
+    //void updateCameraVectors();
 };
 
 #endif

@@ -6,26 +6,16 @@
 #include "HorSegment.h"
 #include "VerSegment.h"
 
-//struct ArcLength
-//{
-//	float t, s;
-//	// CONSTRUCTOR
-//	ArcLength(const float& _t, const float& _s)
-//		: t(_t), s(_s)
-//	{	}
-//};
-
 class Alignment
 {
 private:
 
 public:
 	NURBS path2D;	// 2D horizontal curve
-	//NURBS path3D;	// 3D curve
 	std::string name;
 	std::vector<HorSegment*> plan;			// Horizontal alignment
 	std::vector<VerSegment*> profile;		// Vertical alignment
-	//std::vector<ArcLength> arcLength_table;	// Arc Length Table
+	std::vector<CRAB::Vector4Df*> VPI_list;	// 2D Intersection points
 
 	// DEFAULT CONSTRUCTOR
 	Alignment();
@@ -38,6 +28,9 @@ public:
 	int findSegment(const float& station) const;
 
 	// RETURN
+	// Vector 3D
+	glm::vec3 getPosition3D(const float& t) const;
+	// Vector 4D
 	CRAB::Vector4Df getPosition(const float& t) const;
 	CRAB::Vector4Df getTangent(const float& t) const;
 	CRAB::Vector4Df getNormalUp(const float& t/*, const float& V*/) const;

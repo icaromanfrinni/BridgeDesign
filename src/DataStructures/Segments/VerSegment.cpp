@@ -51,6 +51,11 @@ VerSegment::~VerSegment()
 {
 }
 
+Geometry* VerSegment::getSegment() const
+{
+	return segment;
+}
+
 // RETURN (glm::vec3)
 // ------------------
 glm::vec3 VerSegment::getStartPoint() const

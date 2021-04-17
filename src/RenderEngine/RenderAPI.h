@@ -26,7 +26,7 @@
 #include "Skybox.h"
 #include "GlobalTextures.h"
 
-#define EXAMPLE 14
+#define EXAMPLE 16
 #define DEBUG 1
 
 namespace CRAB
@@ -515,7 +515,7 @@ namespace CRAB
         bridges.push_back(new BoxGirder("ponte", roadways.back(), 124.14f, 50.0f));
 #endif
 
-        /* Automation and Construction 2020: Viaduto do Baldo */
+        /* Automation and Construction 2021: Viaduto do Baldo */
 #if EXAMPLE == 14
         // road_profile
         std::vector<VerSegment*> road_profile;
@@ -560,6 +560,65 @@ namespace CRAB
         //bridges.push_back(new BoxGirder("Viaduto Direito", roadways.back(), 235.0f, 5.5f, 100.0f, stations));
 #endif
 
+        /* NEW YORK: Ponte sobre rio navegável */
+#if EXAMPLE == 15
+        // road_profile
+        std::vector<VerSegment*> road_profile;
+        road_profile.push_back(new VerSegment({ 0.0f, 0.0f, 0.0f, 1.0f }, { 2800.0f, 0.0f, 0.0f, 1.0f }));
+
+        // EIXOS
+        // World    HorSegment  VerSegment
+        // X        X           X
+        // Y        -           Y
+        // Z        -Y          -
+
+        // VALE
+        // ----
+        std::vector<HorSegment*> road_plan_VALE;
+        // road_plan
+        road_plan_VALE.push_back(new HorSegment({ -936.33f, 0.0f, 813.38f, 1.0f }, { -752.04f, 0.0f, 438.69f, 1.0f }));
+        road_plan_VALE.push_back(new HorSegment({ -752.04f, 0.0f, 438.69f, 1.0f }, { -514.63f, 0.0f, -44.01f, 1.0f }, { 18.99f, 0.0f, -111.96f, 1.0f }));
+        road_plan_VALE.push_back(new HorSegment({ 18.99f, 0.0f, -111.96f, 1.0f }, { 1241.78f, 0.0f, -267.65f, 1.0f }));
+       
+        // alignment
+        alignments.push_back(new Alignment("Vale", road_plan_VALE, road_profile));
+        // road
+        roadways.push_back(new Road("Vale", 13.0f, 60.0f, alignments.back(), vehicles.back()));
+
+        bridges.push_back(new BoxGirder("Ponte", roadways.back(), 1300.0f, 8.0f, 300.0f, column_stations, 0.0f, 2000.0f));
+#endif
+
+        /* DISSERTAÇÃO: Ponte da Integração */
+#if EXAMPLE == 16
+        // ROAD PROFILE
+        std::vector<VerSegment*> road_profile;
+        /*road_profile.push_back(new VerSegment({ 0.0f, 190.0f, 0.0f, 1.0f }, { 530.0f, 152.0f, 0.0f, 1.0f }));
+        road_profile.push_back(new VerSegment({ 530.0f, 152.0f, 0.0f, 1.0f }, { 938.0f, 42.0f, 0.0f, 1.0f }));
+        road_profile.push_back(new VerSegment({ 938.0f, 42.0f, 0.0f, 1.0f }, { 1368.0f, 177.0f, 0.0f, 1.0f }));
+        road_profile.push_back(new VerSegment({ 1368.0f, 177.0f, 0.0f, 1.0f }, { 1835.0f, 173.0f, 0.0f, 1.0f }));*/
+        //road_profile.push_back(new VerSegment({ 0.0f, 0.0f, 0.0f, 1.0f }, { 500.0f, 0.0f, 0.0f, 1.0f }));
+        CRAB::Vector4Df VP1 = { 0.0f, 50.0f, 0.0f, 1.0f };
+        CRAB::Vector4Df VP2 = { 150.0f, 20.0f, 0.0f, 1.0f };
+        CRAB::Vector4Df VP3 = { 250.0f, 0.0f, 0.0f, 1.0f };
+        CRAB::Vector4Df VP4 = { 350.0f, 20.0f, 0.0f, 1.0f };
+        CRAB::Vector4Df VP5 = { 500.0f, 50.0f, 0.0f, 1.0f };
+        road_profile.push_back(new VerSegment(VP1, VP2));
+        road_profile.push_back(new VerSegment(VP2, VP3, VP4));
+        road_profile.push_back(new VerSegment(VP4, VP5));
+
+        // ROAD PLAN
+        std::vector<HorSegment*> road_plan;
+        //road_plan.push_back(new HorSegment({ 20.0f, 0.0f, -20.0f, 1.0f }, { 320.0f, 0.0f, -420.0f, 1.0f })); // na diagonal
+        road_plan.push_back(new HorSegment({ 0.0f, 0.0f, 0.0f, 1.0f }, { 500.0f, 0.0f, 0.0f, 1.0f })); // no eixo X
+        // alignment
+        alignments.push_back(new Alignment("Vale", road_plan, road_profile));
+        // road
+        roadways.push_back(new Road("Vale", 9.0f, 50.0f, alignments.back(), vehicles.back()));
+        // bridge
+        column_stations = { 150.0f, 200.0f, 300.0f, 350.0f };
+        bridges.push_back(new BoxGirder("Ponte", roadways.back(), 250.0f, 5.5f, 70.0f, column_stations, 0.0f, 500.0f));
+#endif
+
         // mesh
         // ----
         for (int i = 0; i < bridges.size(); i++)
@@ -567,12 +626,16 @@ namespace CRAB
             //curves.push_back(Grid(bridges[i]->alignment->path3D));
             //curves.push_back(Grid(bridges[i]->abutments.front()->path3D));
             //curves.push_back(Grid(bridges[i]->abutments.back()->path3D));
-            for (int j = 0; j < bridges[i]->model.size(); j++)
-                ourMesh_List.push_back(Mesh(bridges[i]->model[j]));
+            curves.push_back(Grid(bridges[i]->alignment->VPI_list));
+            //curves.push_back(Grid(bridges[i]->alignment));
+            /*for (int j = 0; j < bridges[i]->model.size(); j++)
+                ourMesh_List.push_back(Mesh(bridges[i]->model[j]));*/
         }
         for (int i = 0; i < roadways.size(); i++)
         {
-            curves.push_back(Grid(roadways[i]->alignment->path2D));
+            //curves.push_back(Grid(roadways[i]->alignment->path2D));
+            curves.push_back(Grid(roadways[i]->alignment->VPI_list));
+            curves.push_back(Grid(roadways[i]->alignment));
             //curves.push_back(Grid(roadways[i]->alignment->path3D));
             /*for (int j = 0; j < roadways[i]->model.size(); j++)
                 ourMesh_List.push_back(Mesh(roadways[i]->model[j]));*/
@@ -663,10 +726,10 @@ namespace CRAB
             // render
             for (int i = 0; i < ourMesh_List.size(); i++)
             {
-                if (Controller::polygon_mode == 1)
-                    ourMesh_List[i].material.hasTexture = false;
-                else
+                if (Controller::polygon_mode == 2)
                     ourMesh_List[i].material.hasTexture = true;
+                else
+                    ourMesh_List[i].material.hasTexture = false;
                 ourMesh_List[i].Draw(ourShader);
             }
 
@@ -689,7 +752,8 @@ namespace CRAB
             skyboxShader.setMat4("view", view);
             skyboxShader.setMat4("projection", projection);
             // skybox cube
-            skybox.Draw(ourShader);
+            //skybox.Draw(ourShader);
+            skybox.Draw(skyboxShader);
             glDepthFunc(GL_LESS); // set depth function back to default
 
             // Render dear imgui into screen
@@ -719,14 +783,14 @@ namespace CRAB
         if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
             glfwSetWindowShouldClose(window, true);
 
-        /*if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
+        if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
             camera.ProcessKeyboard(UP, deltaTime);
         if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
             camera.ProcessKeyboard(DOWN, deltaTime);
         if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
             camera.ProcessKeyboard(LEFT, deltaTime);
         if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
-            camera.ProcessKeyboard(RIGHT, deltaTime);*/
+            camera.ProcessKeyboard(RIGHT, deltaTime);
 
         if (glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS)
             TheKeyState = GLFW_KEY_LEFT_CONTROL;

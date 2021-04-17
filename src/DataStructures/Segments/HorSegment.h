@@ -10,9 +10,10 @@
 
 class HorSegment
 {
-public:
 	// Straight Line || Circular Arc
 	Geometry* segment;
+
+public:
 
 	// DEFAULT CONSTRUCTOR
 	HorSegment();
@@ -24,6 +25,8 @@ public:
 	HorSegment(const CRAB::Vector4Df& _p1, const CRAB::Vector4Df& _p2, const CRAB::Vector4Df& _p3);
 	// DESTRUCTOR
 	~HorSegment();
+
+	Geometry* getSegment() const;
 };
 
 #endif // HORSEGMENT_H

@@ -15,7 +15,7 @@
 #include <vector>
 
 #include "Shader.h"
-#include "NURBS.h"
+#include "Alignment.h"
 
 #define STEPS 100
 
@@ -38,9 +38,13 @@ public:
     // default constructor
     Grid();
     // constructor
-    Grid(std::vector<Vertex> vertices);
+    Grid(std::vector<Vertex> _vertices);
+    // overload constructor (from VPI points)
+    Grid(std::vector<CRAB::Vector4Df*> _vertices);
     // overload constructor (from NURBS curve)
-    Grid(const NURBS& curve);
+    Grid(const NURBS& _curve);
+    // overload constructor (from 3D Alignment curve)
+    Grid(const Alignment* _curve);
     // destructor
     ~Grid();
 
@@ -56,6 +60,7 @@ private:
 
     // With points
     bool with_points;
+    //GLfloat point_size;
 
     /*  Functions    */
 

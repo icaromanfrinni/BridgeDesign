@@ -30,19 +30,36 @@ Grid::Grid()
     setupGrid();
 }
 // constructor
-Grid::Grid(std::vector<Grid::Vertex> vertices)
+Grid::Grid(std::vector<Grid::Vertex> _vertices)
+    : vertices(_vertices)
 {
-    this->vertices = vertices;
     this->primitive_type = GL_LINES;
     this->with_points = false;
     // now that we have all the required data, set the vertex buffers and its attribute pointers.
     setupGrid();
 }
-// overload constructor (from NURBS curve)
-Grid::Grid(const NURBS& curve)
+// overload constructor (from VPI points)
+Grid::Grid(std::vector<CRAB::Vector4Df*> _vertices)
 {
     this->primitive_type = GL_LINE_STRIP;
     this->with_points = true;
+
+    Grid::Vertex v;
+    v.Color = { 1.0f, 1.0f, 1.0f }; // white
+    
+    for (int i = 0; i < _vertices.size(); i++)
+    {
+        v.Position = glm::vec3(_vertices[i]->x, _vertices[i]->y, _vertices[i]->z);
+        this->vertices.push_back(v);
+    }
+    
+    setupGrid();
+}
+// overload constructor (from NURBS curve)
+Grid::Grid(const NURBS& _curve)
+{
+    this->primitive_type = GL_LINE_STRIP;
+    this->with_points = false;
 
     Grid::Vertex v;
     //v.Color = { 1.0f, 0.0f, 1.0f }; // magenta
@@ -52,7 +69,25 @@ Grid::Grid(const NURBS& curve)
     for (int i = 0; i <= STEPS; i++)
     {
         float t = float(i) / STEPS;
-        v.Position = curve.getPosition(t);
+        v.Position = _curve.getPosition(t);
+        this->vertices.push_back(v);
+    }
+
+    setupGrid();
+}
+// overload constructor (from 3D Alignment curve)
+Grid::Grid(const Alignment* _curve)
+{
+    this->primitive_type = GL_LINE_STRIP;
+    this->with_points = true;
+
+    Grid::Vertex v;
+    v.Color = { 0.9f, 0.3f, 0.9f }; // magenta2
+    for (int i = 0; i <= STEPS; i++)
+    {
+        float t = float(i) / STEPS;
+        std::cout << "t = " << t << std::endl;
+        v.Position = _curve->getPosition3D(t);
         this->vertices.push_back(v);
     }
 
@@ -70,7 +105,10 @@ void Grid::Draw(Shader shader)
     glBindVertexArray(VAO);
     glDrawArrays(this->primitive_type, 0, vertices.size());
     if (this->with_points)
+    {
+        glPointSize(5.0);
         glDrawArrays(GL_POINTS, 0, vertices.size());
+    }
 }
 
 // initializes all the buffer objects/arrays

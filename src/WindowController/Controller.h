@@ -126,17 +126,31 @@ namespace Controller
 				ImGui::Separator();
 				if (ImGui::BeginMenu("3D Views"))
 				{
-					if (ImGui::MenuItem("Top", NULL, false, false))
+					if (ImGui::MenuItem("Top", NULL))
 					{
-						/*float d = glm::length(camera.View - camera.Position);
-						camera.Position = camera.WorldUp * d;
-						camera.Up = glm::vec3(0.0f, 0.0f, -1.0f);
-						camera.update3DView();*/
+						float d = glm::length(camera.View - camera.Position);
+						camera.Position = camera.View + camera.WorldUp * d;
+						camera.Yaw = -90.0f;
+						camera.Pitch = -89.9f;
+						camera.updateCameraVectors();
 					}
-					if (ImGui::MenuItem("Bottom", NULL, false, false)) {}
+					if (ImGui::MenuItem("Bottom", NULL, false, false))
+					{
+					}
 					if (ImGui::MenuItem("Left", NULL, false, false)) {}
 					if (ImGui::MenuItem("Right", NULL, false, false)) {}
-					if (ImGui::MenuItem("Front", NULL, false, false)) {}
+					if (ImGui::MenuItem("Front", NULL))
+					{
+						float d = glm::length(camera.View - camera.Position);
+						camera.View.y = 0.0f;
+						camera.Position = camera.View + glm::vec3(0.0f, 0.0f, 1.0f) * d;
+						camera.LookAt = glm::normalize(camera.View - camera.Position);
+						//camera.Up = glm::vec3(0.0f, 1.0f, 0.0f);
+						camera.Right = glm::vec3(1.0f, 0.0f, 0.0f);
+						camera.Up = glm::normalize(glm::cross(camera.Right, camera.LookAt));
+						camera.Yaw = -90.0f;
+						camera.Pitch = 0.0f;
+					}
 					if (ImGui::MenuItem("Back", NULL, false, false)) {}
 					ImGui::EndMenu();
 				}
@@ -345,7 +359,7 @@ namespace Controller
 		if (show_camera_window)
 		{
 			ImGui::SetNextWindowPos(ImVec2(100, 100), ImGuiCond_Once);
-			ImGui::SetNextWindowSize(ImVec2(240, 120), ImGuiCond_Once);
+			ImGui::SetNextWindowSize(ImVec2(350, 350), ImGuiCond_Once);
 			ImGui::Begin("Camera", &show_camera_window, ImGuiWindowFlags_NoResize);
 
 			ImGui::Columns(2, NULL, false);
@@ -357,7 +371,7 @@ namespace Controller
 			ImGui::AlignTextToFramePadding();
 			ImGui::Text("Field of View");
 			ImGui::NextColumn();
-			ImGui::SetNextItemWidth(120);
+			ImGui::SetNextItemWidth(185);
 			ImGui::SliderFloat("", &camera.FieldOfView, 1.0f, 90.0f, "%.1f");
 			ImGui::NextColumn();
 			ImGui::PopID();
@@ -368,8 +382,8 @@ namespace Controller
 			ImGui::AlignTextToFramePadding();
 			ImGui::Text("Near");
 			ImGui::NextColumn();
-			ImGui::SetNextItemWidth(120);
-			ImGui::DragFloat("", &camera.Near, 1.0f, 1.0f, 1000.0f, "%.0f m");
+			ImGui::SetNextItemWidth(185);
+			ImGui::SliderFloat("", &camera.Near, 0.1f, 100.0f, "%.1f m");
 			ImGui::NextColumn();
 			ImGui::PopID();
 
@@ -379,8 +393,145 @@ namespace Controller
 			ImGui::AlignTextToFramePadding();
 			ImGui::Text("Far");
 			ImGui::NextColumn();
-			ImGui::SetNextItemWidth(120);
-			ImGui::DragFloat("", &camera.Far, 1.0f, 1.0f, 1000.0f, "%.0f m");
+			ImGui::SetNextItemWidth(185);
+			ImGui::SliderFloat("", &camera.Far, 1.0f, 5000.0f, "%.0f m");
+			ImGui::NextColumn();
+			ImGui::PopID();
+
+			// POSITION
+
+			ImGui::PushID(904);
+			ImGui::AlignTextToFramePadding();
+			ImGui::Text("Position");
+			ImGui::NextColumn();
+			ImGui::SetNextItemWidth(60);
+			ImGui::DragFloat("", &camera.Position.x, 0.1f, 0.0f, 0.0f, "x:%.1f");
+			ImGui::PopID();
+
+			ImGui::PushID(905);
+			ImGui::SameLine(70);
+			ImGui::SetNextItemWidth(60);
+			ImGui::DragFloat("", &camera.Position.y, 0.1f, 0.0f, 0.0f, "y:%.1f");
+			ImGui::PopID();
+
+			ImGui::PushID(906);
+			ImGui::SameLine(132);
+			ImGui::SetNextItemWidth(60);
+			ImGui::DragFloat("", &camera.Position.z, 0.1f, 0.0f, 0.0f, "z:%.1f");
+			ImGui::NextColumn();
+			ImGui::PopID();
+
+			// VIEW
+
+			ImGui::PushID(907);
+			ImGui::AlignTextToFramePadding();
+			ImGui::Text("View");
+			ImGui::NextColumn();
+			ImGui::SetNextItemWidth(60);
+			ImGui::DragFloat("", &camera.View.x, 0.1f, 0.0f, 0.0f, "x:%.1f");
+			ImGui::PopID();
+
+			ImGui::PushID(908);
+			ImGui::SameLine(70);
+			ImGui::SetNextItemWidth(60);
+			ImGui::DragFloat("", &camera.View.y, 0.1f, 0.0f, 0.0f, "y:%.1f");
+			ImGui::PopID();
+
+			ImGui::PushID(909);
+			ImGui::SameLine(132);
+			ImGui::SetNextItemWidth(60);
+			ImGui::DragFloat("", &camera.View.z, 0.1f, 0.0f, 0.0f, "z:%.1f");
+			ImGui::NextColumn();
+			ImGui::PopID();
+
+			// LookAt
+
+			ImGui::PushID(910);
+			ImGui::AlignTextToFramePadding();
+			ImGui::Text("LookAt");
+			ImGui::NextColumn();
+			ImGui::SetNextItemWidth(60);
+			ImGui::DragFloat("", &camera.LookAt.x, 0.1f, 0.0f, 0.0f, "i:%.1f");
+			ImGui::PopID();
+
+			ImGui::PushID(911);
+			ImGui::SameLine(70);
+			ImGui::SetNextItemWidth(60);
+			ImGui::DragFloat("", &camera.LookAt.y, 0.1f, 0.0f, 0.0f, "j:%.1f");
+			ImGui::PopID();
+
+			ImGui::PushID(912);
+			ImGui::SameLine(132);
+			ImGui::SetNextItemWidth(60);
+			ImGui::DragFloat("", &camera.LookAt.z, 0.1f, 0.0f, 0.0f, "k:%.1f");
+			ImGui::NextColumn();
+			ImGui::PopID();
+
+			// Up
+
+			ImGui::PushID(913);
+			ImGui::AlignTextToFramePadding();
+			ImGui::Text("Up");
+			ImGui::NextColumn();
+			ImGui::SetNextItemWidth(60);
+			ImGui::DragFloat("", &camera.Up.x, 0.1f, 0.0f, 0.0f, "i:%.1f");
+			ImGui::PopID();
+
+			ImGui::PushID(914);
+			ImGui::SameLine(70);
+			ImGui::SetNextItemWidth(60);
+			ImGui::DragFloat("", &camera.Up.y, 0.1f, 0.0f, 0.0f, "j:%.1f");
+			ImGui::PopID();
+
+			ImGui::PushID(915);
+			ImGui::SameLine(132);
+			ImGui::SetNextItemWidth(60);
+			ImGui::DragFloat("", &camera.Up.z, 0.1f, 0.0f, 0.0f, "k:%.1f");
+			ImGui::NextColumn();
+			ImGui::PopID();
+
+			// Right
+
+			ImGui::PushID(916);
+			ImGui::AlignTextToFramePadding();
+			ImGui::Text("Right");
+			ImGui::NextColumn();
+			ImGui::SetNextItemWidth(60);
+			ImGui::DragFloat("", &camera.Right.x, 0.1f, 0.0f, 0.0f, "i:%.1f");
+			ImGui::PopID();
+
+			ImGui::PushID(917);
+			ImGui::SameLine(70);
+			ImGui::SetNextItemWidth(60);
+			ImGui::DragFloat("", &camera.Right.y, 0.1f, 0.0f, 0.0f, "j:%.1f");
+			ImGui::PopID();
+
+			ImGui::PushID(918);
+			ImGui::SameLine(132);
+			ImGui::SetNextItemWidth(60);
+			ImGui::DragFloat("", &camera.Right.z, 0.1f, 0.0f, 0.0f, "k:%.1f");
+			ImGui::NextColumn();
+			ImGui::PopID();
+
+			// YAW
+
+			ImGui::PushID(919);
+			ImGui::AlignTextToFramePadding();
+			ImGui::Text("Yaw");
+			ImGui::NextColumn();
+			ImGui::SetNextItemWidth(185);
+			ImGui::DragFloat("", &camera.Yaw, 0.1f, 0.0f, 0.0f, "%.1f");
+			ImGui::NextColumn();
+			ImGui::PopID();
+
+			// PITCH
+
+			ImGui::PushID(920);
+			ImGui::AlignTextToFramePadding();
+			ImGui::Text("Pitch");
+			ImGui::NextColumn();
+			ImGui::SetNextItemWidth(185);
+			ImGui::DragFloat("", &camera.Pitch, 0.1f, 0.0f, 0.0f, "%.1f");
 			ImGui::NextColumn();
 			ImGui::PopID();
 

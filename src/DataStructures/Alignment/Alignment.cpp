@@ -21,107 +21,20 @@ Alignment::Alignment(const std::string& _name, const std::vector<HorSegment*>& _
 	std::vector<Geometry*> hor2DSegments;
 	for (int i = 0; i < this->plan.size(); i++)
 	{
-		hor2DSegments.push_back(this->plan[i]->segment);
+		hor2DSegments.push_back(this->plan[i]->getSegment());
 	}
 	this->path2D = NURBS(hor2DSegments);
 
-	// Arc Length Table CONSTRUCTOR
-	// ----------------------------
-	/*std::cout << "\tBuilding the Arc Length Table of horizontal NURBS curve" << std::endl;
-	float steps = int(this->getRoadLength());
-	arcLength_table.push_back(ArcLength(0.0f, 0.0f));
-	for (int i = 1; i <= steps; i++)
+	// VPI list CONSTRUCTOR
+	// --------------------
+	this->VPI_list.push_back(new CRAB::Vector4Df(this->profile.front()->getSegment()->getStartPoint4D())); // first segment
+	for (int i = 0; i < this->profile.size(); i++)
 	{
-		float ti = i / steps;
-		float G = 0.0f;
-		for (int k = 1; k <= 2; k++)
-		{
-			float w, alfa;
-			if (k == 1)
-			{
-				w = 1.0f;
-				alfa = -1.0f / sqrtf(3.0f);
-			}
-			else
-			{
-				w = 1.0f;
-				alfa = 1.0f / sqrtf(3.0f);
-			}
-			float tk = 0.5f * ((ti - arcLength_table.back().t) * alfa + (ti + arcLength_table.back().t));
-			CRAB::Vector4Df d1 = this->path2D.deriv_4D(tk);
-			G += w * d1.length();
-		}
-		float si = arcLength_table.back().s + 0.5f * (ti - arcLength_table.back().t) * G;
-		arcLength_table.push_back(ArcLength(ti, si));
-	}*/
-
-	//std::cout << "path 2D length = " << this->path2D.getLength() << " m" << std::endl;
-	//std::cout << "path 2D length (from table) = " << this->arcLength_table.back().s << " m" << std::endl;
-
-	// Start & End Stations
-	// --------------------
-	//float start_station = this->findParameter(this->profile.front()->getStartPoint().x);
-	//float end_station = this->findParameter(this->profile.back()->getEndPoint().x);
-	//float t_start = this->path2D.getParameter(this->profile.front()->getEndPoint().x);
-	//float t_end = this->path2D.getParameter(this->profile.back()->getStartPoint().x);
-	//std::cout << "start station = " << t_start << " (s = " << this->profile.front()->getEndPoint().x << " m)" << std::endl;
-	//std::cout << "end station = " << t_end << " (s = " << this->profile.back()->getStartPoint().x << " m)" << std::endl;
-
-	// 3D Curve CONSTRUCTOR
-	// --------------------
-	//std::cout << "\tBuilding the 3D NURBS curve" << std::endl;
-	//std::vector<glm::vec3> points3D;
-
-	// VERSÃO ANTIGA (CALCULANDO A DISTÂNCIA PERCORRIDA NA NURBS PELO COMPRIMENTO DOS SEGMENTOS DE CORDA)
-	//for (int i = 0; i <= ELEMENTS; i++)
-	//{
-	//	float t = start_station + (end_station - start_station) * i / ELEMENTS;
-	//	// coordenadas em planta (UTM)
-	//	points3D.push_back(this->path2D.getPosition(t));
-	//	// elevation (m)
-	//	float distance = this->path2D.getDistance(t);
-	//	int index = findSegment(distance);
-	//	points3D.back().y = profile[index]->getY(distance);
-	//}
-	
-	// VERSÃO NOVA (CRETO)
-	//for (int i = 0; i <= this->path2D.arcLength_table.size(); i++)
-	//{
-	//	float t = float(i) / this->path2D.arcLength_table.size();
-	//	// coordenadas em planta
-	//	points3D.push_back(this->path2D.getPosition(t));
-	//	// elevation (m)
-	//	if (i == this->path2D.arcLength_table.size()) break;
-	//	//std::cout << "i = " << i << "; distance = " << arcLength_table[i].s << " m" << std::endl;
-	//	int index = findSegment(this->path2D.arcLength_table[i].s);
-	//	if (index == -1) continue;
-	//	points3D.back().y = profile[index]->getY(this->path2D.arcLength_table[i].s);
-	//	//std::cout << "y = " << points3D.back().y << std::endl;
-	//}
-
-	// A CADA METRO
-	// Initialize 's'
-	//float s = 0.0f;
-	//while (s <= this->path2D.getArcLength())
-	//{
-	//	// Computes 't' corresponding to 's' in the table
-	//	float t = this->path2D.getParameter(s);
-	//	// Gets the horizontal curve point at parameter 't'
-	//	points3D.push_back(this->path2D.getPosition(t));
-	//	// Find the segment of the longitudinal profile corresponding to 's'
-	//	int index = findSegment(s);
-	//	if (index == -1)
-	//	{
-	//		s++;
-	//		continue;
-	//	}
-	//	// Computes the elevation coordinate from the vertical alignment
-	//	points3D.back().y = profile[index]->getY(s);
-
-	//	s++;
-	//}
-
-	//this->path3D = NURBS(points3D);
+		std::string segment_type = typeid(*this->profile[i]->getSegment()).name(); //get geometry class name
+		if (segment_type == "class ParabolicArc")
+			this->VPI_list.push_back(new CRAB::Vector4Df(this->profile[i]->getSegment()->getMidPoint4D()));
+	}
+	this->VPI_list.push_back(new CRAB::Vector4Df(this->profile.back()->getSegment()->getEndPoint4D())); // last segment
 }
 
 // DESTRUCTOR
@@ -181,13 +94,13 @@ float Alignment::findParameter(const float& s) const
 // --------------------------------------
 int Alignment::findSegment(const float& station) const
 {
-	//std::cout << "station = " << station << std::endl;
+	std::cout << "station = " << station << std::endl;
 	// special case
 	/*if (station >= profile.back()->getEndPoint().x)
 		return profile.size() - 1;
 	if (station < profile.front()->getStartPoint().x)
 		return 0;*/
-	if (station <= profile.front()->getStartPoint().x || station > profile.back()->getEndPoint().x)
+	if (station < profile.front()->getStartPoint().x || station > profile.back()->getEndPoint().x)
 		return -1;
 
 	// BUSCA BINÁRIA
@@ -204,22 +117,25 @@ int Alignment::findSegment(const float& station) const
 	return mid;*/
 
 	for (int i = 0; i < profile.size(); i++)
-		if (station > profile[i]->getStartPoint().x && station <= profile[i]->getEndPoint().x)
+		if (station >= profile[i]->getStartPoint().x && station <= profile[i]->getEndPoint().x)
 			return i;
 }
 
 // RETURN
 // ------
-CRAB::Vector4Df Alignment::getPosition(const float& t) const
+glm::vec3 Alignment::getPosition3D(const float& t) const
 {
-	//glm::vec3 p = this->path3D.getPosition(t);
-	//return CRAB::Vector4Df{ p.x, p.y, p.z, 1.0f };
 	glm::vec3 p = this->path2D.getPosition(t);
 	float s = this->path2D.getDistance(t);
 	int index = this->findSegment(s);
 	if (index == -1)
-		return CRAB::Vector4Df{ p.x, p.y, p.z, 1.0f };
+		return p;
 	p.y = this->profile[index]->getY(s);
+	return p;
+}
+CRAB::Vector4Df Alignment::getPosition(const float& t) const
+{
+	glm::vec3 p = this->getPosition3D(t);
 	return CRAB::Vector4Df{ p.x, p.y, p.z, 1.0f };
 }
 CRAB::Vector4Df Alignment::getTangent(const float& t) const

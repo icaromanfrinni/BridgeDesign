@@ -26,3 +26,8 @@ HorSegment::HorSegment(const CRAB::Vector4Df& _p1, const CRAB::Vector4Df& _p2, c
 HorSegment::~HorSegment()
 {
 }
+
+Geometry* HorSegment::getSegment() const
+{
+	return segment;
+}

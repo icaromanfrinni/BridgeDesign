@@ -9,10 +9,10 @@
 
 class VerSegment
 {
-public:
 	// Straight Line || Parabolic Arc
 	Geometry* segment;
 
+public:
 	// DEFAULT CONSTRUCTOR
 	VerSegment();
 	// OVERLOAD CONSTRUCTOR (Straight Line)
@@ -30,6 +30,7 @@ public:
 	// DESTRUCTOR
 	~VerSegment();
 
+	Geometry* getSegment() const;
 	// RETURN (glm::vec3)
 	glm::vec3 getStartPoint() const;
 	glm::vec3 getMidPoint() const;
