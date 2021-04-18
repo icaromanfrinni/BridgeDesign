@@ -176,11 +176,8 @@
     <ClInclude Include="src\DataStructures\Bridges\BoxGirder.h" />
     <ClInclude Include="src\DataStructures\Bridges\Bridge.h" />
     <ClInclude Include="src\DataStructures\EulerOp.h" />
-    <ClInclude Include="src\DataStructures\Geometry\CircularArc.h" />
     <ClInclude Include="src\DataStructures\Geometry\Geometry.h" />
-    <ClInclude Include="src\DataStructures\Geometry\Line.h" />
     <ClInclude Include="src\DataStructures\Geometry\NURBS.h" />
-    <ClInclude Include="src\DataStructures\Geometry\ParabolicArc.h" />
     <ClInclude Include="src\DataStructures\HalfEdge.h" />
     <ClInclude Include="src\DataStructures\Light\DirectionalLight.h" />
     <ClInclude Include="src\DataStructures\Light\Light.h" />
@@ -215,11 +212,8 @@
     <ClCompile Include="src\DataStructures\Alignment\Alignment.cpp" />
     <ClCompile Include="src\DataStructures\Bridges\BoxGirder.cpp" />
     <ClCompile Include="src\DataStructures\Bridges\Bridge.cpp" />
-    <ClCompile Include="src\DataStructures\Geometry\CircularArc.cpp" />
     <ClCompile Include="src\DataStructures\Geometry\Geometry.cpp" />
-    <ClCompile Include="src\DataStructures\Geometry\Line.cpp" />
     <ClCompile Include="src\DataStructures\Geometry\NURBS.cpp" />
-    <ClCompile Include="src\DataStructures\Geometry\ParabolicArc.cpp" />
     <ClCompile Include="src\DataStructures\Light\DirectionalLight.cpp" />
     <ClCompile Include="src\DataStructures\Light\Light.cpp" />
     <ClCompile Include="src\DataStructures\Material\Material.cpp" />

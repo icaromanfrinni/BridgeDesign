@@ -47,7 +47,7 @@ public:
 
 	// Bridge attributes
 	float B;		// Width
-	float H;		// Height
+	float H;		// Cross-section's Height (over the piers)
 
 	bool hasWidening = true;
 	bool haunchedGirder = true;

@@ -45,7 +45,7 @@ Grid::Grid(std::vector<CRAB::Vector4Df*> _vertices)
     this->with_points = true;
 
     Grid::Vertex v;
-    v.Color = { 1.0f, 1.0f, 1.0f }; // white
+    v.Color = { 0.8f, 0.8f, 0.8f }; // white
     
     for (int i = 0; i < _vertices.size(); i++)
     {
@@ -79,16 +79,18 @@ Grid::Grid(const NURBS& _curve)
 Grid::Grid(const Alignment* _curve)
 {
     this->primitive_type = GL_LINE_STRIP;
-    this->with_points = true;
+    this->with_points = false;
 
     Grid::Vertex v;
     v.Color = { 0.9f, 0.3f, 0.9f }; // magenta2
-    for (int i = 0; i <= STEPS; i++)
+
+    float station = _curve->profile.front()->getStartPoint4D().x;
+    while (station <= _curve->profile.back()->getEndPoint4D().x)
     {
-        float t = float(i) / STEPS;
-        std::cout << "t = " << t << std::endl;
-        v.Position = _curve->getPosition3D(t);
+        //std::cout << "station = " << station << std::endl;
+        v.Position = _curve->getPositionFromStation3D(station);
         this->vertices.push_back(v);
+        station++;
     }
 
     setupGrid();

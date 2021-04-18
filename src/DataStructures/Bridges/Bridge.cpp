@@ -91,6 +91,7 @@ void Bridge::SetupBridge()
 	//for (int i = 1; i < 4; i++)
 	//	bridge_Profile.push_back(total_Profile[i]);
 	//this->alignment = new Alignment(this->name, this->Horizontal_Alignment(), bridge_Profile);
+	
 	this->alignment = new Alignment(this->name, this->Horizontal_Alignment(), this->Vertical_Alignment());
 }
 
@@ -98,7 +99,7 @@ void Bridge::SetupBridge()
 // --------------
 float Bridge::Superelevation(const float& t) const
 {
-	float r = this->alignment->getRadius(t);
+	float r = this->road->alignment->getRadius(t);
 	if (isinf(r))
 		return 0.0f;
 	float fMax;
@@ -110,7 +111,7 @@ float Bridge::Superelevation(const float& t) const
 	if (slope > (slopeMax / 100.0f))
 		slope = (slopeMax / 100.0f);
 	float alpha = atanf(slope) * 180.0f / M_PI;
-	if (this->alignment->isClockwise(t))
+	if (this->road->alignment->isClockwise(t))
 		alpha = alpha * (-1.0f);
 
 	//std::cout << "t = " << t << " slope = " << alpha << " curvature = " << this->alignment->getCurvature(t) << " radius = " << r << std::endl;
@@ -131,7 +132,7 @@ CRAB::Vector4Df Bridge::getNormal(const float& t) const
 // --------
 float Bridge::Widening(const float& t) const
 {
-	float radius = this->alignment->getRadius(t);
+	float radius = this->road->alignment->getRadius(t);
 	//std::cout << "R = " << radius << std::endl;
 	/* TRAVELED WAY ON TANGENT */
 	if (isinf(radius))
@@ -164,7 +165,7 @@ float Bridge::Widening(const float& t) const
 std::vector<HorSegment*> Bridge::Horizontal_Alignment()
 {
 	std::cout << "\tHorizontal alignment" << std::endl;
-	return this->road->alignment->plan;
+	return this->road->alignment->roadplan;
 }
 
 // VERTICAL ALIGNMENT
@@ -172,12 +173,11 @@ std::vector<HorSegment*> Bridge::Horizontal_Alignment()
 std::vector<VerSegment*> Bridge::Vertical_Alignment()
 {
 	std::cout << "\tVertical alignment" << std::endl;
-	//return this->road->alignment->profile;
 	std::vector<VerSegment*> profile;
 
 	// Check type of bridge
-	int index = this->road->alignment->findSegment(this->CS);
-	float CSy = this->road->alignment->profile[index]->getY(this->CS);
+	//int index = this->road->alignment->findSegment(this->CS);
+	//float CSy = this->road->alignment->profile[index]->getY(this->CS);
 	//if (fabsf(CSy - this->EL) >= (this->VC + this->H)
 	//	&& fabsf(CSy - this->WS) >= (this->VC + this->H))
 	//{
@@ -203,10 +203,10 @@ std::vector<VerSegment*> Bridge::Vertical_Alignment()
 
 	// Algebraic difference in grades (%)
 	float A;
-	if (this->road->SSD < Lc)
-		A = Lc * 100 * (powf(sqrtf(2 * eyeHeight) + sqrtf(2 * objHeight), 2.0f)) / powf(this->road->SSD, 2.0f);
+	if (this->road->StoppingSightDistance() < Lc)
+		A = Lc * 100 * (powf(sqrtf(2 * eyeHeight) + sqrtf(2 * objHeight), 2.0f)) / powf(this->road->StoppingSightDistance(), 2.0f);
 	else
-		A = (200 * powf(sqrtf(eyeHeight) + sqrtf(objHeight), 2.0f)) / (2.0f * this->road->SSD - Lc);
+		A = (200 * powf(sqrtf(eyeHeight) + sqrtf(objHeight), 2.0f)) / (2.0f * this->road->StoppingSightDistance() - Lc);
 	
 	// Round up
 	A = ceilf(A);
@@ -216,10 +216,8 @@ std::vector<VerSegment*> Bridge::Vertical_Alignment()
 	// VPC
 	CRAB::Vector4Df VPC = { 0.0f, 0.0f, 0.0f, 1.0f };
 	VPC.x = this->CS - Lc / 2.0f;
-
 	// Apenas para viadutos
-	index = this->road->alignment->findSegment(VPC.x);
-	VPC.y = this->road->alignment->profile[index]->getY(VPC.x) + this->VC + this->H;
+	VPC.y = this->road->alignment->getPositionFromStation(VPC.x).y + this->VC + this->H;
 	//if (this->WS == this->EL) // verifica se é viaduto
 	//{
 	//	index = this->road->alignment->findSegment(VPC.x);
@@ -232,8 +230,7 @@ std::vector<VerSegment*> Bridge::Vertical_Alignment()
 	CRAB::Vector4Df VPT = { 0.0f, 0.0f, 0.0f, 1.0f };
 	VPT.x = this->CS + Lc / 2.0f;
 	// Apenas para viadutos
-	index = this->road->alignment->findSegment(VPT.x);
-	VPT.y = this->road->alignment->profile[index]->getY(VPT.x) + this->VC + this->H;
+	VPT.y = this->road->alignment->getPositionFromStation(VPT.x).y + this->VC + this->H;
 	//if (this->WS == this->EL) // verifica se é viaduto
 	//{
 	//	index = this->road->alignment->findSegment(VPT.x);
@@ -253,84 +250,74 @@ std::vector<VerSegment*> Bridge::Vertical_Alignment()
 	VerSegment* SagCurve_LEFT;
 	{
 		CRAB::Vector4Df VPI;
-		CRAB::Vector4Df grade;
+		CRAB::Vector4Df g;
 
-		// Collision Test
-		CRAB::Ray r;
-		r.origin = CrestCurve->getStartPoint4D();
-		r.direction = (CrestCurve->getStartPoint4D() - CrestCurve->getMidPoint4D()).to_unitary();
-		for (int i = 0; i < this->road->alignment->profile.size(); i++)
+		// Find the intersection point of the sag curve
+		CRAB::Vector4Df r = (CrestCurve->getStartPoint4D() - CrestCurve->getMidPoint4D()).to_unitary();
+		for (int i = 0; i < this->road->alignment->VPI_list.size() - 1 ; i++)
 		{
-			CRAB::Vector4Df P = this->road->alignment->profile[i]->Collision(r);
-			// check if its between the extreme points
-			if (this->road->alignment->profile[i]->Contains(P))
-			{
-				VPI = P;
-				grade = (this->road->alignment->profile[i]->getMidPoint4D() - this->road->alignment->profile[i]->getStartPoint4D()).to_unitary();
+			g = *this->road->alignment->VPI_list[i + 1] - *this->road->alignment->VPI_list[i];
+			CRAB::Vector4Df v = *this->road->alignment->VPI_list[i] - CrestCurve->getStartPoint4D();
+			float u = (v.y * g.x - v.x * g.y) / (r.y * g.x - r.x * g.y);
+			//std::cout << "u = " << u << std::endl;
+			if (u < 0.0f)
 				break;
-			}
-			// if its before all segments
-			if (i == 0)
-			{
-				VPI = P;
-				grade = (this->road->alignment->profile[i]->getMidPoint4D() - this->road->alignment->profile[i]->getStartPoint4D()).to_unitary();
-			}
+			VPI = CrestCurve->getStartPoint4D() + r * u;
+			float ks = (v.x * r.y - v.y * r.x) / (r.x * g.y - r.y * g.x);
+			//std::cout << "ks = " << ks << std::endl;
+			if (ks >= 0.0f && ks <= 1.0f)
+				break;
 		}
 
 		// Algebraic difference in grades (%)
-		float As = 100.0f * tanf(acosf(CRAB::dot(grade, r.direction * (-1.0f))));
+		float As = 100.0f * tanf(acosf(CRAB::dot(g.to_unitary(), r * (-1.0f))));
 		// Length of sag vertical curve (S < L)
-		float Ls = As * powf(this->road->SSD, 2.0f) / (200.0f * lightHeight + 3.5f * this->road->SSD);
+		float Ls = As * powf(this->road->StoppingSightDistance(), 2.0f) / (200.0f * lightHeight + 3.5f * this->road->StoppingSightDistance());
 		if (Ls < Lmin)
 			Ls = Lmin;
 
-		SagCurve_LEFT = new VerSegment(VPI, grade, r.direction * (-1.0f), Ls);
+		SagCurve_LEFT = new VerSegment(VPI, g.to_unitary(), r * (-1.0f), Ls);
 
 		/*std::cout << "\nSagCurve_LEFT" << std::endl;
-		std::cout << "A = " << As << " %" << std::endl;
-		std::cout << "L = " << Ls << " m" << std::endl;*/
+		std::cout << "As = " << As << " %" << std::endl;
+		std::cout << "Ls = " << Ls << " m" << std::endl;*/
 	}
 
 	// RIGHT
 	VerSegment* SagCurve_RIGHT;
 	{
 		CRAB::Vector4Df VPI;
-		CRAB::Vector4Df grade;
+		CRAB::Vector4Df g;
 
-		// Collision Test
-		CRAB::Ray r;
-		r.origin = CrestCurve->getEndPoint4D();
-		r.direction = (CrestCurve->getEndPoint4D() - CrestCurve->getMidPoint4D()).to_unitary();
-		for (int i = 0; i < this->road->alignment->profile.size(); i++)
+		// Find the intersection point of the sag curve
+		CRAB::Vector4Df r = (CrestCurve->getEndPoint4D() - CrestCurve->getMidPoint4D()).to_unitary();
+		for (int i = this->road->alignment->VPI_list.size() - 1; i > 0; i--)
 		{
-			CRAB::Vector4Df P = this->road->alignment->profile[i]->Collision(r);
-			// check if its between the extreme points
-			if (this->road->alignment->profile[i]->Contains(P))
-			{
-				VPI = P;
-				grade = (this->road->alignment->profile[i]->getEndPoint4D() - this->road->alignment->profile[i]->getMidPoint4D()).to_unitary();
+			g = *this->road->alignment->VPI_list[i - 1] - *this->road->alignment->VPI_list[i];
+			CRAB::Vector4Df v = *this->road->alignment->VPI_list[i] - CrestCurve->getEndPoint4D();
+			float u = (v.y * g.x - v.x * g.y) / (r.y * g.x - r.x * g.y);
+			//std::cout << "u = " << u << std::endl;
+			if (u < 0.0f)
 				break;
-			}
-			// if its before all segments
-			if (i == 0)
-			{
-				VPI = P;
-				grade = (this->road->alignment->profile[i]->getEndPoint4D() - this->road->alignment->profile[i]->getMidPoint4D()).to_unitary();
-			}
+			VPI = CrestCurve->getEndPoint4D() + r * u;
+			float ks = (v.x * r.y - v.y * r.x) / (r.x * g.y - r.y * g.x);
+			//std::cout << "ks = " << ks << std::endl;
+			if (ks >= 0.0f && ks <= 1.0f)
+				break;
 		}
 
 		// Algebraic difference in grades (%)
-		float As = 100.0f * tanf(acosf(CRAB::dot(grade, r.direction)));
+		float As = 100.0f * tanf(acosf(CRAB::dot(g.to_unitary(), r * (-1.0f))));
 		// Length of sag vertical curve (S < L)
-		float Ls = As * powf(this->road->SSD, 2.0f) / (200.0f * lightHeight + 3.5f * this->road->SSD);
+		float Ls = As * powf(this->road->StoppingSightDistance(), 2.0f) / (200.0f * lightHeight + 3.5f * this->road->StoppingSightDistance());
 		if (Ls < Lmin)
 			Ls = Lmin;
 
-		SagCurve_RIGHT = new VerSegment(VPI, r.direction, grade, Ls);
+		SagCurve_RIGHT = new VerSegment(VPI, r, g.to_unitary() * (-1.0f), Ls);
 
 		/*std::cout << "\nSagCurve_RIGHT" << std::endl;
-		std::cout << "A = " << As << " %" << std::endl;
-		std::cout << "L = " << Ls << " m" << std::endl;*/
+		std::cout << "As = " << As << " %" << std::endl;
+		std::cout << "Ls = " << Ls << " m" << std::endl;*/
 	}
 
 	//// ********************************** RETURN **********************************
@@ -349,13 +336,13 @@ std::vector<VerSegment*> Bridge::Vertical_Alignment()
 	CRAB::Vector4Df VPT1 = SagCurve_LEFT->getEndPoint4D();
 	std::cout << "VPC1 = [" << VPC1.x << "; " << VPC1.y << "; " << VPC1.z << "]" << std::endl;
 	std::cout << "VPI1 = [" << VPI1.x << "; " << VPI1.y << "; " << VPI1.z << "]" << std::endl;
-	std::cout << "VPT1 = [" << VPT1.x << "; " << VPT1.y << "; " << VPT1.z << "]" << std::endl;
-	std::cout << "\nCURVE 2" << std::endl;
+	std::cout << "VPT1 = [" << VPT1.x << "; " << VPT1.y << "; " << VPT1.z << "]" << std::endl;*/
+	/*std::cout << "\nCURVE 2" << std::endl;
 	CRAB::Vector4Df VPI2 = CrestCurve->getMidPoint4D();
 	std::cout << "VPC2 = [" << VPC.x << "; " << VPC.y << "; " << VPC.z << "]" << std::endl;
 	std::cout << "VPI2 = [" << VPI2.x << "; " << VPI2.y << "; " << VPI2.z << "]" << std::endl;
-	std::cout << "VPT2 = [" << VPT.x << "; " << VPT.y << "; " << VPT.z << "]" << std::endl;
-	std::cout << "\nCURVE 3" << std::endl;
+	std::cout << "VPT2 = [" << VPT.x << "; " << VPT.y << "; " << VPT.z << "]" << std::endl;*/
+	/*std::cout << "\nCURVE 3" << std::endl;
 	CRAB::Vector4Df VPC3 = SagCurve_RIGHT->getStartPoint4D();
 	CRAB::Vector4Df VPI3 = SagCurve_RIGHT->getMidPoint4D();
 	CRAB::Vector4Df VPT3 = SagCurve_RIGHT->getEndPoint4D();

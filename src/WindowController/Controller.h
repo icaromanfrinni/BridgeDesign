@@ -773,7 +773,10 @@ namespace Controller
 					{
 						bridges[i]->SetupBridge();
 						bridges[i]->SetupSection();
-						int new_nPiers = bridges[i]->alignment->getProfileLength() / bridges[i]->mainSpan;
+						
+						//int new_nPiers = bridges[i]->alignment->getProfileLength() / bridges[i]->mainSpan;
+						int new_nPiers = round((bridges[i]->end_S - bridges[i]->start_S) / bridges[i]->mainSpan);
+
 						bridges[i]->SetupPiers(new_nPiers);
 						//bridges[i]->UpdatePiers();
 						bridges[i]->Update();

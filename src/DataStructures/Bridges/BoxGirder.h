@@ -14,9 +14,9 @@ struct Span
 class BoxGirder
 	: public Bridge
 {
-	std::vector<CRAB::Vector4Df> TopLayer_section(const float& t) const;
-	std::vector<CRAB::Vector4Df> Deck_section(const float& t);
-	std::vector<CRAB::Vector4Df> U_section(const float& t);
+	std::vector<CRAB::Vector4Df> TopLayer_section(const float& station) const;
+	std::vector<CRAB::Vector4Df> Deck_section(const float& station);
+	std::vector<CRAB::Vector4Df> U_section(const float& station);
 	//void OLD_Update();
 	
 	//std::vector<float> span_vector; // TODO: vetor de ponteiros

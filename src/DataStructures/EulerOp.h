@@ -659,100 +659,100 @@ namespace EulerOp
 	// f = face q sofre a varredura
 	// bridge = superestrutura do tipo Box-Girder
 	//inline void SWEEP(HED::face* f, Alignment* path, Road* roadway)
-	inline void SWEEP(HED::face* f, BoxGirder* bridge)
-	{
-		// Get Solid
-		HED::solid* currentSolid = f->HedSolid;
+	//inline void SWEEP(HED::face* f, BoxGirder* bridge)
+	//{
+	//	// Get Solid
+	//	HED::solid* currentSolid = f->HedSolid;
 
-		// Init widening
-		float last_w = 0.0f;
+	//	// Init widening
+	//	float last_w = 0.0f;
 
-		for (int i = 0; i < ELEMENTS; i++)
-		{
-			/* ---------- TRANSFORMATION MATRIX ---------- */
+	//	for (int i = 0; i < ELEMENTS; i++)
+	//	{
+	//		/* ---------- TRANSFORMATION MATRIX ---------- */
 
-			// CURRENT POSITION
-			float t = float(i) / ELEMENTS;
-			// Local View
-			CRAB::Matrix4 ViewMatrix = toLocal(bridge->alignment->getPosition(t), bridge->alignment->getTangent(t), bridge->getNormal(t));
+	//		// CURRENT POSITION
+	//		float t = float(i) / ELEMENTS;
+	//		// Local View
+	//		CRAB::Matrix4 ViewMatrix = toLocal(bridge->alignment->getPosition(t), bridge->alignment->getTangent(t), bridge->getNormal(t));
 
-			// NEXT POSITION
-			t = float(i + 1) / ELEMENTS;
-			// Next View
-			CRAB::Matrix4 ModelMatrix = toWorld(bridge->alignment->getPosition(t), bridge->alignment->getTangent(t), bridge->getNormal(t));
-			
-			// Widening of Next Position (dW)
-			float next_w = bridge->Widening(t);
-			float dW = next_w - last_w;
-			last_w = next_w;
-			//std::cout << "t = " << t << ";\tR = " << bridge->alignment->getRadius(t) << " m;\tw = " << next_w << " m" << std::endl;
-			//dW = 0.0f;
+	//		// NEXT POSITION
+	//		t = float(i + 1) / ELEMENTS;
+	//		// Next View
+	//		CRAB::Matrix4 ModelMatrix = toWorld(bridge->alignment->getPosition(t), bridge->alignment->getTangent(t), bridge->getNormal(t));
+	//		
+	//		// Widening of Next Position (dW)
+	//		float next_w = bridge->Widening(t);
+	//		float dW = next_w - last_w;
+	//		last_w = next_w;
+	//		//std::cout << "t = " << t << ";\tR = " << bridge->alignment->getRadius(t) << " m;\tw = " << next_w << " m" << std::endl;
+	//		//dW = 0.0f;
 
-			/* ---------------- EXTRUDE ---------------- */
+	//		/* ---------------- EXTRUDE ---------------- */
 
-			if (currentSolid->faces.size() == 2)
-			{	// use the back face
-				HED::face* backFace = currentSolid->faces.back();
-				HED::halfEdge* he = backFace->hEdge;
+	//		if (currentSolid->faces.size() == 2)
+	//		{	// use the back face
+	//			HED::face* backFace = currentSolid->faces.back();
+	//			HED::halfEdge* he = backFace->hEdge;
 
-				// new vertex
-				CRAB::Vector4Df newVertex = ModelMatrix * (ViewMatrix * he->vStart->point);
-				// first edge
-				mev(he->opp, NULL, he->vStart->id, newVertex);
-				// edges and faces
-				for (he = backFace->hEdge->prev; he != backFace->hEdge; he = he->prev)
-				{
-					// new vertex
-					//newVertex = ModelMatrix * (ViewMatrix * he->vStart->point);
-					newVertex = ViewMatrix * he->vStart->point;
-					if (bridge->hasWidening)
-					{
-						if (fabs(newVertex.x) >= (bridge->road->width / 2.0f) - 0.1f) // 0.1 = fator de segurança, caso a coord.x seja estritamente menor q a lagura/2
-							if (newVertex.x < 0.0f)
-								newVertex.x -= dW;
-							else newVertex.x += dW;
-					}
-					newVertex = ModelMatrix * newVertex;
-					// new edge
-					mev(currentSolid->halfEdges.back()->prev, NULL, currentSolid->vertices.back()->id, newVertex);
-					// new face
-					mef(currentSolid->halfEdges.back(), he->prev->opp, he->prev->opp->leftFace->id);
-				}
-				// last face
-				mef(currentSolid->halfEdges.back(), currentSolid->halfEdges.back()->next->next->next, 0);
-			}
-			else if (currentSolid->faces.size() > 2)
-			{	// use the current face
-				// Get HalfEdge
-				HED::halfEdge* he = f->hEdge;
+	//			// new vertex
+	//			CRAB::Vector4Df newVertex = ModelMatrix * (ViewMatrix * he->vStart->point);
+	//			// first edge
+	//			mev(he->opp, NULL, he->vStart->id, newVertex);
+	//			// edges and faces
+	//			for (he = backFace->hEdge->prev; he != backFace->hEdge; he = he->prev)
+	//			{
+	//				// new vertex
+	//				//newVertex = ModelMatrix * (ViewMatrix * he->vStart->point);
+	//				newVertex = ViewMatrix * he->vStart->point;
+	//				if (bridge->hasWidening)
+	//				{
+	//					if (fabs(newVertex.x) >= (bridge->road->width / 2.0f) - 0.1f) // 0.1 = fator de segurança, caso a coord.x seja estritamente menor q a lagura/2
+	//						if (newVertex.x < 0.0f)
+	//							newVertex.x -= dW;
+	//						else newVertex.x += dW;
+	//				}
+	//				newVertex = ModelMatrix * newVertex;
+	//				// new edge
+	//				mev(currentSolid->halfEdges.back()->prev, NULL, currentSolid->vertices.back()->id, newVertex);
+	//				// new face
+	//				mef(currentSolid->halfEdges.back(), he->prev->opp, he->prev->opp->leftFace->id);
+	//			}
+	//			// last face
+	//			mef(currentSolid->halfEdges.back(), currentSolid->halfEdges.back()->next->next->next, 0);
+	//		}
+	//		else if (currentSolid->faces.size() > 2)
+	//		{	// use the current face
+	//			// Get HalfEdge
+	//			HED::halfEdge* he = f->hEdge;
 
-				// new vertex
-				CRAB::Vector4Df newVertex = ModelMatrix * (ViewMatrix * he->vStart->point);
-				// first edge
-				mev(he->prev->opp, he->opp->next, he->vStart->id, newVertex);
-				// the other edges
-				for (he = f->hEdge->next; he != f->hEdge; he = he->next)
-				{
-					// new vertex
-					//newVertex = ModelMatrix * (ViewMatrix * he->vStart->point);
-					newVertex = ViewMatrix * he->vStart->point;
-					if (bridge->hasWidening)
-					{
-						if (fabs(newVertex.x) >= (bridge->road->width / 2.0f) - 0.1f)
-							if (newVertex.x < 0.0f)
-								newVertex.x -= dW;
-							else newVertex.x += dW;
-					}
-					newVertex = ModelMatrix * newVertex;
-					// new edge
-					mev(he->prev->opp, he->opp->next, he->vStart->id, newVertex);
-				}
-				// close the first new_loop (new face)
-				mef(he->opp->prev, he->opp->next->next, he->opp->leftFace->id);
-				// the other loops
-				for (he = f->hEdge->next; he != f->hEdge; he = he->next)
-					mef(he->opp->prev, he->opp->next->next, he->opp->leftFace->id);
-			}
-		}
-	}
+	//			// new vertex
+	//			CRAB::Vector4Df newVertex = ModelMatrix * (ViewMatrix * he->vStart->point);
+	//			// first edge
+	//			mev(he->prev->opp, he->opp->next, he->vStart->id, newVertex);
+	//			// the other edges
+	//			for (he = f->hEdge->next; he != f->hEdge; he = he->next)
+	//			{
+	//				// new vertex
+	//				//newVertex = ModelMatrix * (ViewMatrix * he->vStart->point);
+	//				newVertex = ViewMatrix * he->vStart->point;
+	//				if (bridge->hasWidening)
+	//				{
+	//					if (fabs(newVertex.x) >= (bridge->road->width / 2.0f) - 0.1f)
+	//						if (newVertex.x < 0.0f)
+	//							newVertex.x -= dW;
+	//						else newVertex.x += dW;
+	//				}
+	//				newVertex = ModelMatrix * newVertex;
+	//				// new edge
+	//				mev(he->prev->opp, he->opp->next, he->vStart->id, newVertex);
+	//			}
+	//			// close the first new_loop (new face)
+	//			mef(he->opp->prev, he->opp->next->next, he->opp->leftFace->id);
+	//			// the other loops
+	//			for (he = f->hEdge->next; he != f->hEdge; he = he->next)
+	//				mef(he->opp->prev, he->opp->next->next, he->opp->leftFace->id);
+	//		}
+	//	}
+	//}
 }

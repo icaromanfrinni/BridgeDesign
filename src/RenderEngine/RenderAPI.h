@@ -597,11 +597,11 @@ namespace CRAB
         road_profile.push_back(new VerSegment({ 938.0f, 42.0f, 0.0f, 1.0f }, { 1368.0f, 177.0f, 0.0f, 1.0f }));
         road_profile.push_back(new VerSegment({ 1368.0f, 177.0f, 0.0f, 1.0f }, { 1835.0f, 173.0f, 0.0f, 1.0f }));*/
         //road_profile.push_back(new VerSegment({ 0.0f, 0.0f, 0.0f, 1.0f }, { 500.0f, 0.0f, 0.0f, 1.0f }));
-        CRAB::Vector4Df VP1 = { 0.0f, 50.0f, 0.0f, 1.0f };
-        CRAB::Vector4Df VP2 = { 150.0f, 20.0f, 0.0f, 1.0f };
+        CRAB::Vector4Df VP1 = { 0.0f, 12.5f, 0.0f, 1.0f };
+        CRAB::Vector4Df VP2 = { 150.0f, 5.0f, 0.0f, 1.0f };
         CRAB::Vector4Df VP3 = { 250.0f, 0.0f, 0.0f, 1.0f };
-        CRAB::Vector4Df VP4 = { 350.0f, 20.0f, 0.0f, 1.0f };
-        CRAB::Vector4Df VP5 = { 500.0f, 50.0f, 0.0f, 1.0f };
+        CRAB::Vector4Df VP4 = { 350.0f, 5.0f, 0.0f, 1.0f };
+        CRAB::Vector4Df VP5 = { 500.0f, 12.5f, 0.0f, 1.0f };
         road_profile.push_back(new VerSegment(VP1, VP2));
         road_profile.push_back(new VerSegment(VP2, VP3, VP4));
         road_profile.push_back(new VerSegment(VP4, VP5));
@@ -611,32 +611,27 @@ namespace CRAB
         //road_plan.push_back(new HorSegment({ 20.0f, 0.0f, -20.0f, 1.0f }, { 320.0f, 0.0f, -420.0f, 1.0f })); // na diagonal
         road_plan.push_back(new HorSegment({ 0.0f, 0.0f, 0.0f, 1.0f }, { 500.0f, 0.0f, 0.0f, 1.0f })); // no eixo X
         // alignment
-        alignments.push_back(new Alignment("Vale", road_plan, road_profile));
+        alignments.push_back(new Alignment("Route", road_plan, road_profile));
         // road
-        roadways.push_back(new Road("Vale", 9.0f, 50.0f, alignments.back(), vehicles.back()));
+        roadways.push_back(new Road("Avenue", 9.0f, 40.0f, alignments.back(), vehicles.back()));
         // bridge
-        column_stations = { 150.0f, 200.0f, 300.0f, 350.0f };
-        bridges.push_back(new BoxGirder("Ponte", roadways.back(), 250.0f, 5.5f, 70.0f, column_stations, 0.0f, 500.0f));
+        column_stations = { 175.0f, 220.0f, 280.0f, 325.0f };
+        bridges.push_back(new BoxGirder("Ponte", roadways.back(), 250.0f, 10.0f, 70.0f, column_stations, 150.0f, 350.0f));
 #endif
 
         // mesh
         // ----
         for (int i = 0; i < bridges.size(); i++)
         {
-            //curves.push_back(Grid(bridges[i]->alignment->path3D));
-            //curves.push_back(Grid(bridges[i]->abutments.front()->path3D));
-            //curves.push_back(Grid(bridges[i]->abutments.back()->path3D));
             curves.push_back(Grid(bridges[i]->alignment->VPI_list));
-            //curves.push_back(Grid(bridges[i]->alignment));
-            /*for (int j = 0; j < bridges[i]->model.size(); j++)
-                ourMesh_List.push_back(Mesh(bridges[i]->model[j]));*/
+            curves.push_back(Grid(bridges[i]->alignment));
+            for (int j = 0; j < bridges[i]->model.size(); j++)
+                ourMesh_List.push_back(Mesh(bridges[i]->model[j]));
         }
         for (int i = 0; i < roadways.size(); i++)
         {
-            //curves.push_back(Grid(roadways[i]->alignment->path2D));
             curves.push_back(Grid(roadways[i]->alignment->VPI_list));
             curves.push_back(Grid(roadways[i]->alignment));
-            //curves.push_back(Grid(roadways[i]->alignment->path3D));
             /*for (int j = 0; j < roadways[i]->model.size(); j++)
                 ourMesh_List.push_back(Mesh(roadways[i]->model[j]));*/
         }

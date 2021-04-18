@@ -72,18 +72,6 @@
     <ClInclude Include="src\DataStructures\Segments\VerSegment.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\DataStructures\Geometry\CircularArc.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\DataStructures\Geometry\Geometry.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\DataStructures\Geometry\Line.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\DataStructures\Geometry\NURBS.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="src\RenderEngine\Grid.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -132,7 +120,10 @@
     <ClInclude Include="src\DataStructures\Vehicle\Vehicle.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\DataStructures\Geometry\ParabolicArc.h">
+    <ClInclude Include="src\DataStructures\Geometry\Geometry.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\DataStructures\Geometry\NURBS.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -188,18 +179,6 @@
     <ClCompile Include="src\DataStructures\Segments\VerSegment.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\DataStructures\Geometry\CircularArc.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\DataStructures\Geometry\Geometry.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\DataStructures\Geometry\Line.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\DataStructures\Geometry\NURBS.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="src\RenderEngine\Grid.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -236,7 +215,10 @@
     <ClCompile Include="src\DataStructures\Vehicle\Vehicle.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\DataStructures\Geometry\ParabolicArc.cpp">
+    <ClCompile Include="src\DataStructures\Geometry\Geometry.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\DataStructures\Geometry\NURBS.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

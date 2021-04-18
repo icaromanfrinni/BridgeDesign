@@ -102,7 +102,7 @@ void BoxGirder::SetupSection(const float& t)
 	// ALTURA VARIÁVEL ENTRE APOIOS
 	//std::cout << "t = " << t << std::endl;
 	// Distância X
-	float x = this->alignment->getDistance(t);
+	float x = this->road->alignment->getDistance(t);
 	//float x = this->alignment->getHorDistance(t);
 	//std::cout << "\nx = " << x << std::endl;
 	//std::cout << "x,plano = " << _x << std::endl;
@@ -208,14 +208,22 @@ void BoxGirder::SetupPiers(const int& _nPiers)
 
 		// Ângulo de rotação do pilar em relação a tangente do alinhamento
 		P.ang = 0.0f;
-		P.dir = this->alignment->getTangentFromStation(P.station);
+		P.dir = this->road->alignment->getTangentFromStation(P.station);
 		P.base = this->road->alignment->getPositionFromStation(P.station);
 		/*if (P.base.y > this->EL)
 			P.base.y = this->EL;*/
 		P.depth = 0.50f;		// profundidade da base do pilar (positivo para rebaixo)
 		P.base.y -= P.depth;	// topo do bloco
-		CRAB::Vector4Df top = this->alignment->getPositionFromStation(P.station);
+		
+		// se a estaca do pilar estiver fora do perfil longitudinal da ponte
+		// pega a posição do perfil da rodovia
+		CRAB::Vector4Df top;
+		if (P.station < this->alignment->profile.front()->getStartPoint4D().x || P.station > this->alignment->profile.back()->getEndPoint4D().x)
+			top = this->road->alignment->getPositionFromStation(P.station);
+		else
+			top = this->alignment->getPositionFromStation(P.station);
 		P.L = (top - P.base).length() - this->H;
+
 		// Adiciona o pilar na lista
 		piers.push_back(P);
 		station += span_length;
@@ -258,14 +266,23 @@ void BoxGirder::SetupPiers(const std::vector<float>& _stations)
 
 		// Ângulo de rotação do pilar em relação a tangente do alinhamento
 		P.ang = 0.0f;
-		P.dir = this->alignment->getTangentFromStation(P.station);
+		P.dir = this->road->alignment->getTangentFromStation(P.station);
 		P.base = this->road->alignment->getPositionFromStation(P.station);
 		/*if (P.base.y > this->EL)
 			P.base.y = this->EL;*/
 		P.depth = 0.50f;		// profundidade da base do pilar (positivo para rebaixo)
 		P.base.y -= P.depth;	// topo do bloco
-		CRAB::Vector4Df top = this->alignment->getPositionFromStation(P.station);
+		
+		// se a estaca do pilar estiver fora do perfil longitudinal da ponte
+		// pega a posição do perfil da rodovia
+		CRAB::Vector4Df top;
+		if (P.station < this->alignment->profile.front()->getStartPoint4D().x || P.station > this->alignment->profile.back()->getEndPoint4D().x)
+			top = this->road->alignment->getPositionFromStation(P.station);
+		else
+			top = this->alignment->getPositionFromStation(P.station);
 		P.L = (top - P.base).length() - this->H;
+		//P.L = 50.0f;
+
 		// Adiciona o pilar na lista
 		piers.push_back(P);
 	}
@@ -281,22 +298,33 @@ void BoxGirder::AddPier()
 	P.h = 0.6f * P.b;
 	P.station = this->start_S;
 	P.ang = 0.0f;
-	P.dir = this->alignment->getTangentFromStation(P.station);
+	P.dir = this->road->alignment->getTangentFromStation(P.station);
 	P.base = this->road->alignment->getPositionFromStation(P.station);
 	/*if (P.base.y > this->EL)
 		P.base.y = this->EL;*/
 	P.depth = 0.50f;
 	P.base.y -= P.depth; // topo do bloco
-	CRAB::Vector4Df top = this->alignment->getPositionFromStation(P.station);
+	
+	// se a estaca do pilar estiver fora do perfil longitudinal da ponte
+		// pega a posição do perfil da rodovia
+	CRAB::Vector4Df top;
+	if (P.station < this->alignment->profile.front()->getStartPoint4D().x || P.station > this->alignment->profile.back()->getEndPoint4D().x)
+		top = this->road->alignment->getPositionFromStation(P.station);
+	else
+		top = this->alignment->getPositionFromStation(P.station);
 	P.L = (top - P.base).length() - this->H;
+	//P.L = 50.0f;
 	
 	piers.push_back(P);
 }
 
 // RETURNS THE VERTICES OF THE CROSS SECTION
 // -----------------------------------------
-std::vector<CRAB::Vector4Df> BoxGirder::TopLayer_section(const float& t) const
+std::vector<CRAB::Vector4Df> BoxGirder::TopLayer_section(const float& station) const
 {
+	// Curve parameter 't'
+	float t = this->alignment->findParameter(station);
+
 	// Local axis
 	CRAB::Vector4Df vUp = { 0.0f, 1.0f, 0.0f, 0.0f };
 	CRAB::Vector4Df vRight = { 1.0f, 0.0f, 0.0f, 0.0f };
@@ -317,14 +345,23 @@ std::vector<CRAB::Vector4Df> BoxGirder::TopLayer_section(const float& t) const
 	nodes.push_back(nodes.front() + reflection(nodes[1] - nodes.front(), vUp));
 
 	// Space View
-	CRAB::Matrix4 ModelMatrix = toWorld(this->alignment->getPosition(t), this->alignment->getTangent(t), this->getNormal(t));
+	CRAB::Matrix4 ModelMatrix;
+	// se 's' estiver fora do perfil longitudinal da ponte
+	// pega a posição do perfil da rodovia
+	if (station < this->alignment->profile.front()->getStartPoint4D().x || station > this->alignment->profile.back()->getEndPoint4D().x)
+		ModelMatrix = toWorld(this->road->alignment->getPosition(t), this->road->alignment->getTangent(t), this->getNormal(t));
+	else
+		ModelMatrix = toWorld(this->alignment->getPosition(t), this->alignment->getTangent(t), this->getNormal(t));
 	for (int i = 0; i < nodes.size(); i++)
 		nodes[i] = ModelMatrix * nodes[i];
 
 	return nodes;
 }
-std::vector<CRAB::Vector4Df> BoxGirder::Deck_section(const float& t)
+std::vector<CRAB::Vector4Df> BoxGirder::Deck_section(const float& station)
 {
+	// Curve parameter 't'
+	float t = this->alignment->findParameter(station);
+
 	// Local axis
 	CRAB::Vector4Df vUp = { 0.0f, 1.0f, 0.0f, 0.0f };
 	CRAB::Vector4Df vRight = { 1.0f, 0.0f, 0.0f, 0.0f };
@@ -375,14 +412,23 @@ std::vector<CRAB::Vector4Df> BoxGirder::Deck_section(const float& t)
 	}
 
 	// Space View
-	CRAB::Matrix4 ModelMatrix = toWorld(this->alignment->getPosition(t), this->alignment->getTangent(t), this->getNormal(t));
+	CRAB::Matrix4 ModelMatrix;
+	// se 's' estiver fora do perfil longitudinal da ponte
+	// pega a posição do perfil da rodovia
+	if (station < this->alignment->profile.front()->getStartPoint4D().x || station > this->alignment->profile.back()->getEndPoint4D().x)
+		ModelMatrix = toWorld(this->road->alignment->getPosition(t), this->road->alignment->getTangent(t), this->getNormal(t));
+	else
+		ModelMatrix = toWorld(this->alignment->getPosition(t), this->alignment->getTangent(t), this->getNormal(t));
 	for (int i = 0; i < nodes.size(); i++)
 		nodes[i] = ModelMatrix * nodes[i];
 
 	return nodes;
 }
-std::vector<CRAB::Vector4Df> BoxGirder::U_section(const float& t)
+std::vector<CRAB::Vector4Df> BoxGirder::U_section(const float& station)
 {
+	// Curve parameter 't'
+	float t = this->alignment->findParameter(station);
+
 	// Local axis
 	CRAB::Vector4Df vUp = { 0.0f, 1.0f, 0.0f, 0.0f };
 	CRAB::Vector4Df vRight = { 1.0f, 0.0f, 0.0f, 0.0f };
@@ -410,7 +456,13 @@ std::vector<CRAB::Vector4Df> BoxGirder::U_section(const float& t)
 	}
 
 	// Space View
-	CRAB::Matrix4 ModelMatrix = toWorld(this->alignment->getPosition(t), this->alignment->getTangent(t), this->getNormal(t));
+	CRAB::Matrix4 ModelMatrix;
+	// se 's' estiver fora do perfil longitudinal da ponte
+	// pega a posição do perfil da rodovia
+	if (station < this->alignment->profile.front()->getStartPoint4D().x || station > this->alignment->profile.back()->getEndPoint4D().x)
+		ModelMatrix = toWorld(this->road->alignment->getPosition(t), this->road->alignment->getTangent(t), this->getNormal(t));
+	else
+		ModelMatrix = toWorld(this->alignment->getPosition(t), this->alignment->getTangent(t), this->getNormal(t));
 	for (int i = 0; i < nodes.size(); i++)
 		nodes[i] = ModelMatrix * nodes[i];
 
@@ -473,14 +525,22 @@ void BoxGirder::UpdatePiers()
 	// Atualizar parâmetros internos
 	for (int i = 0; i < this->piers.size(); i++)
 	{
-		this->piers[i].dir = CRAB::rotateY(this->piers[i].ang) * this->alignment->getTangentFromStation(this->piers[i].station);
-		this->piers[i].base = this->alignment->getPositionFromStation(this->piers[i].station);
+		this->piers[i].dir = CRAB::rotateY(this->piers[i].ang) * this->road->alignment->getTangentFromStation(this->piers[i].station);
+		this->piers[i].base = this->road->alignment->getPositionFromStation(this->piers[i].station);
 
 		/*if (this->piers[i].base.y > this->EL)
 			this->piers[i].base.y = this->EL;*/
 		this->piers[i].base.y -= this->piers[i].depth; // topo do bloco
-		CRAB::Vector4Df top = this->alignment->getPositionFromStation(this->piers[i].station);
+		
+		// se a estaca do pilar estiver fora do perfil longitudinal da ponte
+		// pega a posição do perfil da rodovia
+		CRAB::Vector4Df top;
+		if (this->piers[i].station < this->alignment->profile.front()->getStartPoint4D().x || this->piers[i].station > this->alignment->profile.back()->getEndPoint4D().x)
+			top = this->road->alignment->getPositionFromStation(this->piers[i].station);
+		else
+			top = this->alignment->getPositionFromStation(this->piers[i].station);
 		this->piers[i].L = (top - this->piers[i].base).length() - this->H;
+		//this->piers[i].L = 50.0f;
 
 		// UPDATE span vector
 		// Armazena o final do vão anterior no início do pilar corrente
@@ -884,15 +944,9 @@ void BoxGirder::Update()
 	// Initialize
 	model.clear();
 
-	float start_t = this->alignment->findParameter(this->start_S);
-	//std::cout << "start station = " << this->start_S << " m (t = " << start_t << ")" << std::endl;
-	float end_t = this->alignment->findParameter(this->end_S);
-	//std::cout << "end station = " << this->end_S << " m (t = " << end_t << ")" << std::endl;
-
 	// TOP_LAYER
 	{
-		//std::vector<CRAB::Vector4Df> cross_section = this->TopLayer_section(0);
-		std::vector<CRAB::Vector4Df> cross_section = this->TopLayer_section(start_t);
+		std::vector<CRAB::Vector4Df> cross_section = this->TopLayer_section(this->start_S);
 		EulerOp::mvfs(model, cross_section.front());
 		model.back()->name = "TOP_LAYER";
 		model.back()->material = { 0.1f, 0.1f, 0.1f, 1.0f };
@@ -912,37 +966,21 @@ void BoxGirder::Update()
 		}
 		EulerOp::mef(model.back()->halfEdges.front(), model.back()->halfEdges.back(), 0);
 
-		// Sweep
-		//for (int i = 1; i <= ELEMENTS; i++)
-		//{
-		//	// Current position
-		//	float t = float(i) / ELEMENTS;
-		//	// Next section
-		//	std::vector<CRAB::Vector4Df> new_section = this->TopLayer_section(t);
-		//	// Solid
-		//	EulerOp::SWEEP(model.back()->faces.front(), new_section);
-		//}
-
-		float s = this->alignment->getDistance(start_t) + 1.0f;
-		float s_end = this->alignment->getDistance(end_t);
-		while (s < s_end)
+		float s = this->start_S + 1.0f;
+		while (s <= this->end_S)
 		{
-			//std::cout << "station = " << s << std::endl;
-			// Current position
-			float t = this->alignment->findParameter(s);
 			// Next section
-			std::vector<CRAB::Vector4Df> new_section = this->TopLayer_section(t);
+			std::vector<CRAB::Vector4Df> new_section = this->TopLayer_section(s);
 			// Solid
 			EulerOp::SWEEP(model.back()->faces.front(), new_section);
-
+			// Next station
 			s++;
 		}
 	}
 	
 	// DECK
 	{
-		//std::vector<CRAB::Vector4Df> cross_section = this->Deck_section(0.0f);
-		std::vector<CRAB::Vector4Df> cross_section = this->Deck_section(start_t);
+		std::vector<CRAB::Vector4Df> cross_section = this->Deck_section(this->start_S);
 		EulerOp::mvfs(model, cross_section.front());
 		model.back()->name = "DECK";
 		model.back()->material = { 0.8f, 0.8f, 0.8f, 1.0f };
@@ -962,37 +1000,21 @@ void BoxGirder::Update()
 		}
 		EulerOp::mef(model.back()->halfEdges.front(), model.back()->halfEdges.back(), 0);
 
-		// Sweep
-		//for (int i = 1; i <= /*ELEMENTS*/20; i++)
-		//{
-		//	// Current position
-		//	float t = float(i) / /*ELEMENTS*/20;
-		//	// Next section
-		//	std::vector<CRAB::Vector4Df> new_section = this->Deck_section(t);
-		//	// Solid
-		//	EulerOp::SWEEP(model.back()->faces.front(), new_section);
-		//}	
-
-		float s = this->alignment->getDistance(start_t) + 1.0f;
-		float s_end = this->alignment->getDistance(end_t);
-		while (s < s_end)
+		float s = this->start_S + 1.0f;
+		while (s <= this->end_S)
 		{
-			//std::cout << "station = " << s << std::endl;
-			// Current position
-			float t = this->alignment->findParameter(s);
 			// Next section
-			std::vector<CRAB::Vector4Df> new_section = this->Deck_section(t);
+			std::vector<CRAB::Vector4Df> new_section = this->Deck_section(s);
 			// Solid
 			EulerOp::SWEEP(model.back()->faces.front(), new_section);
-
+			// Next station
 			s++;
 		}
 	}
 
 	// U_SECTION
 	{
-		//std::vector<CRAB::Vector4Df> cross_section = this->U_section(0.0f);
-		std::vector<CRAB::Vector4Df> cross_section = this->U_section(start_t);
+		std::vector<CRAB::Vector4Df> cross_section = this->U_section(this->start_S);
 		EulerOp::mvfs(model, cross_section.front());
 		model.back()->name = "U_SECTION";
 		model.back()->material = { 0.8f, 0.8f, 0.8f, 1.0f };
@@ -1012,29 +1034,14 @@ void BoxGirder::Update()
 		}
 		EulerOp::mef(model.back()->halfEdges.front(), model.back()->halfEdges.back(), 0);
 
-		// Sweep
-		//for (int i = 1; i <= /*ELEMENTS*/200; i++)
-		//{
-		//	// Current position
-		//	float t = float(i) / /*ELEMENTS*/200;
-		//	// Next section
-		//	std::vector<CRAB::Vector4Df> new_section = this->U_section(t);
-		//	// Solid
-		//	EulerOp::SWEEP(model.back()->faces.front(), new_section);
-		//}
-
-		float s = this->alignment->getDistance(start_t) + 1.0f;
-		float s_end = this->alignment->getDistance(end_t);
-		while (s < s_end)
+		float s = this->start_S + 1.0f;
+		while (s <= this->end_S)
 		{
-			//std::cout << "station = " << s << std::endl;
-			// Current position
-			float t = this->alignment->findParameter(s);
 			// Next section
-			std::vector<CRAB::Vector4Df> new_section = this->U_section(t);
+			std::vector<CRAB::Vector4Df> new_section = this->U_section(s);
 			// Solid
 			EulerOp::SWEEP(model.back()->faces.front(), new_section);
-
+			// Next station
 			s++;
 		}
 	}

@@ -41,7 +41,7 @@ NURBS::NURBS(const std::vector<glm::vec3>& _points)
 
 // OVERLOAD CONSTRUCTOR (from Segments)
 // ------------------------------------
-NURBS::NURBS(const std::vector<Geometry*>& segments)
+NURBS::NURBS(const std::vector<HorSegment*>& segments)
 {
 	/* ------------ NON-UNIFORM ------------ */
 
@@ -73,12 +73,12 @@ NURBS::NURBS(const std::vector<Geometry*>& segments)
 	{
 		if (i == 0)
 		{
-			this->points.push_back(segments[i]->getStartPoint());
+			this->points.push_back(segments[i]->getStartPoint3D());
 			this->w.push_back(1.0f);
 		}
-		this->points.push_back(segments[i]->getMidPoint());
+		this->points.push_back(segments[i]->getMidPoint3D());
 		this->w.push_back(segments[i]->midPointWeight());
-		this->points.push_back(segments[i]->getEndPoint());
+		this->points.push_back(segments[i]->getEndPoint3D());
 		this->w.push_back(1.0f);
 	}
 	// degree

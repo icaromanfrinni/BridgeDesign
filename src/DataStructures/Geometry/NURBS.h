@@ -13,7 +13,7 @@
 #include <glm/glm.hpp>
 
 #include "Linear_Algebra.h"
-#include "Geometry.h"
+#include "HorSegment.h"
 
 #define ELEMENTS 100
 
@@ -58,8 +58,8 @@ public:
 	NURBS();
 	// OVERLOAD CONSTRUCTOR (from Points)
 	NURBS(const std::vector<glm::vec3>& _points);
-	// OVERLOAD CONSTRUCTOR (from Geometry)
-	NURBS(const std::vector<Geometry*>& segments);
+	// OVERLOAD CONSTRUCTOR (from HorSegments)
+	NURBS(const std::vector<HorSegment*>& segments);
 	// DESTRUCTOR
 	~NURBS();
 
