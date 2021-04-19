@@ -249,75 +249,83 @@ std::vector<VerSegment*> Bridge::Vertical_Alignment()
 	// LEFT
 	VerSegment* SagCurve_LEFT;
 	{
+		std::cout << "\nSagCurve_LEFT" << std::endl;
 		CRAB::Vector4Df VPI;
-		CRAB::Vector4Df g;
+		CRAB::Vector4Df grade;
 
 		// Find the intersection point of the sag curve
 		CRAB::Vector4Df r = (CrestCurve->getStartPoint4D() - CrestCurve->getMidPoint4D()).to_unitary();
 		for (int i = 0; i < this->road->alignment->VPI_list.size() - 1 ; i++)
 		{
-			g = *this->road->alignment->VPI_list[i + 1] - *this->road->alignment->VPI_list[i];
+			CRAB::Vector4Df g = *this->road->alignment->VPI_list[i + 1] - *this->road->alignment->VPI_list[i];
 			CRAB::Vector4Df v = *this->road->alignment->VPI_list[i] - CrestCurve->getStartPoint4D();
 			float u = (v.y * g.x - v.x * g.y) / (r.y * g.x - r.x * g.y);
-			//std::cout << "u = " << u << std::endl;
+			std::cout << "u = " << u << std::endl;
 			if (u < 0.0f)
 				break;
-			VPI = CrestCurve->getStartPoint4D() + r * u;
 			float ks = (v.x * r.y - v.y * r.x) / (r.x * g.y - r.y * g.x);
-			//std::cout << "ks = " << ks << std::endl;
+			std::cout << "ks = " << ks << std::endl;
 			if (ks >= 0.0f && ks <= 1.0f)
-				break;
+			{
+				VPI = CrestCurve->getStartPoint4D() + r * u;
+				grade = g.to_unitary();
+			}
+				
 		}
 
 		// Algebraic difference in grades (%)
-		float As = 100.0f * tanf(acosf(CRAB::dot(g.to_unitary(), r * (-1.0f))));
+		float As = 100.0f * tanf(acosf(CRAB::dot(grade, r * (-1.0f))));
 		// Length of sag vertical curve (S < L)
 		float Ls = As * powf(this->road->StoppingSightDistance(), 2.0f) / (200.0f * lightHeight + 3.5f * this->road->StoppingSightDistance());
 		if (Ls < Lmin)
 			Ls = Lmin;
 
-		SagCurve_LEFT = new VerSegment(VPI, g.to_unitary(), r * (-1.0f), Ls);
+		SagCurve_LEFT = new VerSegment(VPI, grade, r * (-1.0f), Ls);
 
-		/*std::cout << "\nSagCurve_LEFT" << std::endl;
+		std::cout << "VPI.x = " << VPI.x << " m" << std::endl;
 		std::cout << "As = " << As << " %" << std::endl;
-		std::cout << "Ls = " << Ls << " m" << std::endl;*/
+		std::cout << "Ls = " << Ls << " m" << std::endl;
 	}
 
 	// RIGHT
 	VerSegment* SagCurve_RIGHT;
 	{
+		std::cout << "\nSagCurve_RIGHT" << std::endl;
+
 		CRAB::Vector4Df VPI;
-		CRAB::Vector4Df g;
+		CRAB::Vector4Df grade;
 
 		// Find the intersection point of the sag curve
 		CRAB::Vector4Df r = (CrestCurve->getEndPoint4D() - CrestCurve->getMidPoint4D()).to_unitary();
 		for (int i = this->road->alignment->VPI_list.size() - 1; i > 0; i--)
 		{
-			g = *this->road->alignment->VPI_list[i - 1] - *this->road->alignment->VPI_list[i];
+			CRAB::Vector4Df g = *this->road->alignment->VPI_list[i - 1] - *this->road->alignment->VPI_list[i];
 			CRAB::Vector4Df v = *this->road->alignment->VPI_list[i] - CrestCurve->getEndPoint4D();
 			float u = (v.y * g.x - v.x * g.y) / (r.y * g.x - r.x * g.y);
-			//std::cout << "u = " << u << std::endl;
+			std::cout << "u = " << u << std::endl;
 			if (u < 0.0f)
 				break;
-			VPI = CrestCurve->getEndPoint4D() + r * u;
 			float ks = (v.x * r.y - v.y * r.x) / (r.x * g.y - r.y * g.x);
-			//std::cout << "ks = " << ks << std::endl;
+			std::cout << "ks = " << ks << std::endl;
 			if (ks >= 0.0f && ks <= 1.0f)
-				break;
+			{
+				VPI = CrestCurve->getEndPoint4D() + r * u;
+				grade = g.to_unitary();
+			}
 		}
 
 		// Algebraic difference in grades (%)
-		float As = 100.0f * tanf(acosf(CRAB::dot(g.to_unitary(), r * (-1.0f))));
+		float As = 100.0f * tanf(acosf(CRAB::dot(grade, r * (-1.0f))));
 		// Length of sag vertical curve (S < L)
 		float Ls = As * powf(this->road->StoppingSightDistance(), 2.0f) / (200.0f * lightHeight + 3.5f * this->road->StoppingSightDistance());
 		if (Ls < Lmin)
 			Ls = Lmin;
 
-		SagCurve_RIGHT = new VerSegment(VPI, r, g.to_unitary() * (-1.0f), Ls);
+		SagCurve_RIGHT = new VerSegment(VPI, r, grade * (-1.0f), Ls);
 
-		/*std::cout << "\nSagCurve_RIGHT" << std::endl;
+		std::cout << "VPI.x = " << VPI.x << " m" << std::endl;
 		std::cout << "As = " << As << " %" << std::endl;
-		std::cout << "Ls = " << Ls << " m" << std::endl;*/
+		std::cout << "Ls = " << Ls << " m" << std::endl;
 	}
 
 	//// ********************************** RETURN **********************************

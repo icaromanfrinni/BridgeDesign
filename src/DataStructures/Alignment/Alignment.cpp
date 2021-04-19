@@ -25,7 +25,8 @@ Alignment::Alignment(const std::string& _name, const std::vector<HorSegment*>& _
 	this->VPI_list.push_back(new CRAB::Vector4Df(this->profile.front()->getStartPoint4D())); // first segment
 	for (int i = 0; i < this->profile.size(); i++)
 	{
-		if (this->profile[i]->getG1() != this->profile[i]->getG2())
+		//if (this->profile[i]->getG1() != this->profile[i]->getG2())
+		if (fabs(this->profile[i]->getG1() - this->profile[i]->getG2()) > SMALL_NUMBER)
 			this->VPI_list.push_back(new CRAB::Vector4Df(this->profile[i]->getMidPoint4D()));
 	}
 	this->VPI_list.push_back(new CRAB::Vector4Df(this->profile.back()->getEndPoint4D())); // last segment

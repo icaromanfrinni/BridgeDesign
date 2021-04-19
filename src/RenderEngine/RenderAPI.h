@@ -592,31 +592,61 @@ namespace CRAB
 #if EXAMPLE == 16
         // ROAD PROFILE
         std::vector<VerSegment*> road_profile;
-        /*road_profile.push_back(new VerSegment({ 0.0f, 190.0f, 0.0f, 1.0f }, { 530.0f, 152.0f, 0.0f, 1.0f }));
-        road_profile.push_back(new VerSegment({ 530.0f, 152.0f, 0.0f, 1.0f }, { 938.0f, 42.0f, 0.0f, 1.0f }));
-        road_profile.push_back(new VerSegment({ 938.0f, 42.0f, 0.0f, 1.0f }, { 1368.0f, 177.0f, 0.0f, 1.0f }));
-        road_profile.push_back(new VerSegment({ 1368.0f, 177.0f, 0.0f, 1.0f }, { 1835.0f, 173.0f, 0.0f, 1.0f }));*/
+        // TERRENO
+        /*CRAB::Vector4Df VP1 = { 0.0f, 200.0f, 0.0f, 1.0f };
+        CRAB::Vector4Df VP2 = { 400.0f, 168.0f, 0.0f, 1.0f };
+        CRAB::Vector4Df VP3 = { 500.0f, 160.0f, 0.0f, 1.0f };
+        CRAB::Vector4Df VP4 = { 600.0f, 138.0f, 0.0f, 1.0f };
+        CRAB::Vector4Df VP5 = { 900.0f, 72.0f, 0.0f, 1.0f };
+        CRAB::Vector4Df VP6 = { 1000.0f, 50.0f, 0.0f, 1.0f };
+        CRAB::Vector4Df VP7 = { 1100.0f, 82.5f, 0.0f, 1.0f };
+        CRAB::Vector4Df VP8 = { 1300.0f, 147.5f, 0.0f, 1.0f };
+        CRAB::Vector4Df VP9 = { 1400.0f, 180.0f, 0.0f, 1.0f };
+        CRAB::Vector4Df VP10 = { 1500.0f, 180.0f, 0.0f, 1.0f };
+        CRAB::Vector4Df VP11 = { 3000.0f, 180.0f, 0.0f, 1.0f };
+        road_profile.push_back(new VerSegment(VP1, VP2));
+        road_profile.push_back(new VerSegment(VP2, VP3, VP4));
+        road_profile.push_back(new VerSegment(VP4, VP5));
+        road_profile.push_back(new VerSegment(VP5, VP6, VP7));
+        road_profile.push_back(new VerSegment(VP7, VP8));
+        road_profile.push_back(new VerSegment(VP8, VP9, VP10));
+        road_profile.push_back(new VerSegment(VP10, VP11));*/
+        // PISTA PROJETADA
+        CRAB::Vector4Df VP1 = { 0.0f, 190.31f, 0.0f, 1.0f };
+        CRAB::Vector4Df VP2 = { 429.49f, 159.52f, 0.0f, 1.0f };
+        CRAB::Vector4Df VP3 = { 529.49f, 152.35f, 0.0f, 1.0f };
+        CRAB::Vector4Df VP4 = { 629.49f, 155.26f, 0.0f, 1.0f };
+        CRAB::Vector4Df VP5 = { 1267.77f, 173.81f, 0.0f, 1.0f };
+        CRAB::Vector4Df VP6 = { 1367.77f, 176.72f, 0.0f, 1.0f };
+        CRAB::Vector4Df VP7 = { 1467.77f, 175.91f, 0.0f, 1.0f };
+        CRAB::Vector4Df VP8 = { 1837.21f, 172.90f, 0.0f, 1.0f };
+        road_profile.push_back(new VerSegment(VP1, VP2));
+        road_profile.push_back(new VerSegment(VP2, VP3, VP4));
+        road_profile.push_back(new VerSegment(VP4, VP5));
+        road_profile.push_back(new VerSegment(VP5, VP6, VP7));
+        road_profile.push_back(new VerSegment(VP7, VP8));
         //road_profile.push_back(new VerSegment({ 0.0f, 0.0f, 0.0f, 1.0f }, { 500.0f, 0.0f, 0.0f, 1.0f }));
-        CRAB::Vector4Df VP1 = { 0.0f, 12.5f, 0.0f, 1.0f };
+        /*CRAB::Vector4Df VP1 = { 0.0f, 12.5f, 0.0f, 1.0f };
         CRAB::Vector4Df VP2 = { 150.0f, 5.0f, 0.0f, 1.0f };
         CRAB::Vector4Df VP3 = { 250.0f, 0.0f, 0.0f, 1.0f };
         CRAB::Vector4Df VP4 = { 350.0f, 5.0f, 0.0f, 1.0f };
         CRAB::Vector4Df VP5 = { 500.0f, 12.5f, 0.0f, 1.0f };
         road_profile.push_back(new VerSegment(VP1, VP2));
         road_profile.push_back(new VerSegment(VP2, VP3, VP4));
-        road_profile.push_back(new VerSegment(VP4, VP5));
+        road_profile.push_back(new VerSegment(VP4, VP5));*/
 
         // ROAD PLAN
         std::vector<HorSegment*> road_plan;
+        road_plan.push_back(new HorSegment({ 0.0f, 0.0f, 0.0f, 1.0f }, { 1837.21f, 0.0f, 0.0f, 1.0f }));
         //road_plan.push_back(new HorSegment({ 20.0f, 0.0f, -20.0f, 1.0f }, { 320.0f, 0.0f, -420.0f, 1.0f })); // na diagonal
-        road_plan.push_back(new HorSegment({ 0.0f, 0.0f, 0.0f, 1.0f }, { 500.0f, 0.0f, 0.0f, 1.0f })); // no eixo X
+        //road_plan.push_back(new HorSegment({ 0.0f, 0.0f, 0.0f, 1.0f }, { 500.0f, 0.0f, 0.0f, 1.0f })); // no eixo X
         // alignment
-        alignments.push_back(new Alignment("Route", road_plan, road_profile));
+        alignments.push_back(new Alignment("Route01", road_plan, road_profile));
         // road
         roadways.push_back(new Road("Avenue", 9.0f, 40.0f, alignments.back(), vehicles.back()));
         // bridge
-        column_stations = { 175.0f, 220.0f, 280.0f, 325.0f };
-        bridges.push_back(new BoxGirder("Ponte", roadways.back(), 250.0f, 10.0f, 70.0f, column_stations, 150.0f, 350.0f));
+        //column_stations = { 175.0f, 220.0f, 280.0f, 325.0f };
+        bridges.push_back(new BoxGirder("Ponte", roadways.back(), 938.0f, 20.0f, 100.0f, column_stations, 700.0f, 1200.0f));
 #endif
 
         // mesh
@@ -625,8 +655,8 @@ namespace CRAB
         {
             curves.push_back(Grid(bridges[i]->alignment->VPI_list));
             curves.push_back(Grid(bridges[i]->alignment));
-            for (int j = 0; j < bridges[i]->model.size(); j++)
-                ourMesh_List.push_back(Mesh(bridges[i]->model[j]));
+            /*for (int j = 0; j < bridges[i]->model.size(); j++)
+                ourMesh_List.push_back(Mesh(bridges[i]->model[j]));*/
         }
         for (int i = 0; i < roadways.size(); i++)
         {
