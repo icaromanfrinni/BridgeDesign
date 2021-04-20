@@ -8,12 +8,13 @@ std::string bridgeName, roadName;
 //std::vector<std::string> bridgeTypes = { "Box Girder", "Beam" };
 std::vector<float> column_stations;
 std::string piers_inline;
-float main_span = 70.0f;
+float main_span = 70.0f; // m
 float slopeMax = 6.0f;
 float cross_station, v_clearance, h_clearance, start_s, end_s;
 float roadWidth, dSpeed;
 int nLanes = 2;
 float nPiers;
+float pierDepth = 5.0f; // m
 
 // Box Girder Bridge
 // -----------------

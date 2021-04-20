@@ -212,7 +212,7 @@ void BoxGirder::SetupPiers(const int& _nPiers)
 		P.base = this->road->alignment->getPositionFromStation(P.station);
 		/*if (P.base.y > this->EL)
 			P.base.y = this->EL;*/
-		P.depth = 0.50f;		// profundidade da base do pilar (positivo para rebaixo)
+		P.depth = pierDepth;		// profundidade da base do pilar (positivo para rebaixo)
 		P.base.y -= P.depth;	// topo do bloco
 		
 		// se a estaca do pilar estiver fora do perfil longitudinal da ponte
@@ -270,7 +270,7 @@ void BoxGirder::SetupPiers(const std::vector<float>& _stations)
 		P.base = this->road->alignment->getPositionFromStation(P.station);
 		/*if (P.base.y > this->EL)
 			P.base.y = this->EL;*/
-		P.depth = 0.50f;		// profundidade da base do pilar (positivo para rebaixo)
+		P.depth = pierDepth;		// profundidade da base do pilar (positivo para rebaixo)
 		P.base.y -= P.depth;	// topo do bloco
 		
 		// se a estaca do pilar estiver fora do perfil longitudinal da ponte
@@ -302,7 +302,7 @@ void BoxGirder::AddPier()
 	P.base = this->road->alignment->getPositionFromStation(P.station);
 	/*if (P.base.y > this->EL)
 		P.base.y = this->EL;*/
-	P.depth = 0.50f;
+	P.depth = pierDepth;
 	P.base.y -= P.depth; // topo do bloco
 	
 	// se a estaca do pilar estiver fora do perfil longitudinal da ponte

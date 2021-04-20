@@ -242,7 +242,7 @@ namespace Controller
 		if (show_general_criteria_window)
 		{
 			ImGui::SetNextWindowPos(ImVec2(100, 100), ImGuiCond_Once);
-			ImGui::SetNextWindowSize(ImVec2(325, 250), ImGuiCond_Once);
+			ImGui::SetNextWindowSize(ImVec2(325, 270), ImGuiCond_Once);
 			ImGui::Begin("General Criteria", &show_general_criteria_window, ImGuiWindowFlags_NoResize);
 
 			ImGui::Columns(2, NULL, false);
@@ -270,13 +270,24 @@ namespace Controller
 			ImGui::NextColumn();
 			ImGui::PopID();
 
+			// PIER DEPTH
+
+			ImGui::PushID(903);
+			ImGui::AlignTextToFramePadding();
+			ImGui::Text("Depth of foundation");
+			ImGui::NextColumn();
+			ImGui::SetNextItemWidth(80);
+			ImGui::DragFloat("m", &pierDepth, 0.01f, 0.00f, 1000.00f, "%.2f");
+			ImGui::NextColumn();
+			ImGui::PopID();
+
 			// SEPARATOR
 
 			ImGui::Separator();
 
 			// DECELERATION RATE
 
-			ImGui::PushID(903);
+			ImGui::PushID(911);
 			ImGui::AlignTextToFramePadding();
 			ImGui::Text("Deceleration rate");
 			ImGui::NextColumn();
@@ -287,7 +298,7 @@ namespace Controller
 
 			// REACTION TIME
 
-			ImGui::PushID(904);
+			ImGui::PushID(912);
 			ImGui::AlignTextToFramePadding();
 			ImGui::Text("Brake reaction time");
 			ImGui::NextColumn();
@@ -298,7 +309,7 @@ namespace Controller
 
 			// HEIGHT OF EYE
 
-			ImGui::PushID(905);
+			ImGui::PushID(913);
 			ImGui::AlignTextToFramePadding();
 			ImGui::Text("Height of eye above road");
 			ImGui::NextColumn();
@@ -309,7 +320,7 @@ namespace Controller
 
 			// HEIGHT OF OBJECT
 
-			ImGui::PushID(906);
+			ImGui::PushID(914);
 			ImGui::AlignTextToFramePadding();
 			ImGui::Text("Height of object above road");
 			ImGui::NextColumn();
@@ -320,7 +331,7 @@ namespace Controller
 
 			// HEADLIGHT HEIGHT
 
-			ImGui::PushID(907);
+			ImGui::PushID(915);
 			ImGui::AlignTextToFramePadding();
 			ImGui::Text("Headlight height above road");
 			ImGui::NextColumn();
@@ -331,7 +342,7 @@ namespace Controller
 
 			// ANGLE OF LIGHT
 
-			ImGui::PushID(908);
+			ImGui::PushID(916);
 			ImGui::AlignTextToFramePadding();
 			ImGui::Text("Angle of headlight (degree)");
 			ImGui::NextColumn();

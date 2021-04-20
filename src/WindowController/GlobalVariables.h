@@ -16,7 +16,7 @@ extern std::vector<float> column_stations;
 extern std::string piers_inline;
 extern float roadWidth, dSpeed, slopeMax;
 extern int nLanes;
-extern float nPiers;
+extern float nPiers, pierDepth;
 
 // Box Girder Bridge
 // -----------------

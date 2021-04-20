@@ -65,11 +65,21 @@ float Alignment::findParameter(const float& s) const
 // --------------------------------------
 int Alignment::findSegment(const float& s) const
 {
-	/*if (s < profile.front()->getStartPoint4D().x || s > profile.back()->getEndPoint4D().x)
-		return -1;*/
+	//std::cout << "profile.size() = " << profile.size() << std::endl;
 	for (int i = 0; i < profile.size(); i++)
-		if (s >= profile[i]->getStartPoint4D().x && s <= profile[i]->getEndPoint4D().x)
-			return i;
+	{
+		/*std::cout << "i = " << i << std::endl;
+		std::cout << "Start = " << profile[i]->getStartPoint4D().x << std::endl;
+		std::cout << "End = " << profile[i]->getEndPoint4D().x << std::endl;*/
+		float A = profile[i]->getStartPoint4D().x;
+		float B = profile[i]->getEndPoint4D().x;
+		/*if (s >= A && s <= B)
+			return i;*/
+		if (s > A || fabsf(s - A) < 0.01f) // < 1cm
+			if (s < B || fabsf(s - B) < 0.01f)
+				return i;
+	}
+	return -1;
 }
 
 // RETURN
@@ -78,10 +88,14 @@ glm::vec3 Alignment::getPosition3D(const float& t) const
 {
 	glm::vec3 p = this->path2D.getPosition(t);
 	float s = this->path2D.getDistance(t);
+	/*std::cout << "\n" << std::endl;
+	std::cout << "s = " << s << std::endl;*/
 	int index = this->findSegment(s);
 	/*if (index == -1)
 		return p;*/
+	//std::cout << "index = " << index << std::endl;
 	p.y = this->profile[index]->getY(s);
+	//std::cout << "y = " << p.y << std::endl;
 	return p;
 }
 CRAB::Vector4Df Alignment::getPosition(const float& t) const
