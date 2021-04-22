@@ -27,6 +27,9 @@ class BoxGirder
 	void mergesort(std::vector<Pier>& X, int start, int end, std::vector<Pier>& aux);
 	void mergesort(std::vector<Pier>& X);
 
+	// INITIALIZE
+	void SetupBoxGirder(const std::vector<float>& _stations);
+
 public:
 	// Box-Girder Bridge Attributes
 	float Lb;		// slab cantilever
@@ -44,9 +47,9 @@ public:
 	// OVERLOAD CONSTRUCTOR (Viaduct)
 	BoxGirder(const std::string& _name, Road* _road, const float& cross_station, const float& vertical_clearance, const float& horizontal_clearance, const std::vector<float>& _stations, const float& start_station, const float& end_station);
 	// OVERLOAD CONSTRUCTOR (Overpass)
-	//BoxGirder(const std::string& _name, Road* _road, const float& cross_station, const float& vertical_clearance, const float& horizontal_clearance, const float& elevation_level, const float& start_station, const float& end_station);
+	BoxGirder(const std::string& _name, Road* _road, const float& cross_station, const float& vertical_clearance, const float& horizontal_clearance, const std::vector<float>& _stations, const float& ground_level, const float& start_station, const float& end_station);
 	// OVERLOAD CONSTRUCTOR (Bridge)
-	//BoxGirder(const std::string& _name, Road* _road, const float& cross_station, const float& vertical_clearance, const float& horizontal_clearance, const float& elevation_level, const float& water_surface, const float& start_station, const float& end_station);
+	BoxGirder(const std::string& _name, Road* _road, const float& cross_station, const float& vertical_clearance, const float& horizontal_clearance, const std::vector<float>& _stations, const float& ground_level, const float& flood_level, const float& start_station, const float& end_station);
 	// DESTRUCTOR
 	~BoxGirder();
 

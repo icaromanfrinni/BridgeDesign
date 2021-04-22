@@ -12,6 +12,38 @@ BoxGirder::BoxGirder()
 BoxGirder::BoxGirder(const std::string& _name, Road* _road, const float& cross_station, const float& vertical_clearance, const float& horizontal_clearance, const std::vector<float>& _stations, const float& start_station, const float& end_station)
 	: Bridge(_name, _road, cross_station, vertical_clearance, horizontal_clearance, start_station, end_station)
 {
+	// Initialize
+	this->SetupBoxGirder(_stations);
+}
+
+// OVERLOAD CONSTRUCTOR (Overpass)
+// -------------------------------
+BoxGirder::BoxGirder(const std::string& _name, Road* _road, const float& cross_station, const float& vertical_clearance, const float& horizontal_clearance, const std::vector<float>& _stations, const float& ground_level, const float& start_station, const float& end_station)
+	: Bridge(_name, _road, cross_station, vertical_clearance, horizontal_clearance, ground_level, start_station, end_station)
+{
+	// Initialize
+	this->SetupBoxGirder(_stations);
+}
+
+// OVERLOAD CONSTRUCTOR (Bridge)
+// -----------------------------
+BoxGirder::BoxGirder(const std::string& _name, Road* _road, const float& cross_station, const float& vertical_clearance, const float& horizontal_clearance, const std::vector<float>& _stations,const float& ground_level, const float& flood_level, const float& start_station, const float& end_station)
+	: Bridge(_name, _road, cross_station, vertical_clearance, horizontal_clearance, ground_level, flood_level, start_station, end_station)
+{
+	// Initialize
+	this->SetupBoxGirder(_stations);
+}
+
+// DESTRUCTOR
+// ----------
+BoxGirder::~BoxGirder()
+{
+}
+
+// INITIALIZE
+// ----------
+void BoxGirder::SetupBoxGirder(const std::vector<float>& _stations)
+{
 	// Preliminary calculations
 	this->SetupSection();
 
@@ -27,43 +59,9 @@ BoxGirder::BoxGirder(const std::string& _name, Road* _road, const float& cross_s
 		this->automaticPiers = false;
 		this->SetupPiers(_stations);
 	}
-	
+
 	// Model
 	this->Update();
-}
-
-// OVERLOAD CONSTRUCTOR (Overpass)
-// -------------------------------
-//BoxGirder::BoxGirder(const std::string& _name, Road* _road, const float& cross_station, const float& vertical_clearance, const float& horizontal_clearance, const float& elevation_level, const float& start_station, const float& end_station)
-//	: Bridge(_name, _road, cross_station, vertical_clearance, horizontal_clearance, elevation_level, start_station, end_station)
-//{
-//	// Preliminary calculations
-//	this->SetupSection();
-//	// Piers
-//	int n = round(this->alignment->getProfileLength() / this->mainSpan);
-//	SetupPiers(n);
-//	// Model
-//	this->Update();
-//}
-
-// OVERLOAD CONSTRUCTOR (Bridge)
-// -----------------------------
-//BoxGirder::BoxGirder(const std::string& _name, Road* _road, const float& cross_station, const float& vertical_clearance, const float& horizontal_clearance, const float& elevation_level, const float& water_surface, const float& start_station, const float& end_station)
-//	: Bridge(_name, _road, cross_station, vertical_clearance, horizontal_clearance, elevation_level, water_surface, start_station, end_station)
-//{
-//	// Preliminary calculations
-//	this->SetupSection();
-//	// Piers
-//	int n = round(this->alignment->getProfileLength() / this->mainSpan);
-//	SetupPiers(n);
-//	// Model
-//	this->Update();
-//}
-
-// DESTRUCTOR
-// ----------
-BoxGirder::~BoxGirder()
-{
 }
 
 // SETUP ALL THE PARAMETERS
@@ -210,9 +208,9 @@ void BoxGirder::SetupPiers(const int& _nPiers)
 		P.ang = 0.0f;
 		P.dir = this->road->alignment->getTangentFromStation(P.station);
 		P.base = this->road->alignment->getPositionFromStation(P.station);
-		/*if (P.base.y > this->EL)
-			P.base.y = this->EL;*/
-		P.depth = pierDepth;		// profundidade da base do pilar (positivo para rebaixo)
+		if (P.base.y > this->GL)
+			P.base.y = this->GL;
+		P.depth = pierDepth;	// profundidade da base do pilar (positivo para rebaixo)
 		P.base.y -= P.depth;	// topo do bloco
 		
 		// se a estaca do pilar estiver fora do perfil longitudinal da ponte
@@ -268,8 +266,8 @@ void BoxGirder::SetupPiers(const std::vector<float>& _stations)
 		P.ang = 0.0f;
 		P.dir = this->road->alignment->getTangentFromStation(P.station);
 		P.base = this->road->alignment->getPositionFromStation(P.station);
-		/*if (P.base.y > this->EL)
-			P.base.y = this->EL;*/
+		if (P.base.y > this->GL)
+			P.base.y = this->GL;
 		P.depth = pierDepth;		// profundidade da base do pilar (positivo para rebaixo)
 		P.base.y -= P.depth;	// topo do bloco
 		
@@ -281,7 +279,6 @@ void BoxGirder::SetupPiers(const std::vector<float>& _stations)
 		else
 			top = this->alignment->getPositionFromStation(P.station);
 		P.L = (top - P.base).length() - this->H;
-		//P.L = 50.0f;
 
 		// Adiciona o pilar na lista
 		piers.push_back(P);
@@ -300,8 +297,8 @@ void BoxGirder::AddPier()
 	P.ang = 0.0f;
 	P.dir = this->road->alignment->getTangentFromStation(P.station);
 	P.base = this->road->alignment->getPositionFromStation(P.station);
-	/*if (P.base.y > this->EL)
-		P.base.y = this->EL;*/
+	if (P.base.y > this->GL)
+		P.base.y = this->GL;
 	P.depth = pierDepth;
 	P.base.y -= P.depth; // topo do bloco
 	
@@ -313,7 +310,6 @@ void BoxGirder::AddPier()
 	else
 		top = this->alignment->getPositionFromStation(P.station);
 	P.L = (top - P.base).length() - this->H;
-	//P.L = 50.0f;
 	
 	piers.push_back(P);
 }
@@ -528,8 +524,8 @@ void BoxGirder::UpdatePiers()
 		this->piers[i].dir = CRAB::rotateY(this->piers[i].ang) * this->road->alignment->getTangentFromStation(this->piers[i].station);
 		this->piers[i].base = this->road->alignment->getPositionFromStation(this->piers[i].station);
 
-		/*if (this->piers[i].base.y > this->EL)
-			this->piers[i].base.y = this->EL;*/
+		if (this->piers[i].base.y > this->GL)
+			this->piers[i].base.y = this->GL;
 		this->piers[i].base.y -= this->piers[i].depth; // topo do bloco
 		
 		// se a estaca do pilar estiver fora do perfil longitudinal da ponte
@@ -540,7 +536,6 @@ void BoxGirder::UpdatePiers()
 		else
 			top = this->alignment->getPositionFromStation(this->piers[i].station);
 		this->piers[i].L = (top - this->piers[i].base).length() - this->H;
-		//this->piers[i].L = 50.0f;
 
 		// UPDATE span vector
 		// Armazena o final do vão anterior no início do pilar corrente
@@ -942,14 +937,14 @@ void BoxGirder::UpdatePiers()
 void BoxGirder::Update()
 {
 	// Initialize
-	model.clear();
+	solids.clear();
 
 	// TOP_LAYER
 	{
 		std::vector<CRAB::Vector4Df> cross_section = this->TopLayer_section(this->start_S);
-		EulerOp::mvfs(model, cross_section.front());
-		model.back()->name = "TOP_LAYER";
-		model.back()->material = { 0.1f, 0.1f, 0.1f, 1.0f };
+		EulerOp::mvfs(solids, cross_section.front());
+		solids.back()->name = "TOP_LAYER";
+		solids.back()->material = { 0.1f, 0.1f, 0.1f, 1.0f };
 
 		// First face (sentido inverso, pois a normal da primeira face aponta pro sentido contrário à tangente da curva paramétrica)
 		std::reverse(cross_section.begin(), cross_section.end());
@@ -958,13 +953,13 @@ void BoxGirder::Update()
 		{
 			if (i == 0)
 			{
-				EulerOp::mev(model.back()->faces.front()->hEdge, NULL, i, cross_section[i]);
+				EulerOp::mev(solids.back()->faces.front()->hEdge, NULL, i, cross_section[i]);
 				continue;
 			}
-			EulerOp::mev(model.back()->halfEdges[id_HalfEdge], NULL, i, cross_section[i]);
+			EulerOp::mev(solids.back()->halfEdges[id_HalfEdge], NULL, i, cross_section[i]);
 			id_HalfEdge += 2;
 		}
-		EulerOp::mef(model.back()->halfEdges.front(), model.back()->halfEdges.back(), 0);
+		EulerOp::mef(solids.back()->halfEdges.front(), solids.back()->halfEdges.back(), 0);
 
 		float s = this->start_S + 1.0f;
 		while (s <= this->end_S)
@@ -972,7 +967,7 @@ void BoxGirder::Update()
 			// Next section
 			std::vector<CRAB::Vector4Df> new_section = this->TopLayer_section(s);
 			// Solid
-			EulerOp::SWEEP(model.back()->faces.front(), new_section);
+			EulerOp::SWEEP(solids.back()->faces.front(), new_section);
 			// Next station
 			s++;
 		}
@@ -981,9 +976,9 @@ void BoxGirder::Update()
 	// DECK
 	{
 		std::vector<CRAB::Vector4Df> cross_section = this->Deck_section(this->start_S);
-		EulerOp::mvfs(model, cross_section.front());
-		model.back()->name = "DECK";
-		model.back()->material = { 0.8f, 0.8f, 0.8f, 1.0f };
+		EulerOp::mvfs(solids, cross_section.front());
+		solids.back()->name = "DECK";
+		solids.back()->material = { 0.8f, 0.8f, 0.8f, 1.0f };
 
 		// First face (sentido inverso, pois a normal da primeira face aponta pro sentido contrário à tangente da curva paramétrica)
 		std::reverse(cross_section.begin(), cross_section.end());
@@ -992,13 +987,13 @@ void BoxGirder::Update()
 		{
 			if (i == 0)
 			{
-				EulerOp::mev(model.back()->faces.front()->hEdge, NULL, i, cross_section[i]);
+				EulerOp::mev(solids.back()->faces.front()->hEdge, NULL, i, cross_section[i]);
 				continue;
 			}
-			EulerOp::mev(model.back()->halfEdges[id_HalfEdge], NULL, i, cross_section[i]);
+			EulerOp::mev(solids.back()->halfEdges[id_HalfEdge], NULL, i, cross_section[i]);
 			id_HalfEdge += 2;
 		}
-		EulerOp::mef(model.back()->halfEdges.front(), model.back()->halfEdges.back(), 0);
+		EulerOp::mef(solids.back()->halfEdges.front(), solids.back()->halfEdges.back(), 0);
 
 		float s = this->start_S + 1.0f;
 		while (s <= this->end_S)
@@ -1006,7 +1001,7 @@ void BoxGirder::Update()
 			// Next section
 			std::vector<CRAB::Vector4Df> new_section = this->Deck_section(s);
 			// Solid
-			EulerOp::SWEEP(model.back()->faces.front(), new_section);
+			EulerOp::SWEEP(solids.back()->faces.front(), new_section);
 			// Next station
 			s++;
 		}
@@ -1015,9 +1010,9 @@ void BoxGirder::Update()
 	// U_SECTION
 	{
 		std::vector<CRAB::Vector4Df> cross_section = this->U_section(this->start_S);
-		EulerOp::mvfs(model, cross_section.front());
-		model.back()->name = "U_SECTION";
-		model.back()->material = { 0.8f, 0.8f, 0.8f, 1.0f };
+		EulerOp::mvfs(solids, cross_section.front());
+		solids.back()->name = "U_SECTION";
+		solids.back()->material = { 0.8f, 0.8f, 0.8f, 1.0f };
 
 		// First face (sentido inverso, pois a normal da primeira face aponta pro sentido contrário à tangente da curva paramétrica)
 		std::reverse(cross_section.begin(), cross_section.end());
@@ -1026,13 +1021,13 @@ void BoxGirder::Update()
 		{
 			if (i == 0)
 			{
-				EulerOp::mev(model.back()->faces.front()->hEdge, NULL, i, cross_section[i]);
+				EulerOp::mev(solids.back()->faces.front()->hEdge, NULL, i, cross_section[i]);
 				continue;
 			}
-			EulerOp::mev(model.back()->halfEdges[id_HalfEdge], NULL, i, cross_section[i]);
+			EulerOp::mev(solids.back()->halfEdges[id_HalfEdge], NULL, i, cross_section[i]);
 			id_HalfEdge += 2;
 		}
-		EulerOp::mef(model.back()->halfEdges.front(), model.back()->halfEdges.back(), 0);
+		EulerOp::mef(solids.back()->halfEdges.front(), solids.back()->halfEdges.back(), 0);
 
 		float s = this->start_S + 1.0f;
 		while (s <= this->end_S)
@@ -1040,7 +1035,7 @@ void BoxGirder::Update()
 			// Next section
 			std::vector<CRAB::Vector4Df> new_section = this->U_section(s);
 			// Solid
-			EulerOp::SWEEP(model.back()->faces.front(), new_section);
+			EulerOp::SWEEP(solids.back()->faces.front(), new_section);
 			// Next station
 			s++;
 		}
@@ -1055,23 +1050,23 @@ void BoxGirder::Update()
 			CRAB::Vector4Df vRight = cross(piers[i].dir, WorldUp).to_unitary();
 			// v0
 			CRAB::Vector4Df start_point = piers[i].base + (piers[i].dir * (piers[i].h / 2.0f)) + (vRight * (piers[i].b / 2.0f));
-			EulerOp::mvfs(model, start_point);
-			model.back()->name = "PIER";
-			model.back()->material = { 0.8f, 0.8f, 0.8f, 1.0f };
+			EulerOp::mvfs(solids, start_point);
+			solids.back()->name = "PIER";
+			solids.back()->material = { 0.8f, 0.8f, 0.8f, 1.0f };
 			// v1
-			CRAB::Vector4Df newVertex = model.back()->vertices.back()->point - (vRight * piers[i].b);
-			EulerOp::mev(model.back()->faces.front()->hEdge, NULL, 0, newVertex);
+			CRAB::Vector4Df newVertex = solids.back()->vertices.back()->point - (vRight * piers[i].b);
+			EulerOp::mev(solids.back()->faces.front()->hEdge, NULL, 0, newVertex);
 			// v2
-			newVertex = model.back()->vertices.back()->point - (piers[i].dir * piers[i].h);
-			EulerOp::mev(model.back()->halfEdges[0], NULL, 1, newVertex);
+			newVertex = solids.back()->vertices.back()->point - (piers[i].dir * piers[i].h);
+			EulerOp::mev(solids.back()->halfEdges[0], NULL, 1, newVertex);
 			// v3
-			newVertex = model.back()->vertices.back()->point + (vRight * piers[i].b);
-			EulerOp::mev(model.back()->halfEdges[2], NULL, 2, newVertex);
+			newVertex = solids.back()->vertices.back()->point + (vRight * piers[i].b);
+			EulerOp::mev(solids.back()->halfEdges[2], NULL, 2, newVertex);
 			// f1
-			EulerOp::mef(model.back()->halfEdges.front(), model.back()->halfEdges[5], 0);
+			EulerOp::mef(solids.back()->halfEdges.front(), solids.back()->halfEdges[5], 0);
 
 			// EXTRUDE
-			EulerOp::EXTRUDE(model.back()->faces.front(), WorldUp, piers[i].L);
+			EulerOp::EXTRUDE(solids.back()->faces.front(), WorldUp, piers[i].L);
 		}
 	}
 

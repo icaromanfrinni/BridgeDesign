@@ -55,6 +55,32 @@ Grid::Grid(std::vector<CRAB::Vector4Df*> _vertices)
     
     setupGrid();
 }
+// overload constructor (from Vertical Alignment)
+Grid::Grid(std::vector<VerSegment*> _profile)
+{
+    this->primitive_type = GL_LINE_STRIP;
+    this->with_points = true;
+
+    Grid::Vertex v;
+    v.Color = { 0.8f, 0.8f, 0.8f };
+
+    for (int i = 0; i < _profile.size(); i++)
+    {
+        //if (fabs(_profile[i]->getG1() - _profile[i]->getG2()) > SMALL_NUMBER) // se curva vertical
+        //    v.Color = { 0.8f, 0.8f, 0.8f };
+        //else
+        //    v.Color = { 0.2f, 0.2f, 0.2f };
+        
+        v.Position = _profile[i]->getStartPoint3D();
+        this->vertices.push_back(v);
+        v.Position = _profile[i]->getMidPoint3D();
+        this->vertices.push_back(v);
+        v.Position = _profile[i]->getEndPoint3D();
+        this->vertices.push_back(v);
+    }
+
+    setupGrid();
+}
 // overload constructor (from NURBS curve)
 Grid::Grid(const NURBS& _curve)
 {

@@ -37,7 +37,7 @@ float Road::StoppingSightDistance()
 //void Road::update()
 //{
 //	// Initialize
-//	model.clear();
+//	solids.clear();
 //	CRAB::Vector4Df newVertex, next_position, start_point;
 //	float offset; // displacement
 //	float segment_L; // the length of the line segment
@@ -52,24 +52,24 @@ float Road::StoppingSightDistance()
 //
 //	// v0
 //	start_point = alignment->getPosition(0.0f);// .segments.front()->getStartPoint();
-//	EulerOp::mvfs(model, start_point);
-//	model.back()->name = "ROAD";
-//	model.back()->material = { 0.8f, 0.8f, 0.8f, 1.0f };
+//	EulerOp::mvfs(solids, start_point);
+//	solids.back()->name = "ROAD";
+//	solids.back()->material = { 0.8f, 0.8f, 0.8f, 1.0f };
 //	// v1
-//	newVertex = model.back()->vertices.back()->point - (vRight * (this->width / 2.0f));
-//	EulerOp::mev(model.back()->faces[0]->hEdge, NULL, 0, newVertex);
+//	newVertex = solids.back()->vertices.back()->point - (vRight * (this->width / 2.0f));
+//	EulerOp::mev(solids.back()->faces[0]->hEdge, NULL, 0, newVertex);
 //	// v2
-//	newVertex = model.back()->vertices.back()->point - (vUp * 1.0f);
-//	EulerOp::mev(model.back()->halfEdges[0], NULL, 1, newVertex);
+//	newVertex = solids.back()->vertices.back()->point - (vUp * 1.0f);
+//	EulerOp::mev(solids.back()->halfEdges[0], NULL, 1, newVertex);
 //	// v3
-//	newVertex = model.back()->vertices.back()->point + (vRight * this->width);
-//	EulerOp::mev(model.back()->halfEdges[2], NULL, 2, newVertex);
+//	newVertex = solids.back()->vertices.back()->point + (vRight * this->width);
+//	EulerOp::mev(solids.back()->halfEdges[2], NULL, 2, newVertex);
 //	// v4
-//	newVertex = model.back()->vertices.back()->point + (vUp * 1.0f);
-//	EulerOp::mev(model.back()->halfEdges[4], NULL, 3, newVertex);
+//	newVertex = solids.back()->vertices.back()->point + (vUp * 1.0f);
+//	EulerOp::mev(solids.back()->halfEdges[4], NULL, 3, newVertex);
 //	// f1
-//	EulerOp::mef(model.back()->halfEdges[0], model.back()->halfEdges[7], 0);
+//	EulerOp::mef(solids.back()->halfEdges[0], model.back()->halfEdges[7], 0);
 //
 //	// SWEEP
-//	EulerOp::SWEEP(model.back()->faces.front(), alignment);
+//	EulerOp::SWEEP(solids.back()->faces.front(), alignment);
 //}

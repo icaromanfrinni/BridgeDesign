@@ -16,7 +16,7 @@ class Road
 public:
 	std::string name;
 	Alignment* alignment;
-	//std::vector<HED::solid*> model;
+	//std::vector<HED::solid*> solids;
 	float width;		// Roadway width
 	float speed;		// Design speed
 	Vehicle* vehicle;	// Design vehicle

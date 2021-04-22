@@ -645,36 +645,36 @@ namespace CRAB
 
         // ROAD PLAN
         std::vector<HorSegment*> road_plan;
-        //road_plan.push_back(new HorSegment({ 0.0f, 0.0f, 0.0f, 1.0f }, { 3000.0f, 0.0f, 0.0f, 1.0f }));
         road_plan.push_back(new HorSegment({ 0.0f, 0.0f, 0.0f, 1.0f }, { 1837.21f, 0.0f, 0.0f, 1.0f }));
-        //road_plan.push_back(new HorSegment({ 20.0f, 0.0f, -20.0f, 1.0f }, { 320.0f, 0.0f, -420.0f, 1.0f })); // na diagonal
-        //road_plan.push_back(new HorSegment({ 0.0f, 0.0f, 0.0f, 1.0f }, { 500.0f, 0.0f, 0.0f, 1.0f })); // no eixo X
         // alignment
         //alignments.push_back(new Alignment("Terrain", road_plan, terrain_profile));
-        alignments.push_back(new Alignment("Route01", road_plan, road_profile));
+        alignments.push_back(new Alignment("Route", road_plan, road_profile));
         // road
         //roadways.push_back(new Road("Terrain", 16.80f, 60.0f, alignments.back(), vehicles.back()));
         roadways.push_back(new Road("Avenue", 16.80f, 80.0f, alignments.back(), vehicles.back()));
         // bridge
         //column_stations = { 175.0f, 220.0f, 280.0f, 325.0f };
-        //bridges.push_back(new BoxGirder("Ponte", roadways.back(), 1000.0f, 100.0f, 400.0f, column_stations, 500.0f, 1500.0f));
-        bridges.push_back(new BoxGirder("Ponte", roadways.back(), 938.0f, 10.0f, 450.0f, column_stations, 700.0f, 1200.0f));
-        //bridges.push_back(new BoxGirder("Ponte", roadways.back(), 938.0f, 50.0f, 200.0f, column_stations, 700.0f, 1200.0f));
+        //bridges.push_back(new BoxGirder("Bridge", roadways.back(), 938.0f, 20.0f, 450.0f, column_stations, 700.0f, 1200.0f));
+        //bridges.push_back(new BoxGirder("Bridge", roadways.back(), 938.0f, 20.0f, 450.0f, column_stations, 0.0f, 700.0f, 1200.0f));
+        bridges.push_back(new BoxGirder("Bridge", roadways.back(), 938.0f, 20.0f, 450.0f, column_stations, 0.0f, 150.0f, 700.0f, 1200.0f));
 #endif
 
         // mesh
         // ----
         for (int i = 0; i < bridges.size(); i++)
         {
-            curves.push_back(Grid(bridges[i]->alignment->VPI_list));
+            //curves.push_back(Grid(bridges[i]->alignment->VPI_list));
             curves.push_back(Grid(bridges[i]->alignment));
-            for (int j = 0; j < bridges[i]->model.size(); j++)
-                ourMesh_List.push_back(Mesh(bridges[i]->model[j]));
+            curves.push_back(Grid(bridges[i]->alignment->profile));
+            /*for (int j = 0; j < bridges[i]->model.size(); j++)
+                ourMesh_List.push_back(Mesh(bridges[i]->model[j]));*/
+            models.push_back(CRAB::Model(bridges[i]->name, bridges[i]->solids));
         }
         for (int i = 0; i < roadways.size(); i++)
         {
-            curves.push_back(Grid(roadways[i]->alignment->VPI_list));
+            //curves.push_back(Grid(roadways[i]->alignment->VPI_list));
             curves.push_back(Grid(roadways[i]->alignment));
+            curves.push_back(Grid(roadways[i]->alignment->profile));
             /*for (int j = 0; j < roadways[i]->model.size(); j++)
                 ourMesh_List.push_back(Mesh(roadways[i]->model[j]));*/
         }
@@ -762,14 +762,15 @@ namespace CRAB
             ourShader.setMat4("model", model);
 
             // render
-            for (int i = 0; i < ourMesh_List.size(); i++)
-            {
-                if (Controller::polygon_mode == 2)
-                    ourMesh_List[i].material.hasTexture = true;
-                else
-                    ourMesh_List[i].material.hasTexture = false;
-                ourMesh_List[i].Draw(ourShader);
-            }
+            for (int i = 0; i < models.size(); i++)
+                for (int j = 0; j < models[i].mesh_list.size(); j++)
+                {
+                    if (Controller::polygon_mode == 2)
+                        models[i].mesh_list[j].material.hasTexture = true;
+                    else
+                        models[i].mesh_list[j].material.hasTexture = false;
+                    models[i].mesh_list[j].Draw(ourShader);
+                }
 
             // draw grid
             gridShader.use();
@@ -838,20 +839,21 @@ namespace CRAB
         if (glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS && glfwGetKey(window, GLFW_KEY_E) == GLFW_PRESS)
         {
             for (int i = 0; i < bridges.size(); i++)
-                HED::WriteObjFile(bridges[i]->model);
+                HED::WriteObjFile(bridges[i]->solids);
         }
         if (glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS && glfwGetKey(window, GLFW_KEY_N) == GLFW_PRESS)
         {
-            solids.clear();
-            ourMesh_List.clear();
+            models.clear();
             bridges.clear();
+            curves.clear();
+            roadways.clear();
         }
         if (glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS && glfwGetKey(window, GLFW_KEY_I) == GLFW_PRESS)
         {
-            std::string fileName;
+            std::string modelName;
             std::cout << "Enter file name (*.obj): " << std::endl;
-            std::cin >> fileName;
-            fileName = "objects/" + fileName + ".obj";
+            std::cin >> modelName;
+            std::string fileName = "objects/" + modelName + ".obj";
             ObjFile inputObjFile;
             if (inputObjFile.ReadObjFile(fileName) == false) {
                 MessageBox(NULL, (LPCWSTR)L"File could not be opened!", (LPCWSTR)L"Info",
@@ -860,11 +862,12 @@ namespace CRAB
             else {
                 //solids.clear();
                 //ourMesh_List.clear();
+                models.push_back(CRAB::Model(modelName));
                 for (int i = 0; i < inputObjFile.objectList.size(); i++)
                 {
                     // from OBJ -> Mesh
                     // ----------------
-                    ourMesh_List.push_back(Mesh(inputObjFile.objectList[i]));
+                    models.back().mesh_list.push_back(Mesh(inputObjFile.objectList[i]));
                     // from OBJ -> HalfEdge -> Mesh
                     // ----------------------------
                     //solids.push_back(new HED::solid(i, inputObjFile.objectList[i]));

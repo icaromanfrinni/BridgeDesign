@@ -11,15 +11,9 @@ Bridge::Bridge()
 Bridge::Bridge(const std::string& _name, Road* _road, const float& cross_station, const float& vertical_clearance, const float& horizontal_clearance, const float& start_station, const float& end_station)
 	: name(_name), road(_road), CS(cross_station), VC(vertical_clearance), HC(horizontal_clearance), start_S(start_station), end_S(end_station)
 {
-	// General attributes
-	this->mainSpan = main_span;
-	//this->mainSpan = this->HC;
-	//this->VC = v_clearance;
-
 	// Viaduct
-	int index = this->road->alignment->findSegment(this->CS);
-	/*this->EL = this->road->alignment->profile[index]->getY(this->CS);
-	this->WS = this->EL;*/
+	this->GL = this->road->alignment->getPositionFromStation(this->CS).y;
+	this->FL = this->GL;
 
 	// Preliminary calculations
 	this->SetupBridge();
@@ -28,37 +22,27 @@ Bridge::Bridge(const std::string& _name, Road* _road, const float& cross_station
 }
 // OVERLOAD CONSTRUCTOR (Overpass)
 // -------------------------------
-//Bridge::Bridge(const std::string& _name, Road* _road, const float& cross_station, const float& vertical_clearance, const float& horizontal_clearance, const float& elevation_level, const float& start_station, const float& end_station)
-//	: name(_name), road(_road), CS(cross_station), VC(vertical_clearance), HC(horizontal_clearance), EL(elevation_level), start_S(start_station), end_S(end_station)
-//{
-//	// General attributes
-//	this->mainSpan = main_span;
-//	//this->mainSpan = this->HC;
-//	//this->VC = v_clearance;
-//
-//	// Overpass
-//	this->WS = this->EL;
-//
-//	// Preliminary calculations
-//	this->SetupBridge();
-//
-//	std::cout << "\n\tNEW MODEL (Overpass) ..................... " << name << std::endl;
-//}
+Bridge::Bridge(const std::string& _name, Road* _road, const float& cross_station, const float& vertical_clearance, const float& horizontal_clearance, const float& ground_level, const float& start_station, const float& end_station)
+	: name(_name), road(_road), CS(cross_station), VC(vertical_clearance), HC(horizontal_clearance), GL(ground_level), start_S(start_station), end_S(end_station)
+{
+	// Overpass
+	this->FL = this->GL;
+
+	// Preliminary calculations
+	this->SetupBridge();
+
+	std::cout << "\n\tNEW MODEL (Overpass) ..................... " << name << std::endl;
+}
 // OVERLOAD CONSTRUCTOR (Bridge)
 // -----------------------------
-//Bridge::Bridge(const std::string& _name, Road* _road, const float& cross_station, const float& vertical_clearance, const float& horizontal_clearance, const float& elevation_level, const float& water_surface, const float& start_station, const float& end_station)
-//	: name(_name), road(_road), CS(cross_station), VC(vertical_clearance), HC(horizontal_clearance), EL(elevation_level), WS(water_surface), start_S(start_station), end_S(end_station)
-//{
-//	// General attributes
-//	this->mainSpan = main_span;
-//	//this->mainSpan = this->HC;
-//	//this->VC = v_clearance;
-//
-//	// Preliminary calculations
-//	this->SetupBridge();
-//
-//	std::cout << "\n\tNEW MODEL (Bridge) ....................... " << name << std::endl;
-//}
+Bridge::Bridge(const std::string& _name, Road* _road, const float& cross_station, const float& vertical_clearance, const float& horizontal_clearance, const float& ground_level, const float& flood_level, const float& start_station, const float& end_station)
+	: name(_name), road(_road), CS(cross_station), VC(vertical_clearance), HC(horizontal_clearance), GL(ground_level), FL(flood_level), start_S(start_station), end_S(end_station)
+{
+	// Preliminary calculations
+	this->SetupBridge();
+
+	std::cout << "\n\tNEW MODEL (Bridge) ....................... " << name << std::endl;
+}
 
 // DESTRUCTOR
 // ----------
@@ -71,10 +55,9 @@ Bridge::~Bridge()
 void Bridge::SetupBridge()
 {
 	// Bridge attributes
+	this->mainSpan = main_span;
 	this->B = this->road->width;
-	// nos apoios
-	//this->H = int((100.0f * this->mainSpan / 16.0f) / 5.0f) * 0.05f;
-	this->H = int((100.0f * this->mainSpan / 20.0f) / 5.0f) * 0.05f;
+	this->H = int((100.0f * this->mainSpan / 20.0f) / 5.0f) * 0.05f; // nos apoios
 
 	// Alignment
 	////this->alignment = this->road->alignment;
@@ -176,25 +159,21 @@ std::vector<VerSegment*> Bridge::Vertical_Alignment()
 	std::vector<VerSegment*> profile;
 
 	// Check type of bridge
-	//int index = this->road->alignment->findSegment(this->CS);
-	//float CSy = this->road->alignment->profile[index]->getY(this->CS);
-	//if (fabsf(CSy - this->EL) >= (this->VC + this->H)
-	//	&& fabsf(CSy - this->WS) >= (this->VC + this->H))
-	//{
-	//	// Start
-	//	CRAB::Vector4Df VPT = { 0.0f, 0.0f, 0.0f, 1.0f };
-	//	VPT.x = this->CS - this->HC / 2.0f;
-	//	index = this->road->alignment->findSegment(VPT.x);
-	//	VPT.y = this->road->alignment->profile[index]->getY(VPT.x);
-	//	// End
-	//	CRAB::Vector4Df VPC = { 0.0f, 0.0f, 0.0f, 1.0f };
-	//	VPC.x = this->CS + this->HC / 2.0f;
-	//	index = this->road->alignment->findSegment(VPC.x);
-	//	VPC.y = this->road->alignment->profile[index]->getY(VPC.x);
-
-	//	profile.push_back(new VerSegment(VPT, VPC));
-	//	return profile;
-	//}
+	float CSy = this->road->alignment->getPositionFromStation(this->CS).y;
+	std::cout << "CSy = " << CSy << std::endl;
+	if (fabsf(CSy - this->GL) >= (this->VC + this->H)
+		&& fabsf(CSy - this->FL) >= (this->VC + this->H))
+	{
+		/*CRAB::Vector4Df VPC = { 0.0f, 0.0f, 0.0f, 1.0f };
+		VPC.x = this->CS - this->HC / 2.0f;
+		VPC.y = this->road->alignment->getPositionFromStation(VPC.x).y;
+		CRAB::Vector4Df VPT = { 0.0f, 0.0f, 0.0f, 1.0f };
+		VPT.x = this->CS + this->HC / 2.0f;
+		VPT.y = this->road->alignment->getPositionFromStation(VPT.x).y;
+		profile.push_back(new VerSegment(VPC, VPT));
+		return profile;*/
+		return this->road->alignment->profile;
+	}
 
 	/* ================================== CREST VERTICAL CURVE ================================== */
 
@@ -218,26 +197,20 @@ std::vector<VerSegment*> Bridge::Vertical_Alignment()
 	VPC.x = this->CS - Lc / 2.0f;
 	// Apenas para viadutos
 	VPC.y = this->road->alignment->getPositionFromStation(VPC.x).y + this->VC + this->H;
-	//if (this->WS == this->EL) // verifica se é viaduto
-	//{
-	//	index = this->road->alignment->findSegment(VPC.x);
-	//	VPC.y = this->road->alignment->profile[index]->getY(VPC.x) + this->VC + this->H;
-	//}
-	//else
-	//	VPC.y = this->WS + this->VC + this->H;
+	if (this->FL == this->GL) // se não for ponte
+		VPC.y = this->road->alignment->getPositionFromStation(VPC.x).y + this->VC + this->H;
+	else
+		VPC.y = this->FL + this->VC + this->H;
 
 	// VPT
 	CRAB::Vector4Df VPT = { 0.0f, 0.0f, 0.0f, 1.0f };
 	VPT.x = this->CS + Lc / 2.0f;
 	// Apenas para viadutos
 	VPT.y = this->road->alignment->getPositionFromStation(VPT.x).y + this->VC + this->H;
-	//if (this->WS == this->EL) // verifica se é viaduto
-	//{
-	//	index = this->road->alignment->findSegment(VPT.x);
-	//	VPT.y = this->road->alignment->profile[index]->getY(VPT.x) + this->VC + this->H;
-	//}
-	//else
-	//	VPT.y = this->WS + this->VC + this->H;
+	if (this->FL == this->GL) // se não for ponte
+		VPT.y = this->road->alignment->getPositionFromStation(VPT.x).y + this->VC + this->H;
+	else
+		VPT.y = this->FL + this->VC + this->H;
 
 	VerSegment* CrestCurve = new VerSegment(VPC, VPT, A);
 

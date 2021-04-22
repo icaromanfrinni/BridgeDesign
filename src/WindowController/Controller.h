@@ -69,19 +69,21 @@ namespace Controller
 			{
 				if (ImGui::MenuItem("New", "Ctrl+N"))
 				{
-					solids.clear();
-					ourMesh_List.clear();
+					//solids.clear();
+					models.clear();
 					bridges.clear();
+					curves.clear();
+					roadways.clear();
 				}
 				//if (ImGui::MenuItem("Open", NULL, false, false)) {}
 				//if (ImGui::MenuItem("Save", NULL, false, false)) {}
 				ImGui::Separator();
 				if (ImGui::MenuItem("Import", "Ctrl+I"))
 				{
-					std::string fileName;
+					std::string modelName;
 					std::cout << "Enter file name (*.obj): " << std::endl;
-					std::cin >> fileName;
-					fileName = "objects/" + fileName + ".obj";
+					std::cin >> modelName;
+					std::string fileName = "objects/" + modelName + ".obj";
 					ObjFile inputObjFile;
 					if (inputObjFile.ReadObjFile(fileName) == false)
 					{
@@ -89,13 +91,16 @@ namespace Controller
 							MB_OK | MB_ICONEXCLAMATION);
 					}
 					else
+					{
+						models.push_back(CRAB::Model(modelName));
 						for (int i = 0; i < inputObjFile.objectList.size(); i++)
-							ourMesh_List.push_back(Mesh(inputObjFile.objectList[i]));
+							models.back().mesh_list.push_back(Mesh(inputObjFile.objectList[i]));
+					}
 				}
 				if (ImGui::MenuItem("Export", "Ctrl+E"))
 				{
 					for (int i = 0; i < bridges.size(); i++)
-						HED::WriteObjFile(bridges[i]->model);
+						HED::WriteObjFile(bridges[i]->solids);
 				}
 				/*if (ImGui::BeginMenu("Export"))
 				{
@@ -778,7 +783,8 @@ namespace Controller
 
 					///*std::vector<Bridge*>::iterator it = bridges.begin() + CurrentBridge;
 					//bridges.erase(it);*/
-					ourMesh_List.clear(); //TODO: apagar apenas os modelos da rodovia corrente
+					models.clear(); //TODO: apagar apenas os modelos da rodovia corrente
+					curves.clear();
 					////bridges.push_back(new BoxGirder(CurrentBridgeName, roadways[CurrentRoad], cross_station, h_clearance));
 					for (int i = 0; i < bridges.size(); i++)
 					{
@@ -791,8 +797,16 @@ namespace Controller
 						bridges[i]->SetupPiers(new_nPiers);
 						//bridges[i]->UpdatePiers();
 						bridges[i]->Update();
-						for (int j = 0; j < bridges[i]->model.size(); j++)
-							ourMesh_List.push_back(Mesh(bridges[i]->model[j]));
+
+						models.push_back(CRAB::Model(bridges[i]->name, bridges[i]->solids));
+						curves.push_back(Grid(bridges[i]->alignment));
+						curves.push_back(Grid(bridges[i]->alignment->profile));
+					}
+					for (int i = 0; i < roadways.size(); i++)
+					{
+						//models.push_back(CRAB::Model(roadways[i]->name, roadways[i]->solids));
+						curves.push_back(Grid(roadways[i]->alignment));
+						curves.push_back(Grid(roadways[i]->alignment->profile));
 					}
 					//show_edit_road_parameters = false;
 				}
@@ -938,9 +952,14 @@ namespace Controller
 					}
 				}
 
+				// add new bridge
 				bridges.push_back(new BoxGirder(bridgeName, roadways[CurrentRoad], cross_station, v_clearance, h_clearance, column_stations, start_s, end_s));
-				for (int i = 0; i < bridges.back()->model.size(); i++)
-					ourMesh_List.push_back(Mesh(bridges.back()->model[i]));
+				// create model
+				models.push_back(CRAB::Model(bridges.back()->name, bridges.back()->solids));
+				// add alignment curve
+				curves.push_back(Grid(bridges.back()->alignment));
+				curves.push_back(Grid(bridges.back()->alignment->profile));
+
 				show_add_bridge_window = false;
 			}
 			ImGui::SameLine(225);
@@ -1115,11 +1134,21 @@ namespace Controller
 					bridges[CurrentBridge]->Update();
 					/*std::vector<Bridge*>::iterator it = bridges.begin() + CurrentBridge;
 					bridges.erase(it);*/
-					ourMesh_List.clear(); //TODO: apagar apenas os modelos da ponte corrente
+					models.clear(); //TODO: apagar apenas os modelos da ponte corrente
+					curves.clear();
 					//bridges.push_back(new BoxGirder(CurrentBridgeName, roadways[CurrentRoad], cross_station, h_clearance));
 					for (int i = 0; i < bridges.size(); i++)
-						for (int j = 0; j < bridges[i]->model.size(); j++)
-							ourMesh_List.push_back(Mesh(bridges[i]->model[j]));
+					{
+						models.push_back(CRAB::Model(bridges[i]->name, bridges[i]->solids));
+						curves.push_back(Grid(bridges[i]->alignment));
+						curves.push_back(Grid(bridges[i]->alignment->profile));
+					}
+					for (int i = 0; i < roadways.size(); i++)
+					{
+						//models.push_back(CRAB::Model(roadways[i]->name, roadways[i]->solids));
+						curves.push_back(Grid(roadways[i]->alignment));
+						curves.push_back(Grid(roadways[i]->alignment->profile));
+					}
 					//show_edit_bridge_parameters = false;
 				}
 				ImGui::SameLine(205);
@@ -1295,9 +1324,20 @@ namespace Controller
 				if (ImGui::Button(" UPDATE ")) {
 					bridges[CurrentBridge]->UpdatePiers();
 					bridges[CurrentBridge]->Update();
-					ourMesh_List.clear(); //TODO: apagar apenas os modelos da ponte corrente
-					for (int i = 0; i < bridges[CurrentBridge]->model.size(); i++)
-						ourMesh_List.push_back(Mesh(bridges[CurrentBridge]->model[i]));
+					models.clear(); //TODO: apagar apenas os modelos da ponte corrente
+					curves.clear();
+					for (int i = 0; i < bridges.size(); i++)
+					{
+						models.push_back(CRAB::Model(bridges[i]->name, bridges[i]->solids));
+						curves.push_back(Grid(bridges[i]->alignment));
+						curves.push_back(Grid(bridges[i]->alignment->profile));
+					}
+					for (int i = 0; i < roadways.size(); i++)
+					{
+						//models.push_back(CRAB::Model(roadways[i]->name, roadways[i]->solids));
+						curves.push_back(Grid(roadways[i]->alignment));
+						curves.push_back(Grid(roadways[i]->alignment->profile));
+					}
 					show_edit_bridge_section = false;
 				}
 				ImGui::SameLine(205);
@@ -1450,9 +1490,20 @@ namespace Controller
 				if (ImGui::Button(" UPDATE ")) {
 					bridges[CurrentBridge]->UpdatePiers();
 					bridges[CurrentBridge]->Update();
-					ourMesh_List.clear(); //TODO: apagar apenas os modelos da ponte corrente
-					for (int i = 0; i < bridges[CurrentBridge]->model.size(); i++)
-						ourMesh_List.push_back(Mesh(bridges[CurrentBridge]->model[i]));
+					models.clear(); //TODO: apagar apenas os modelos da ponte corrente
+					curves.clear();
+					for (int i = 0; i < bridges.size(); i++)
+					{
+						models.push_back(CRAB::Model(bridges[i]->name, bridges[i]->solids));
+						curves.push_back(Grid(bridges[i]->alignment));
+						curves.push_back(Grid(bridges[i]->alignment->profile));
+					}
+					for (int i = 0; i < roadways.size(); i++)
+					{
+						//models.push_back(CRAB::Model(roadways[i]->name, roadways[i]->solids));
+						curves.push_back(Grid(roadways[i]->alignment));
+						curves.push_back(Grid(roadways[i]->alignment->profile));
+					}
 					//show_edit_bridge_columns = false;
 				}
 				ImGui::SameLine(205);

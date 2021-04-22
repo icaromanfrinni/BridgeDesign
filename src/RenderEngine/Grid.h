@@ -41,6 +41,8 @@ public:
     Grid(std::vector<Vertex> _vertices);
     // overload constructor (from VPI points)
     Grid(std::vector<CRAB::Vector4Df*> _vertices);
+    // overload constructor (from Vertical Alignment)
+    Grid(std::vector<VerSegment*> _profile);
     // overload constructor (from NURBS curve)
     Grid(const NURBS& _curve);
     // overload constructor (from 3D Alignment curve)
