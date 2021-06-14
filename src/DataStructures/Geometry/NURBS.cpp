@@ -83,8 +83,8 @@ NURBS::NURBS(const std::vector<HorSegment*>& segments)
 	}
 	// degree
 	this->P = this->points.size() - 1;
-	if (this->P > 5)
-		this->P = 5;
+	if (this->P > 3)
+		this->P = 3;
 	// knot vector
 	int m = points.size() + this->P;
 	int n = points.size() - 1;
@@ -102,15 +102,17 @@ NURBS::NURBS(const std::vector<HorSegment*>& segments)
 	}
 
 	/*std::cout << "number of segments = " << segments.size() << std::endl;
-	std::cout << "number of control points = " << this->points.size() << std::endl;*/
+	std::cout << "number of control points = " << this->points.size() << std::endl;
+	std::cout << "m = " << m << std::endl;
+	std::cout << "n = " << n << std::endl;
 
-	/*for (int i = 0; i < this->points.size(); i++)
-		std::cout << "P[" << i << "] = {" << this->points[i].x << "; " << this->points[i].y << "; " << this->points[i].z << "}" << std::endl;*/
+	for (int i = 0; i < this->points.size(); i++)
+		std::cout << "P[" << i << "] = {" << this->points[i].x << "; " << this->points[i].y << "; " << this->points[i].z << "}" << std::endl;
 
-	/*for (int i = 0; i < this->w.size(); i++)
-		std::cout << "w[" << i << "] = " << this->w[i] << std::endl;*/
+	for (int i = 0; i < this->w.size(); i++)
+		std::cout << "w[" << i << "] = " << this->w[i] << std::endl;
 
-	/*for (int i = 0; i < this->T.size(); i++)
+	for (int i = 0; i < this->T.size(); i++)
 		std::cout << "u[" << i << "] = " << this->T[i] << std::endl;*/
 
 	this->SetupArcLengthTable();
@@ -160,6 +162,9 @@ void NURBS::SetupArcLengthTable()
 		//std::cout << "t = " << ti << "; s = " << si << std::endl;
 		arcLength_table.push_back(ArcLength(ti, si));
 	}
+
+	//std::cout << "\n\tarcLength_table size = " << arcLength_table.size() << std::endl;
+	//std::cout << "total arc-length = " << arcLength_table.back().s << " m" << std::endl;
 }
 
 // BASIS FUNCTIONS

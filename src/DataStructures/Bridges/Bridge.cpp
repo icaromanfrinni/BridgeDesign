@@ -97,10 +97,10 @@ float Bridge::Superelevation(const float& t) const
 	if (this->road->alignment->isClockwise(t))
 		alpha = alpha * (-1.0f);
 
-	//std::cout << "t = " << t << " slope = " << alpha << " curvature = " << this->alignment->getCurvature(t) << " radius = " << r << std::endl;
-	//std::cout << "alpha = " << alpha << std::endl; 
-	//std::cout << "\tslope = " << slope << std::endl;
-	//std::cout << "\tcurvature = " << this->alignment->getCurvature(t) << std::endl;
+	/*std::cout << "\talpha = " << alpha << std::endl; 
+	std::cout << "\te = " << slope * 100 << " %"<< std::endl;
+	std::cout << "\t1/R = " << this->alignment->getCurvature(t) << std::endl;
+	std::cout << "\tR = " << r << std::endl;*/
 
 	return alpha;
 }
@@ -160,7 +160,7 @@ std::vector<VerSegment*> Bridge::Vertical_Alignment()
 
 	// Check type of bridge
 	float CSy = this->road->alignment->getPositionFromStation(this->CS).y;
-	std::cout << "CSy = " << CSy << std::endl;
+	//std::cout << "CSy = " << CSy << std::endl;
 	if (fabsf(CSy - this->GL) >= (this->VC + this->H)
 		&& fabsf(CSy - this->FL) >= (this->VC + this->H))
 	{
@@ -190,7 +190,7 @@ std::vector<VerSegment*> Bridge::Vertical_Alignment()
 	// Round up
 	A = ceilf(A);
 	//std::cout << "A = " << A << std::endl;
-	//std::cout << "S = " << this->road->SSD << std::endl;
+	//std::cout << "S = " << this->road->StoppingSightDistance() << std::endl;
 
 	// VPC
 	CRAB::Vector4Df VPC = { 0.0f, 0.0f, 0.0f, 1.0f };
@@ -222,7 +222,6 @@ std::vector<VerSegment*> Bridge::Vertical_Alignment()
 	// LEFT
 	VerSegment* SagCurve_LEFT;
 	{
-		//std::cout << "\nSagCurve_LEFT" << std::endl;
 		CRAB::Vector4Df VPI;
 		CRAB::Vector4Df grade;
 
@@ -256,7 +255,8 @@ std::vector<VerSegment*> Bridge::Vertical_Alignment()
 
 		SagCurve_LEFT = new VerSegment(VPI, grade, r * (-1.0f), Ls);
 
-		/*std::cout << "VPI.x = " << VPI.x << " m" << std::endl;
+		/*std::cout << "\nSagCurve_LEFT" << std::endl;
+		std::cout << "VPI.x = " << VPI.x << " m" << std::endl;
 		std::cout << "As = " << As << " %" << std::endl;
 		std::cout << "Ls = " << Ls << " m" << std::endl;*/
 	}
@@ -264,7 +264,6 @@ std::vector<VerSegment*> Bridge::Vertical_Alignment()
 	// RIGHT
 	VerSegment* SagCurve_RIGHT;
 	{
-		//std::cout << "\nSagCurve_RIGHT" << std::endl;
 		CRAB::Vector4Df VPI;
 		CRAB::Vector4Df grade;
 
@@ -298,7 +297,8 @@ std::vector<VerSegment*> Bridge::Vertical_Alignment()
 
 		SagCurve_RIGHT = new VerSegment(VPI, r, grade * (-1.0f), Ls);
 
-		/*std::cout << "VPI.x = " << VPI.x << " m" << std::endl;
+		/*std::cout << "\nSagCurve_RIGHT" << std::endl;
+		std::cout << "VPI.x = " << VPI.x << " m" << std::endl;
 		std::cout << "As = " << As << " %" << std::endl;
 		std::cout << "Ls = " << Ls << " m" << std::endl;*/
 	}
@@ -319,13 +319,13 @@ std::vector<VerSegment*> Bridge::Vertical_Alignment()
 	CRAB::Vector4Df VPT1 = SagCurve_LEFT->getEndPoint4D();
 	std::cout << "VPC1 = [" << VPC1.x << "; " << VPC1.y << "; " << VPC1.z << "]" << std::endl;
 	std::cout << "VPI1 = [" << VPI1.x << "; " << VPI1.y << "; " << VPI1.z << "]" << std::endl;
-	std::cout << "VPT1 = [" << VPT1.x << "; " << VPT1.y << "; " << VPT1.z << "]" << std::endl;*/
-	/*std::cout << "\nCURVE 2" << std::endl;
+	std::cout << "VPT1 = [" << VPT1.x << "; " << VPT1.y << "; " << VPT1.z << "]" << std::endl;
+	std::cout << "\nCURVE 2" << std::endl;
 	CRAB::Vector4Df VPI2 = CrestCurve->getMidPoint4D();
 	std::cout << "VPC2 = [" << VPC.x << "; " << VPC.y << "; " << VPC.z << "]" << std::endl;
 	std::cout << "VPI2 = [" << VPI2.x << "; " << VPI2.y << "; " << VPI2.z << "]" << std::endl;
-	std::cout << "VPT2 = [" << VPT.x << "; " << VPT.y << "; " << VPT.z << "]" << std::endl;*/
-	/*std::cout << "\nCURVE 3" << std::endl;
+	std::cout << "VPT2 = [" << VPT.x << "; " << VPT.y << "; " << VPT.z << "]" << std::endl;
+	std::cout << "\nCURVE 3" << std::endl;
 	CRAB::Vector4Df VPC3 = SagCurve_RIGHT->getStartPoint4D();
 	CRAB::Vector4Df VPI3 = SagCurve_RIGHT->getMidPoint4D();
 	CRAB::Vector4Df VPT3 = SagCurve_RIGHT->getEndPoint4D();

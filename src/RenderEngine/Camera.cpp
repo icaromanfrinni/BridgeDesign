@@ -3,8 +3,8 @@
 // default Constructor
 Camera::Camera() : MovementSpeed(SPEED), MouseSensitivity(SENSITIVITY), FieldOfView(FOV)
 {
-    Position = glm::vec3(900.0f, 0.0f, 500.0f);
-    View = glm::vec3(900.0f, 0.0f, 0.0f);
+    Position = glm::vec3(0.0f, 0.0f, 50.0f);
+    View = glm::vec3(0.0f, 0.0f, 0.0f);
     LookAt = glm::normalize(View - Position);
     Near = 0.1f;
     Far = 5000.0f;

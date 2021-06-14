@@ -161,7 +161,7 @@ void BoxGirder::SetupSection(const float& t)
 	}
 	th = int((100.0f * (b - 2 * bw) / 5.0f) / 5.0f) * 0.05f;
 
-	/*if (this->dH < 1.80f)
+	/*if (this->dH < 3.76f)
 	{
 		std::cout << "\nH = " << this->dH << std::endl;
 		std::cout << "Lb = " << Lb << std::endl;
@@ -355,6 +355,8 @@ std::vector<CRAB::Vector4Df> BoxGirder::TopLayer_section(const float& station) c
 }
 std::vector<CRAB::Vector4Df> BoxGirder::Deck_section(const float& station)
 {
+	//std::cout << "\nstation = " << station << " m" << std::endl;
+
 	// Curve parameter 't'
 	float t = this->alignment->findParameter(station);
 
@@ -370,7 +372,7 @@ std::vector<CRAB::Vector4Df> BoxGirder::Deck_section(const float& station)
 	if (hasWidening)
 		w = this->Widening(t);
 
-	//std::cout << "\tt = " << t << " w = " << w << std::endl;
+	//std::cout << "\tw = " << w << std::endl;
 
 	// Local View
 	float offset = (B / 2.0f) * SLOPE + TOP_LAYER;
@@ -996,6 +998,7 @@ void BoxGirder::Update()
 		EulerOp::mef(solids.back()->halfEdges.front(), solids.back()->halfEdges.back(), 0);
 
 		float s = this->start_S + 1.0f;
+		//float s = this->start_S + 50.0f;
 		while (s <= this->end_S)
 		{
 			// Next section
@@ -1004,7 +1007,10 @@ void BoxGirder::Update()
 			EulerOp::SWEEP(solids.back()->faces.front(), new_section);
 			// Next station
 			s++;
+			//s += 50.0f;
 		}
+
+		//system("pause");
 	}
 
 	// U_SECTION

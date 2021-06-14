@@ -5,10 +5,10 @@ Grid::Grid()
 {
     Grid::Vertex p;
     glm::vec3 color;
-    int gridSize = 500;
+    int gridSize = 2000;
     // XZ-axis
-    for (int i = -gridSize; i <= gridSize; i += 10)
-        for (int k = -gridSize; k <= gridSize; k += 10)
+    for (int i = -gridSize; i <= gridSize; i += 50)
+        for (int k = -gridSize; k <= gridSize; k += 50)
         {
             if (i == 0) color = { 0.3f, 0.3f, 0.9f };
             else if (k == 0) color = { 0.9f, 0.3f, 0.3f };

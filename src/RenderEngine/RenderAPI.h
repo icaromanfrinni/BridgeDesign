@@ -26,7 +26,7 @@
 #include "Skybox.h"
 #include "GlobalTextures.h"
 
-#define EXAMPLE 16
+#define EXAMPLE 17
 #define DEBUG 1
 
 namespace CRAB
@@ -53,7 +53,7 @@ namespace CRAB
     glm::mat4 projection = glm::mat4(1.0f);
 
     // lighting
-    DirectionalLight mainLight({ 0.8f, 0.8f, 0.8f }, camera.LookAt);
+    DirectionalLight mainLight({ 0.6f, 0.6f, 0.6f }, camera.LookAt);
     //DirectionalLight mainLight({ 0.9f, 0.9f, 0.9f }, { -1.0f, -1.0f, -1.0f });
     
     // timing
@@ -168,7 +168,7 @@ namespace CRAB
         texPavement.push_back(new Texture("textures/half_pavement_diffuse.jpg", "diffuse"));
         texPavement.push_back(new Texture("textures/half_pavement_roughness.jpg", "specular"));
         texPavement.push_back(new Texture("textures/half_pavement_normal.jpg", "normal"));
-        
+
         texConcrete.push_back(new Texture("textures/Concrete_009_COLOR.jpg", "diffuse"));
         texConcrete.push_back(new Texture("textures/Concrete_009_DISP.png", "specular"));
         texConcrete.push_back(new Texture("textures/Concrete_009_NORM.jpg", "normal"));
@@ -200,7 +200,7 @@ namespace CRAB
         std::cout << std::endl;
         std::cout << "\tLOAD MODELS" << std::endl;
         std::cout << "\t-----------" << std::endl;
-        
+
         /* EXEMPLO: Reunião 13 */
 #if EXAMPLE == 1
 
@@ -234,7 +234,7 @@ namespace CRAB
         // bridge
         bridges.push_back(new BoxGirder("Rio_Pacoti", roadways.back(), 180.0f/*, 6.0f*/, 90.0f));
 #endif
-       
+
         /* EXEMPLO: Superelevação */
 #if EXAMPLE == 2
 
@@ -554,10 +554,10 @@ namespace CRAB
         //// alignment
         //alignments.push_back(new Alignment("Ramo Direito", road_plan_RIGHT, road_profile));
 
-        ///* R00 */
-        //roadways.push_back(new Road("Pista Direita", 9.20f, 50.0f, alignments.back(), vehicles.back()));
-        //stations = { 150.0f, 200.0f, 270.0f, 320.0f }; // 50m, 70m, 50m
-        //bridges.push_back(new BoxGirder("Viaduto Direito", roadways.back(), 235.0f, 5.5f, 100.0f, stations));
+        /* R00 */
+        roadways.push_back(new Road("Pista Direita", 9.20f, 50.0f, alignments.back(), vehicles.back()));
+        column_stations = { 150.0f, 200.0f, 270.0f, 320.0f }; // 50m, 70m, 50m
+        bridges.push_back(new BoxGirder("Viaduto Direito", roadways.back(), 235.0f, 5.5f, 100.0f, column_stations, 110.0f, 350.0f));
 #endif
 
         /* NEW YORK: Ponte sobre rio navegável */
@@ -579,7 +579,7 @@ namespace CRAB
         road_plan_VALE.push_back(new HorSegment({ -936.33f, 0.0f, 813.38f, 1.0f }, { -752.04f, 0.0f, 438.69f, 1.0f }));
         road_plan_VALE.push_back(new HorSegment({ -752.04f, 0.0f, 438.69f, 1.0f }, { -514.63f, 0.0f, -44.01f, 1.0f }, { 18.99f, 0.0f, -111.96f, 1.0f }));
         road_plan_VALE.push_back(new HorSegment({ 18.99f, 0.0f, -111.96f, 1.0f }, { 1241.78f, 0.0f, -267.65f, 1.0f }));
-       
+
         // alignment
         alignments.push_back(new Alignment("Vale", road_plan_VALE, road_profile));
         // road
@@ -590,7 +590,7 @@ namespace CRAB
 
         /* DISSERTAÇÃO: Ponte da Integração */
 #if EXAMPLE == 16
-        
+
         // ROAD PROFILE
         std::vector<VerSegment*> terrain_profile;
         // TERRENO TESTE
@@ -653,10 +653,101 @@ namespace CRAB
         //roadways.push_back(new Road("Terrain", 16.80f, 60.0f, alignments.back(), vehicles.back()));
         roadways.push_back(new Road("Avenue", 16.80f, 80.0f, alignments.back(), vehicles.back()));
         // bridge
-        //column_stations = { 175.0f, 220.0f, 280.0f, 325.0f };
+        column_stations = { 638.0f, 738.0f, 838.0f, 1038.0f, 1138.0f, 1238.0f };
         //bridges.push_back(new BoxGirder("Bridge", roadways.back(), 938.0f, 20.0f, 450.0f, column_stations, 700.0f, 1200.0f));
         //bridges.push_back(new BoxGirder("Bridge", roadways.back(), 938.0f, 20.0f, 450.0f, column_stations, 0.0f, 700.0f, 1200.0f));
-        bridges.push_back(new BoxGirder("Bridge", roadways.back(), 938.0f, 20.0f, 450.0f, column_stations, 0.0f, 150.0f, 700.0f, 1200.0f));
+        bridges.push_back(new BoxGirder("Bridge", roadways.back(), 938.0f, 70.0f, 200.0f, column_stations, 47.0f, 97.0f, 538.0f, 1338.0f));
+#endif
+
+        /* DISSERTAÇÃO: Ponte de Guaratuba */
+#if EXAMPLE == 17
+
+
+        // ROAD PLAN
+        std::vector<HorSegment*> road_plan;
+        // Curva 1
+        CRAB::Vector4Df PC1 = { 160.50f, 0.0f, -1001.29f, 1.0f };
+        CRAB::Vector4Df PI1 = { 233.56f, 0.0f, -890.81f, 1.0f };
+        CRAB::Vector4Df PT1 = { 363.33f, 0.0f, -864.29f, 1.0f };
+        // Curva 2
+        CRAB::Vector4Df PC2 = { 1827.21f, 0.0f, -565.13f, 1.0f };
+        CRAB::Vector4Df PI2 = { 1974.54f, 0.0f, -535.02f, 1.0f };
+        CRAB::Vector4Df PT2 = { 2086.83f, 0.0f, -635.06f, 1.0f };
+        // Curva 3
+        CRAB::Vector4Df PC3 = { 2209.97f, 0.0f, -744.75f, 1.0f };
+        CRAB::Vector4Df PI3 = { 2262.68f, 0.0f, -791.71f, 1.0f };
+        CRAB::Vector4Df PT3 = { 2333.85f, 0.0f, -804.74f, 1.0f };
+        // Curva 4
+        CRAB::Vector4Df PC4 = { 2385.32f, 0.0f, -813.68f, 1.0f };
+        CRAB::Vector4Df PI4 = { 2570.49f, 0.0f, -846.88f, 1.0f };
+        CRAB::Vector4Df PT4 = { 2696.57f, 0.0f, -986.59f, 1.0f };
+        // Alinhamento Horizontal
+        road_plan.push_back(new HorSegment(PC1, PI1, PT1));
+        road_plan.push_back(new HorSegment(PT1, PC2));
+        road_plan.push_back(new HorSegment(PC2, PI2, PT2));
+        road_plan.push_back(new HorSegment(PT2, PC3));
+        road_plan.push_back(new HorSegment(PC3, PI3, PT3));
+        road_plan.push_back(new HorSegment(PT3, PC4));
+        road_plan.push_back(new HorSegment(PC4, PI4, PT4));
+        // no eixo
+        //road_plan.push_back(new HorSegment({ 0.0f, 0.0f, 0.0f, 1.0f }, { 2743.0f, 0.0f, 0.0f, 1.0f }));
+
+        // ROAD PROFILE
+        std::vector<VerSegment*> road_profile;
+        // Curva vertical 1
+        CRAB::Vector4Df VPC1 = { 0.0f, 3.60f, 0.0f, 1.0f };
+        CRAB::Vector4Df VPI1 = { 20.0f, 3.80f, 0.0f, 1.0f };
+        CRAB::Vector4Df VPT1 = { 40.0f, 3.66f, 0.0f, 1.0f };
+        // Curva vertical 2
+        CRAB::Vector4Df VPC2 = { 190.0f, 2.59f, 0.0f, 1.0f };
+        CRAB::Vector4Df VPI2 = { 300.0f, 1.80f, 0.0f, 1.0f };
+        CRAB::Vector4Df VPT2 = { 410.0f, 2.73f, 0.0f, 1.0f };
+        // Curva vertical 3
+        CRAB::Vector4Df VPC3 = { 410.0f, 2.73f, 0.0f, 1.0f };
+        CRAB::Vector4Df VPI3 = { 430.0f, 2.90f, 0.0f, 1.0f };
+        CRAB::Vector4Df VPT3 = { 450.0f, 2.95f, 0.0f, 1.0f };
+        // Curva vertical 4
+        CRAB::Vector4Df VPC4 = { 640.0f, 3.47f, 0.0f, 1.0f };
+        CRAB::Vector4Df VPI4 = { 665.0f, 3.53f, 0.0f, 1.0f };
+        CRAB::Vector4Df VPT4 = { 690.0f, 3.53f, 0.0f, 1.0f };
+        // Curva vertical 5
+        CRAB::Vector4Df VPC5 = { 2152.5f, 3.53f, 0.0f, 1.0f };
+        CRAB::Vector4Df VPI5 = { 2215.0f, 3.53f, 0.0f, 1.0f };
+        CRAB::Vector4Df VPT5 = { 2277.5f, 10.43f, 0.0f, 1.0f };
+        // Curva vertical 6
+        CRAB::Vector4Df VPC6 = { 2495.0f, 34.41f, 0.0f, 1.0f };
+        CRAB::Vector4Df VPI6 = { 2545.0f, 39.92f, 0.0f, 1.0f };
+        CRAB::Vector4Df VPT6 = { 2595.0f, 34.71f, 0.0f, 1.0f };
+        CRAB::Vector4Df VPT6b = { 2743.0f, 19.29f, 0.0f, 1.0f };
+        // Curva vertical 7
+        CRAB::Vector4Df VPC7 = { 2810.0f, 12.31f, 0.0f, 1.0f };
+        CRAB::Vector4Df VPI7 = { 2830.0f, 10.23f, 0.0f, 1.0f };
+        CRAB::Vector4Df VPT7 = { 2850.0f, 8.91f, 0.0f, 1.0f };
+        // Curva vertical 8
+        CRAB::Vector4Df VPC8 = { 2882.5f, 6.77f, 0.0f, 1.0f };
+        CRAB::Vector4Df VPI8 = { 2907.5f, 5.13f, 0.0f, 1.0f };
+        CRAB::Vector4Df VPT8 = { 2932.5f, 5.13f, 0.0f, 1.0f };
+
+        // Alinhamento Vertical
+        road_profile.push_back(new VerSegment(VPC1, VPI1, VPT1));
+        road_profile.push_back(new VerSegment(VPT1, VPC2));
+        road_profile.push_back(new VerSegment(VPC2, VPI2, VPT2));
+        road_profile.push_back(new VerSegment(VPC3, VPI3, VPT3));
+        road_profile.push_back(new VerSegment(VPT3, VPC4));
+        road_profile.push_back(new VerSegment(VPC4, VPI4, VPT4));
+        road_profile.push_back(new VerSegment(VPT4, VPC5));
+        road_profile.push_back(new VerSegment(VPC5, VPI5, VPT5));
+        road_profile.push_back(new VerSegment(VPT5, VPC6));
+        road_profile.push_back(new VerSegment(VPC6, VPI6, VPT6));
+        road_profile.push_back(new VerSegment(VPT6, VPT6b));
+
+        // alignment
+        alignments.push_back(new Alignment("Alinhamento", road_plan, road_profile));
+        // road
+        roadways.push_back(new Road("PR-412", 16.80f, 80.0f, alignments.back(), vehicles.back()));
+        // bridge
+        //column_stations = { 638.0f, 738.0f, 838.0f, 1038.0f, 1138.0f, 1238.0f };
+        bridges.push_back(new BoxGirder("Ponte de Guaratuba", roadways.back(), 1200.0f, 20.0f, 100.0f, column_stations, -10.0f, 0.0f, 765.0f, 2085.0f));
 #endif
 
         // mesh
@@ -665,7 +756,7 @@ namespace CRAB
         {
             //curves.push_back(Grid(bridges[i]->alignment->VPI_list));
             curves.push_back(Grid(bridges[i]->alignment));
-            curves.push_back(Grid(bridges[i]->alignment->profile));
+            //curves.push_back(Grid(bridges[i]->alignment->profile));
             /*for (int j = 0; j < bridges[i]->model.size(); j++)
                 ourMesh_List.push_back(Mesh(bridges[i]->model[j]));*/
             models.push_back(CRAB::Model(bridges[i]->name, bridges[i]->solids));
@@ -674,7 +765,7 @@ namespace CRAB
         {
             //curves.push_back(Grid(roadways[i]->alignment->VPI_list));
             curves.push_back(Grid(roadways[i]->alignment));
-            curves.push_back(Grid(roadways[i]->alignment->profile));
+            //curves.push_back(Grid(roadways[i]->alignment->profile));
             /*for (int j = 0; j < roadways[i]->model.size(); j++)
                 ourMesh_List.push_back(Mesh(roadways[i]->model[j]));*/
         }
@@ -724,8 +815,8 @@ namespace CRAB
 
             // init
             // ----
-            glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
-            //glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
+            //glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+            glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
             // per-frame time logic

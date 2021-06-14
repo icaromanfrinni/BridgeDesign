@@ -36,7 +36,7 @@ public:
 	float h;		// slab thickness
 	float bw;		// webs slab thickness
 	float iw;		// web inclination
-	bool iLocked = false;
+	bool iLocked = true;
 	float b;		// bottom slab width
 	float th;		// horizontal haunch
 	float tv;		// vertical haunch
