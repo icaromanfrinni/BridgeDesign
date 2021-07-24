@@ -213,6 +213,8 @@ namespace Controller
 						v_clearance = 5.5f;
 						h_clearance = 100.0f;
 						piers_inline = "145 195 265 315";
+						riverbed = -10.0f;
+						highWaterLevel = 0.0f;
 						start_s = 110.0f;
 						end_s = 350.0f;
 					}
@@ -824,7 +826,7 @@ namespace Controller
 		if (show_add_bridge_window)
 		{
 			ImGui::SetNextWindowPos(ImVec2(100, 100), ImGuiCond_Once);
-			ImGui::SetNextWindowSize(ImVec2(295, 245), ImGuiCond_Once);
+			ImGui::SetNextWindowSize(ImVec2(295, 265), ImGuiCond_Once);
 			ImGui::Begin("New Bridge", &show_add_bridge_window, ImGuiWindowFlags_NoResize);   // Pass a pointer to our bool variable (the window will have a closing button that will clear the bool when clicked)
 			
 			ImGui::Columns(2, NULL, false);
@@ -909,9 +911,20 @@ namespace Controller
 			ImGui::NextColumn();
 			ImGui::PopID();
 
-			// START STATION
+			// HIGH WATER LEVEL
 
 			ImGui::PushID(907);
+			ImGui::AlignTextToFramePadding();
+			ImGui::Text("High-flood level");
+			ImGui::NextColumn();
+			ImGui::SetNextItemWidth(80);
+			ImGui::DragFloat("m", &highWaterLevel, 0.01f, -1000.00f, 1000.00f, "%.2f");
+			ImGui::NextColumn();
+			ImGui::PopID();
+
+			// START STATION
+
+			ImGui::PushID(908);
 			ImGui::AlignTextToFramePadding();
 			ImGui::Text("Start station");
 			ImGui::NextColumn();
@@ -922,7 +935,7 @@ namespace Controller
 
 			// END STATION
 
-			ImGui::PushID(908);
+			ImGui::PushID(909);
 			ImGui::AlignTextToFramePadding();
 			ImGui::Text("End station");
 			ImGui::NextColumn();

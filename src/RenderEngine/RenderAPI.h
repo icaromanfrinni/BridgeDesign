@@ -237,21 +237,23 @@ namespace CRAB
 
         /* EXEMPLO: Superelevação */
 #if EXAMPLE == 2
-
+        // Alinhamento horizontal da rodovia
         std::vector<HorSegment*> road_plan;
-        road_plan.push_back(new HorSegment(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(100.0f, 0.0f, 0.0f)));
-        road_plan.push_back(new HorSegment(glm::vec3(100.0f, 0.0f, 0.0f), glm::vec3(200.0f, 0.0f, 0.0f), glm::vec3(200.0f, 0.0f, 100.0f)/*, 60.0f, 1.0f / 68.0f, BOTH*/));
-        road_plan.push_back(new HorSegment(glm::vec3(200.0f, 0.0f, 100.0f), glm::vec3(200.0f, 0.0f, 200.0f)));
+        road_plan.push_back(new HorSegment({ 0.0f, 0.0f, 0.0f, 1.0f }, { 500.0f, 0.0f, 0.0f, 1.0f }));
+        road_plan.push_back(new HorSegment({ 500.0f, 0.0f, 0.0f, 1.0f }, { 800.0f, 0.0f, 0.0f, 1.0f }, { 800.0f, 0.0f, 300.0f, 1.0f }));
+        road_plan.push_back(new HorSegment({ 800.0f, 0.0f, 300.0f, 1.0f }, { 800.0f, 0.0f, 600.0f, 1.0f }, { 1100.0f, 0.0f, 600.0f, 1.0f }));
+        road_plan.push_back(new HorSegment({ 1100.0f, 0.0f, 600.0f, 1.0f }, { 1600.0f, 0.0f, 600.0f, 1.0f }));
 
-        std::vector<VerSegment*> profile;
-        profile.push_back(new VerSegment(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(200.0f, 0.0f, 0.0f)));
+        // Alinhamento vertical da rodovia
+        std::vector<VerSegment*> road_profile;
+        road_profile.push_back(new VerSegment({ 0.0f, 0.0f, 0.0f, 1.0f }, { 1900.0f, 0.0f, 0.0f, 1.0f }));
 
         // alignment
-        alignments.push_back(new Alignment("Pista_01", road_plan, profile));
+        alignments.push_back(new Alignment("Pista_01", road_plan, road_profile));
         // road
-        roadways.push_back(new Road("Rodovia_001", 8.00f, 40.0f, alignments.back(), vehicles.back()));
+        roadways.push_back(new Road("Rodovia_001", 8.0f, 40.0f, alignments.back(), vehicles.back()));
         // bridge
-        bridges.push_back(new BoxGirder("Rio_Pacoti", roadways.back(), 100.0f, 6.0f, 50.0f));
+        bridges.push_back(new BoxGirder("Ponte_001", roadways.back(), 500.0f, 0.0f, 50.0f, column_stations, -20.0f, -10.0f, 0.0f, 1900.0f));
 #endif
 
         /* EXEMPLO: Reunião 13 (com cálculo automático do alinhamento vertical) */
@@ -540,8 +542,8 @@ namespace CRAB
 
         /* R01 */
         roadways.push_back(new Road("Pista Esquerda", 9.20f, 50.0f, alignments.back(), vehicles.back()));
-        //main_span = 70.0;
-        //bridges.push_back(new BoxGirder("Viaduto Esquerdo", roadways.back(), 230.0f, 5.5f, 100.0f, { 145.0f, 195.0f, 265.0f, 315.0f }, 110.0f, 350.0f));
+        main_span = 70.0;
+        bridges.push_back(new BoxGirder("Viaduto Esquerdo", roadways.back(), 230.0f, 5.5f, 100.0f, { 145.0f, 195.0f, 265.0f, 315.0f }, 110.0f, 350.0f));
 
         //// VIADUTO DIREITO
         //// ---------------
@@ -555,9 +557,9 @@ namespace CRAB
         //alignments.push_back(new Alignment("Ramo Direito", road_plan_RIGHT, road_profile));
 
         /* R00 */
-        roadways.push_back(new Road("Pista Direita", 9.20f, 50.0f, alignments.back(), vehicles.back()));
-        column_stations = { 150.0f, 200.0f, 270.0f, 320.0f }; // 50m, 70m, 50m
-        bridges.push_back(new BoxGirder("Viaduto Direito", roadways.back(), 235.0f, 5.5f, 100.0f, column_stations, 110.0f, 350.0f));
+        //roadways.push_back(new Road("Pista Direita", 9.20f, 50.0f, alignments.back(), vehicles.back()));
+        //column_stations = { 150.0f, 200.0f, 270.0f, 320.0f }; // 50m, 70m, 50m
+        //bridges.push_back(new BoxGirder("Viaduto Direito", roadways.back(), 235.0f, 5.5f, 100.0f, column_stations, 110.0f, 350.0f));
 #endif
 
         /* NEW YORK: Ponte sobre rio navegável */
@@ -583,8 +585,8 @@ namespace CRAB
         // alignment
         alignments.push_back(new Alignment("Vale", road_plan_VALE, road_profile));
         // road
-        roadways.push_back(new Road("Vale", 13.0f, 60.0f, alignments.back(), vehicles.back()));
-
+        roadways.push_back(new Road("Vale", 8.5f, 60.0f, alignments.back(), vehicles.back()));
+        main_span = 70.0;
         bridges.push_back(new BoxGirder("Ponte", roadways.back(), 1300.0f, 8.0f, 300.0f, column_stations, 0.0f, 2000.0f));
 #endif
 
@@ -661,7 +663,6 @@ namespace CRAB
 
         /* DISSERTAÇÃO: Ponte de Guaratuba */
 #if EXAMPLE == 17
-
 
         // ROAD PLAN
         std::vector<HorSegment*> road_plan;
@@ -750,12 +751,31 @@ namespace CRAB
         bridges.push_back(new BoxGirder("Ponte de Guaratuba", roadways.back(), 1200.0f, 20.0f, 100.0f, column_stations, -10.0f, 0.0f, 765.0f, 2085.0f));
 #endif
 
+        /* PONTE RETA */
+#if EXAMPLE == 18
+        // road_plan
+        std::vector<HorSegment*> road_plan;
+        road_plan.push_back(new HorSegment({ 0.0f, 0.0f, 0.0f, 1.0f }, { 1000.0f, 0.0f, 0.0f, 1.0f }));
+
+        // road_profile
+        std::vector<VerSegment*> road_profile;
+        road_profile.push_back(new VerSegment({ 0.0f, 0.0f, 0.0f, 1.0f }, { 1000.0f, 0.0f, 0.0f, 1.0f }));
+
+        // alignment
+        alignments.push_back(new Alignment("alignment", road_plan, road_profile));
+        // road
+        roadways.push_back(new Road("road", 8.5f, 60.0f, alignments.back(), vehicles.back()));
+        main_span = 100.0;
+        column_stations = { 50.0f, 150.0f, 250.0f, 350.0f, 450.0f, 550.0f, 650.0f, 750.0f, 850.0f, 950.0f };
+        bridges.push_back(new BoxGirder("ponte", roadways.back(), 500.0f, 8.0f, 50.0f, column_stations, -10.0f, 0.0f, 320.0f, 680.0f));
+#endif
+        
         // mesh
         // ----
         for (int i = 0; i < bridges.size(); i++)
         {
             //curves.push_back(Grid(bridges[i]->alignment->VPI_list));
-            curves.push_back(Grid(bridges[i]->alignment));
+           // curves.push_back(Grid(bridges[i]->alignment));
             //curves.push_back(Grid(bridges[i]->alignment->profile));
             /*for (int j = 0; j < bridges[i]->model.size(); j++)
                 ourMesh_List.push_back(Mesh(bridges[i]->model[j]));*/
@@ -980,8 +1000,8 @@ namespace CRAB
             camera.View = glm::vec3(view.x, view.y, view.z);
             camera.LookAt = camera.View - camera.Position;
             camera.Up = glm::vec3(up.x, up.y, up.z);
-        }
-        if (glfwGetKey(window, GLFW_KEY_B) == GLFW_PRESS)
+        }*/
+        /*if (glfwGetKey(window, GLFW_KEY_B) == GLFW_PRESS)
         {
             walkAround -= deltaTime * 0.1f;
             if (walkAround < 0.0f)

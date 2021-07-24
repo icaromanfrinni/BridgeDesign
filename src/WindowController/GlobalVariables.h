@@ -11,7 +11,7 @@ extern Camera camera;
 // ---------------------
 extern std::string bridgeName, roadName;
 //extern std::vector<std::string> bridgeTypes;
-extern float cross_station, h_clearance, v_clearance, main_span, start_s, end_s;
+extern float cross_station, h_clearance, v_clearance, main_span, riverbed, highWaterLevel, start_s, end_s;
 extern std::vector<float> column_stations;
 extern std::string piers_inline;
 extern float roadWidth, dSpeed, slopeMax;

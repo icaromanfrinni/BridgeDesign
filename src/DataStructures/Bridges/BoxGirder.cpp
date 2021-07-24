@@ -940,6 +940,7 @@ void BoxGirder::Update()
 {
 	// Initialize
 	solids.clear();
+	float step = 2.0f;
 
 	// TOP_LAYER
 	{
@@ -963,7 +964,7 @@ void BoxGirder::Update()
 		}
 		EulerOp::mef(solids.back()->halfEdges.front(), solids.back()->halfEdges.back(), 0);
 
-		float s = this->start_S + 1.0f;
+		float s = this->start_S + step;
 		while (s <= this->end_S)
 		{
 			// Next section
@@ -971,7 +972,7 @@ void BoxGirder::Update()
 			// Solid
 			EulerOp::SWEEP(solids.back()->faces.front(), new_section);
 			// Next station
-			s++;
+			s += step;
 		}
 	}
 	
@@ -997,8 +998,7 @@ void BoxGirder::Update()
 		}
 		EulerOp::mef(solids.back()->halfEdges.front(), solids.back()->halfEdges.back(), 0);
 
-		float s = this->start_S + 1.0f;
-		//float s = this->start_S + 50.0f;
+		float s = this->start_S + step;
 		while (s <= this->end_S)
 		{
 			// Next section
@@ -1006,8 +1006,7 @@ void BoxGirder::Update()
 			// Solid
 			EulerOp::SWEEP(solids.back()->faces.front(), new_section);
 			// Next station
-			s++;
-			//s += 50.0f;
+			s += step;
 		}
 
 		//system("pause");
@@ -1035,7 +1034,7 @@ void BoxGirder::Update()
 		}
 		EulerOp::mef(solids.back()->halfEdges.front(), solids.back()->halfEdges.back(), 0);
 
-		float s = this->start_S + 1.0f;
+		float s = this->start_S + step;
 		while (s <= this->end_S)
 		{
 			// Next section
@@ -1043,7 +1042,7 @@ void BoxGirder::Update()
 			// Solid
 			EulerOp::SWEEP(solids.back()->faces.front(), new_section);
 			// Next station
-			s++;
+			s += step;
 		}
 	}
 

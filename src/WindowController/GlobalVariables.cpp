@@ -10,7 +10,7 @@ std::vector<float> column_stations;
 std::string piers_inline;
 float main_span = 150.0f; // m
 float slopeMax = 6.0f;
-float cross_station, v_clearance, h_clearance, start_s, end_s;
+float cross_station, v_clearance, h_clearance, riverbed, highWaterLevel, start_s, end_s;
 float roadWidth, dSpeed;
 int nLanes = 2;
 float nPiers;
